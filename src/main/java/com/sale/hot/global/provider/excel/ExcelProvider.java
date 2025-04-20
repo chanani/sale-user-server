@@ -1,6 +1,6 @@
 package com.sale.hot.global.provider.excel;
 
-import kr.co.qubiton.catchbeauty.global.provider.excel.dto.ExcelSheet;
+import com.sale.hot.global.provider.excel.dto.ExcelSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
