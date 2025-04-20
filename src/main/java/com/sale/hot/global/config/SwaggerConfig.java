@@ -8,7 +8,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @OpenAPIDefinition(
         info = @Info(title = "HotSale API 명세서",
@@ -22,20 +21,15 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {
-
-    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
-
-    public SwaggerConfig(RequestMappingHandlerMapping requestMappingHandlerMapping) {
-        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
-    }
+//    public SwaggerConfig(RequestMappingHandlerMapping requestMappingHandlerMapping) {
+//        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
+//    }
 
     private static final String BEARER_TOKEN_PREFIX = "Bearer";
-    private static final String CB_SHOP_ID = "CB-SHOP-ID";
 
     @Bean
     public OpenAPI openAPI() {
         String authorization = HttpHeaders.AUTHORIZATION;
-       // SecurityRequirement securityRequirement = new SecurityRequirement().addList(authorization, CB_SHOP_ID);
 
         Components components = new Components()
                 .addSecuritySchemes(authorization,
@@ -49,10 +43,7 @@ public class SwaggerConfig {
                 );
 
         OpenAPI openAPI = new OpenAPI()
-                //.addSecurityItem(securityRequirement)
                 .components(components);
-
-
         return openAPI;
     }
 
