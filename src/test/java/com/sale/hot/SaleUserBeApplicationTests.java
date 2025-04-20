@@ -1,4 +1,4 @@
-package com.sale.user;
+package com.sale.hot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
