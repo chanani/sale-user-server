@@ -11,6 +11,12 @@ spring:
       name: user
       password: asdf1234!@
 
-
+# swagger
+springdoc:
+  api-docs:
+    path: /sale-user-be/user/v3/api-docs
+  swagger-ui:
+    path: /sale-user-be/user/swagger-ui.html
+    url: /sale-user-be/user/v3/api-docs
 
 
