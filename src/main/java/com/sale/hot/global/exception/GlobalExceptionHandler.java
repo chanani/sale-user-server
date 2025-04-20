@@ -11,6 +11,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
@@ -91,4 +94,15 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.error(status.value(), e.getMessage()));
     }
 
+    // 파비콘 요청 무시에 대한 처리
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleNoResource(NoResourceFoundException ex) {
+        if ("favicon.ico".equals(ex.getResourcePath())) {
+            return ResponseEntity.notFound().build();  // 조용히 무시
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("code", -1, "status", 500, "message", "No static resource " + ex.getResourcePath()));
+    }
 }
