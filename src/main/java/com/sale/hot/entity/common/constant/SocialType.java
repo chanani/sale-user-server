@@ -1,5 +1,8 @@
 package com.sale.hot.entity.common.constant;
 
+/**
+ * 회원가입 종류
+ */
 public enum SocialType {
     LOCAL("포털"),
     KAKAO("카카오"),

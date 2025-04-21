@@ -1,15 +1,15 @@
 package com.sale.hot.entity.common.constant;
 
 /**
- * 성별
+ * 결제 수단
  */
-public enum Gender {
-    M("남자"),
-    F("여자");
+public enum PaymentType {
+    CARD("카드"),
+    BANK("계좌이체");
 
     private final String value;
 
-    Gender(String value) {
+    PaymentType(String value) {
         this.value = value;
     }
 }

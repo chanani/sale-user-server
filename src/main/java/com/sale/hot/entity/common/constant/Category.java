@@ -1,5 +1,8 @@
 package com.sale.hot.entity.common.constant;
 
+/**
+ * 카테고리 종류
+ */
 public enum Category {
     FOOD("먹거리"),
     GAME("SW/GAME"),
