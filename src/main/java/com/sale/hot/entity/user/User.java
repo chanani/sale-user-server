@@ -3,6 +3,7 @@ package com.sale.hot.entity.user;
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
+import com.sale.hot.entity.garde.Grade;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +26,9 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long gradeId; // 다른 테이블
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_id")
+    private Grade gradeId;
 
     @Column(name = "user_id")
     private String userId;
@@ -58,5 +61,7 @@ public class User extends BaseEntity {
 
     @Column(name = "social_id")
     private String socialId;
+
+
 
 }
