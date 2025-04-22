@@ -28,7 +28,7 @@ public class User extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_id")
-    private Grade gradeId;
+    private Grade grade;
 
     @Column(name = "user_id")
     private String userId;
@@ -62,6 +62,36 @@ public class User extends BaseEntity {
     @Column(name = "social_id")
     private String socialId;
 
+    /**
+     * 등급 변경
+     */
+    public void addGrade(Grade grade){
+        this.grade = grade;
+    }
 
+    /**
+     * 프로필 변경
+     */
+    public void addProfile(String profile){
+        this.profile = profile;
+    }
+
+    /**
+     * 비밀번호 변경
+     */
+    public void addPassword(String password){
+        this.password = password;
+    }
+
+    /**
+     * 연락처 변경
+     */
+    public void addPhone(String phone){
+        this.phone = phone;
+    }
+
+    /**
+     * TODO: 4/22/25 개인 정보 수정
+     */
 
 }
