@@ -2,15 +2,52 @@ spring:
   application:
     name: saleUserBe
   datasource:
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mariadb://qubiton.xyz:33010/newU300_dev?serverTimezone=Asia/Seoul
-    username: root
-    password: asdf1234
-  security:
-    user:
-      name: user
-      password: asdf1234!@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://49.247.173.142:3306/hotDelivery?serverTimezone=Asia/Seoul
+    username: chan
+    password: 1q2w3e4r!
 
+    # security
+    security:
+      user:
+        name: user
+        password: asdf1234!@
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 12
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 6000000
+
+    jpa:
+      hibernate:
+        # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
+        ddl-auto: none
+
+    data:
+      redis:
+        host: localhost
+        port: 6379
+        database: 0
+
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: mink240000@gmail.com
+      password: wsqerlrvbcoqtujf
+      properties:
+        mail:
+          smtp:
+            auth: true
+            timeout: 5000
+            starttls:
+              enable: true
+  # jwt
+  jwt:
+    secret-key: ?Ka}SqPl][^s*(dFerF]fEOpz#F~4P.x{/|#0!NtvlYUhW(hun2TQt}3+'f{|A8t:z7QzI_E:{^6bv
+    issuer-uri: www.hotDelivery.com
+    accessToken-expired-time: 3600000
+    refreshToken-expired-time: 86400000
 # swagger
 springdoc:
   api-docs:

@@ -35,7 +35,9 @@ public class DataBaseConfig {
     @Primary
     @Bean
     public DataSource mainDataSource() {
-        return mainDataSourceProperties().initializeDataSourceBuilder().build();
+        return mainDataSourceProperties()
+                .initializeDataSourceBuilder()
+                .build();
     }
 
     @Primary

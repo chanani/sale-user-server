@@ -3,10 +3,7 @@ package com.sale.hot.entity.garde;
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -15,9 +12,11 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "grade")
+@Builder
 public class Grade extends BaseEntity {
 
     @Id
@@ -25,8 +24,7 @@ public class Grade extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "grade", cascade = CascadeType.PERSIST)
     private List<User> user;
 
     // 출석 횟수 조건

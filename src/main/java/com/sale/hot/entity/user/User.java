@@ -7,10 +7,7 @@ import com.sale.hot.entity.garde.Grade;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -22,9 +19,11 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "user")
+@Builder
 public class User extends BaseEntity {
 
     @Id
