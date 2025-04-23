@@ -5,8 +5,10 @@ import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.garde.Grade;
 import com.sale.hot.entity.notification.Notification;
+import com.sale.hot.entity.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -65,9 +67,13 @@ public class User extends BaseEntity {
     @Column(name = "social_id")
     private String socialId;
 
-    // 알림
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Notification> notifications = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Post> posts = new ArrayList<>();
 
     /**
      * 등급 변경
@@ -104,6 +110,14 @@ public class User extends BaseEntity {
     public void addNotification(Notification notification) {
         this.notifications.add(notification);
         notification.setUser(this);
+    }
+
+    /**
+     * 게시글 등록
+     */
+    public void addPost(Post post){
+        this.posts.add(post);
+        post.setUser(this);
     }
 
     /**
