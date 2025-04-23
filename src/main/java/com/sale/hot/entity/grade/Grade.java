@@ -1,4 +1,4 @@
-package com.sale.hot.entity.garde;
+package com.sale.hot.entity.grade;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.user.User;
@@ -23,6 +23,9 @@ public class Grade extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "name")
+    private String name;
 
     @OneToMany(mappedBy = "grade", cascade = CascadeType.PERSIST)
     private List<User> user;

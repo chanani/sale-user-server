@@ -3,7 +3,7 @@ package com.sale.hot.entity.user;
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
-import com.sale.hot.entity.garde.Grade;
+import com.sale.hot.entity.grade.Grade;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
 import jakarta.persistence.*;
@@ -45,6 +45,9 @@ public class User extends BaseEntity {
 
     @Column(name = "phone")
     private String phone;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
