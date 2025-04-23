@@ -1,6 +1,8 @@
 package com.sale.hot.entity.category;
 
-import com.sale.hot.entity.user.User;
+import com.sale.hot.entity.BaseEntity;
+import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,15 +20,27 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "category")
-public class Category {
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue
     @Column(name = "id")
     private Long id;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    @Builder.Default
-    private List<User> user = new ArrayList<>();
+    @Column(name = "name")
+    private String name;
 
+    @Column(name = "sort_order")
+    private Integer order;
+
+    @Column(name = "active")
+    private BooleanYn active;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
+
+    public void setPost(Post post) {
+        this.posts.add(post);
+    }
 }
