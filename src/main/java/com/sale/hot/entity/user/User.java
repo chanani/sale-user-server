@@ -4,6 +4,7 @@ import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.garde.Grade;
+import com.sale.hot.entity.notification.Notification;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -62,6 +65,10 @@ public class User extends BaseEntity {
     @Column(name = "social_id")
     private String socialId;
 
+    // 알림
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();
+
     /**
      * 등급 변경
      */
@@ -88,6 +95,15 @@ public class User extends BaseEntity {
      */
     public void addPhone(String phone){
         this.phone = phone;
+    }
+
+    /**
+     * 알림 등록
+     * @param notification : 알림 엔티티
+     */
+    public void addNotification(Notification notification) {
+        this.notifications.add(notification);
+        notification.setUser(this);
     }
 
     /**
