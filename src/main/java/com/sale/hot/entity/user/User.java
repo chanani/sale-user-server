@@ -6,6 +6,7 @@ import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.grade.Grade;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
+import com.sale.hot.entity.postLike.PostLike;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -77,6 +78,11 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Post> posts = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+
     /**
      * 등급 변경
      */
@@ -120,6 +126,14 @@ public class User extends BaseEntity {
     public void addPost(Post post){
         this.posts.add(post);
         post.setUser(this);
+    }
+
+    /**
+     * 관심 게시글 등록
+     */
+    public void addPostLike(PostLike postLike){
+        this.postLikes.add(postLike);
+        postLike.setUser(this);
     }
 
     /**
