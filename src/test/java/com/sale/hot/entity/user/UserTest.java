@@ -8,10 +8,12 @@ import com.sale.hot.entity.grade.Grade;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @SpringBootTest
+@Transactional
 class UserTest {
 
     @Autowired
@@ -30,7 +32,6 @@ class UserTest {
                 .build();
 
         Grade gradeResult = gradeRepository.save(grade);
-
 
         User user = User.builder()
                 .userId("***REMOVED***12")

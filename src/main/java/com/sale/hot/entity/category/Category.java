@@ -17,12 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "category")
 @Builder
+@Table(name = "category")
 public class Category extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -33,6 +33,7 @@ public class Category extends BaseEntity {
     private Integer order;
 
     @Column(name = "active")
+    @Enumerated(EnumType.STRING)
     private BooleanYn active;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)

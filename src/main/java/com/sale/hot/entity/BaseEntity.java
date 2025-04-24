@@ -1,9 +1,7 @@
 package com.sale.hot.entity;
 
 import com.sale.hot.entity.common.constant.StatusType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedBy;
@@ -35,7 +33,9 @@ public class BaseEntity {
     @Column(name = "updated_by")
     private Long updatedBy;
 
-    @ColumnDefault("ACTIVE")
+    @ColumnDefault("'ACTIVE'")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private StatusType status;
 
     /**

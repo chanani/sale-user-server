@@ -3,7 +3,7 @@ package com.sale.hot.entity.common.constant;
 /**
  * 카테고리 종류
  */
-public enum Category {
+public enum CategoryKind {
     FOOD("먹거리"),
     GAME("SW/GAME"),
     PC("PC제품"),
@@ -16,7 +16,7 @@ public enum Category {
 
     private final String value;
 
-    Category(String value) {
+    CategoryKind(String value) {
         this.value = value;
     }
 }

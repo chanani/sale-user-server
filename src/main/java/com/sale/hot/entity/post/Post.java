@@ -3,14 +3,15 @@ package com.sale.hot.entity.post;
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,10 +20,11 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "post")
+@Builder
 public class Post extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -35,6 +37,7 @@ public class Post extends BaseEntity {
     private Category category;
 
     @Column(name = "promotion_status")
+    @Enumerated(EnumType.STRING)
     private BooleanYn promotion; // 광고 진행 여부
 
     @Column(name = "title")
@@ -67,8 +70,16 @@ public class Post extends BaseEntity {
     @Column(name = "dislike_count")
     private Integer dislikeCount = 0;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void addPostLikes(PostLike postLike){
+        this.postLikes.add(postLike);
+        postLike.setPost(this);
     }
 }

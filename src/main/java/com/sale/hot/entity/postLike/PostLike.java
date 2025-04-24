@@ -1,13 +1,11 @@
-package com.sale.hot.entity.notification;
+package com.sale.hot.entity.postLike;
 
 import com.sale.hot.entity.BaseEntity;
-import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.common.constant.LikeType;
+import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,8 +15,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "Notification")
-public class Notification extends BaseEntity {
+@Builder
+@Table(name = "post_like")
+public class PostLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +28,19 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "title")
-    private String title;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-    @Column(name = "message")
-    private String content;
-
-    @Column(name = "is_read")
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private BooleanYn isRead;
+    private LikeType type;
 
-    public void setUser(User user) {
+    public void setUser(User user){
         this.user = user;
+    }
+
+    public void setPost(Post post){
+        this.post = post;
     }
 }
