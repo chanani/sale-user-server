@@ -2,6 +2,7 @@ package com.sale.hot.entity.post;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.category.Category;
+import com.sale.hot.entity.comment.Comment;
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
@@ -74,12 +75,31 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
+    private List<Comment> comments = new ArrayList<>();
+
+    /**
+     * 회원 등록
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * 관심 게시글 등록
+     */
     public void addPostLikes(PostLike postLike){
         this.postLikes.add(postLike);
         postLike.setPost(this);
     }
+
+    /**
+     * 댓글 등록
+     */
+    public void addComments(Comment comment){
+        this.comments.add(comment);
+        comment.setPost(this);
+    }
+
 }

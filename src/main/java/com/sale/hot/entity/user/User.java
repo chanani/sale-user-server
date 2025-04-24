@@ -1,6 +1,7 @@
 package com.sale.hot.entity.user;
 
 import com.sale.hot.entity.BaseEntity;
+import com.sale.hot.entity.comment.Comment;
 import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.grade.Grade;
@@ -82,6 +83,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Comment> comments = new ArrayList<>();
 
     /**
      * 등급 변경
@@ -134,6 +138,14 @@ public class User extends BaseEntity {
     public void addPostLike(PostLike postLike){
         this.postLikes.add(postLike);
         postLike.setUser(this);
+    }
+
+    /**
+     *  댓글 등록
+     */
+    public void addComment(Comment comment){
+        this.comments.add(comment);
+        comment.setUser(this);
     }
 
     /**
