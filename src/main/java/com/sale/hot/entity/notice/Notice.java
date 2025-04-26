@@ -37,6 +37,7 @@ public class Notice extends BaseEntity {
     private BooleanYn active;
 
     @Column(name = "view_count")
+    @Builder.Default
     private Integer viewCount = 0;
 
 
