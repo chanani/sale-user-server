@@ -40,6 +40,7 @@ public class Comment extends BaseEntity {
     private Comment parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+    @Builder.Default
     private List<Comment> children = new ArrayList<>();
     /** ------------------------------------ **/
 

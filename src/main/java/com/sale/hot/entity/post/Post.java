@@ -60,15 +60,19 @@ public class Post extends BaseEntity {
     private Integer price = 0;
 
     @Column(name = "delivery_price")
+    @Builder.Default
     private Integer deliveryPrice = 0;
 
     @Column(name = "view_count")
+    @Builder.Default
     private Integer viewCount = 0;
 
     @Column(name = "like_count")
+    @Builder.Default
     private Integer likeCount = 0;
 
     @Column(name = "dislike_count")
+    @Builder.Default
     private Integer dislikeCount = 0;
 
     @Builder.Default

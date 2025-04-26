@@ -8,6 +8,7 @@ import com.sale.hot.entity.grade.Grade;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.postLike.PostLike;
+import com.sale.hot.entity.report.Report;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -87,6 +88,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Comment> comments = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Report> reports = new ArrayList<>();
+
     /**
      * 등급 변경
      */
@@ -146,6 +151,14 @@ public class User extends BaseEntity {
     public void addComment(Comment comment){
         this.comments.add(comment);
         comment.setUser(this);
+    }
+
+    /**
+     * 신고 등록
+     */
+    public void addReport(Report report){
+        this.reports.add(report);
+        report.setUser(this);
     }
 
     /**
