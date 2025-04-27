@@ -29,6 +29,7 @@ public class Popup extends BaseEntity {
     private String content;
 
     @Column(name = "active")
+    @Enumerated(EnumType.STRING)
     private BooleanYn active;
 
 }
