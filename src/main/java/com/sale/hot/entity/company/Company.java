@@ -54,7 +54,7 @@ public class Company extends BaseEntity {
     private String companyName;
 
     @Column(name = "business_type")
-    private String business_type;
+    private String businessType;
 
     @Column(name = "company_address")
     private String address;
