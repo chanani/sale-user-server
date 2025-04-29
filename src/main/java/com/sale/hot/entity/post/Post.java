@@ -4,6 +4,7 @@ import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.comment.Comment;
 import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.payment.Payment;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
@@ -83,6 +84,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<Comment> comments = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
+    private List<Payment> payments = new ArrayList<>();
+
     /**
      * 회원 등록
      */
@@ -104,6 +109,14 @@ public class Post extends BaseEntity {
     public void addComments(Comment comment){
         this.comments.add(comment);
         comment.setPost(this);
+    }
+
+    /**
+     * 결제 내역 등록
+     */
+    public void addPayment(Payment payment){
+        this.payments.add(payment);
+        payment.setPost(this);
     }
 
 }

@@ -2,6 +2,8 @@ package com.sale.hot.entity.company;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.Gender;
+import com.sale.hot.entity.companyNotification.CompanyNotification;
+import com.sale.hot.entity.payment.Payment;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -9,6 +11,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -64,5 +68,29 @@ public class Company extends BaseEntity {
 
     @Column(name = "last_visit")
     private LocalDateTime lastVisit;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
+    @Builder.Default
+    private List<CompanyNotification> notifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
+    @Builder.Default
+    private List<Payment> payments = new ArrayList<>();
+
+    /**
+     * 알람 등록
+     */
+    public void addNotification(CompanyNotification notification){
+        this.notifications.add(notification);
+        notification.setCompany(this);
+    }
+
+    /**
+     * 결제 내역 등록
+     */
+    public void addPayment(Payment payment){
+        this.payments.add(payment);
+        payment.setCompany(this);
+    }
 
 }
