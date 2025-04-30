@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Post Like API Controller", description = "관심 게시글 관련 API를 제공합니다.")
-@RestController(value = "/api/v1")
+@RestController
 @RequiredArgsConstructor
 public class PostLikeApiController {
 }
