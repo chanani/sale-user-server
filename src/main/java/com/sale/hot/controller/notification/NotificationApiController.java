@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Notification API Controller", description = "사용자 알람 관련 API를 제공합니다.")
-@RestController(value = "/api/v1")
+@RestController
 @RequiredArgsConstructor
 public class NotificationApiController {
 }
