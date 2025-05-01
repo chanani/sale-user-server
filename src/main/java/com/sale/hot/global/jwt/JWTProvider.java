@@ -8,13 +8,19 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -119,5 +125,56 @@ public class JWTProvider {
 
         byte[] decodedBytes = Base64.getDecoder().decode(splitStr[1]);
         return new String(decodedBytes);
+    }
+
+
+    /**
+     * Token -> Authentication
+     * @param token
+     * @return Authentication(Security 에서 사용)
+     */
+    public Authentication getAuthentication(String token) {
+        String username = getUsernameFromToken(token); // JWT에서 username 추출
+        List<String> roles = getRolesFromToken(token); // JWT에서 roles 추출
+
+        // 2. UserDetails 객체 생성
+        User userDetails = new User(
+                username,
+                "", // 비밀번호는 필요없음
+                roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList()
+        );
+
+        // 3. Authentication 객체 반환
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+    }
+
+    // JWT에서 username 추출
+    public String getUsernameFromToken(String token) {
+        Claims claims = parseClaims(token);
+        return claims.getSubject(); // 일반적으로 subject에 username 저장
+    }
+
+    // JWT에서 roles 추출
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = parseClaims(token);
+        Object rolesObj = claims.get("roles"); // roles라는 key에 저장했다고 가정
+        if (rolesObj instanceof String rolesStr) {
+            // 예: "ROLE_USER,ROLE_ADMIN"
+            return Arrays.asList(rolesStr.split(","));
+        } else if (rolesObj instanceof List<?> rolesList) {
+            return rolesList.stream().map(String::valueOf).toList();
+        }
+        return List.of();
+    }
+
+    // JWT 파싱 메서드
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
