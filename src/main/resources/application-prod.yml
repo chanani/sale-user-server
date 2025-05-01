@@ -42,12 +42,12 @@ spring:
             timeout: 5000
             starttls:
               enable: true
-  # jwt
-  jwt:
-    secret-key: ?Ka}SqPl][^s*(dFerF]fEOpz#F~4P.x{/|#0!NtvlYUhW(hun2TQt}3+'f{|A8t:z7QzI_E:{^6bv
-    issuer-uri: www.hotDelivery.com
-    accessToken-expired-time: 3600000
-    refreshToken-expired-time: 86400000
+# jwt
+jwt:
+  secret-key: ?Ka}SqPl][^s*(dFerF]fEOpz#F~4P.x{/|#0!NtvlYUhW(hun2TQt}3+'f{|A8t:z7QzI_E:{^6??
+  issuer-uri: www.hotDelivery.com
+  accessToken-expired-time: 3600000
+  refreshToken-expired-time: 86400000
 
 
 # swagger
