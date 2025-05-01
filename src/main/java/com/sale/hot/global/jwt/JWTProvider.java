@@ -26,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JWTProvider {
+
     private final ObjectMapper objectMapper;
 
     @Value("${jwt.secret-key}")

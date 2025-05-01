@@ -27,14 +27,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JWTProvider jwtProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+        // Token 추출
         String token = parseBearerToken(request);
-
+        System.out.println("token = " + token);
         // 토큰값이 유요하다면 검증을 시작한다.
         if (token != null) {
             // 토큰 검증
             jwtProvider.verifyToken(TokenType.ACCESS_TOKEN, token);
+            System.out.println("verify Token Check");
             Authentication authentication = jwtProvider.getAuthentication(token);
+            System.out.println("authentication = " + authentication);
 
             // SecurityContextHolder => 인증정보를 담는다.
             SecurityContextHolder.getContext().setAuthentication(authentication);
