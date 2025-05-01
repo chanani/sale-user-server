@@ -1,6 +1,7 @@
 package com.sale.hot.global.config;
 
 import com.sale.hot.global.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // 패스워드 암호화 관련 메소드
     @Bean
@@ -49,7 +53,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/")
                         .permitAll()
                 )*/
-                .addFilterBefore(JwtAuthenticationFilter,
+                .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 /**
                  * 로그아웃 관련 설정
