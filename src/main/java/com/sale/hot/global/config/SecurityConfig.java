@@ -1,5 +1,6 @@
 package com.sale.hot.global.config;
 
+import com.sale.hot.global.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +34,7 @@ public class SecurityConfig {
                  * anyRequest().authenticated() : 위에 명시하지 않은 나머지 요청은 사용자만 접근, 즉 로그인 해야 접근 가능
                  */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login").permitAll()
+                        .requestMatchers("/", "/login", "/error-codes").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -42,11 +44,13 @@ public class SecurityConfig {
                  * defaultSuccessUrl : 로그인에 성공하면 이동할 기본 URL을 설정
                  * permitAll : 인증 없이 접근할 수 있도록 허용
                  */
-                .formLogin(form -> form
+                /*.formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
                         .permitAll()
-                )
+                )*/
+                .addFilterBefore(JwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
                 /**
                  * 로그아웃 관련 설정
                  * logoutUrl : 로그아웃을 처리할 URL
