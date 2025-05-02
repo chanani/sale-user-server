@@ -40,6 +40,9 @@ public class User extends BaseEntity {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "nickname")
+    private String nickname;
+
     @Column(name = "password")
     private String password;
 
