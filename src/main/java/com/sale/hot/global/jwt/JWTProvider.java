@@ -3,6 +3,7 @@ package com.sale.hot.global.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sale.hot.global.exception.AccountTokenException;
 import com.sale.hot.global.exception.dto.ErrorCode;
+import com.sale.hot.global.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +42,13 @@ public class JWTProvider {
     @Value("${jwt.refreshToken-expired-time}")
     private Long refreshTokenExpiredTime;
 
-    public String createAccessToken(Long userNo) throws Exception {
-        // 토큰 생성전 PK 암호화, 암호화 키를 별도로 생성해서 한번 더 암호화
+    public String createAccessToken(Long userId) throws Exception {
+       /* // 토큰 생성전 PK 암호화, 암호화 키를 별도로 생성해서 한번 더 암호화
         SecretKey secretKey = AESEncryption.getFixedKey();
-        String userNoEncrypt = AESEncryption.encrypt(String.valueOf(userNo), secretKey);
+        String userIdEncrypt = AESEncryption.encrypt(String.valueOf(userId), secretKey);*/
 
         return Jwts.builder()
-                .claim("userInfo", objectMapper.writeValueAsString(userNoEncrypt))
+                .claim("id", userId)
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -56,13 +57,13 @@ public class JWTProvider {
                 .compact();
     }
 
-    public String createRefreshToken(Long userNo) throws Exception {
-        // 토큰 생성전 PK 암호화, 암호화 키를 별도로 생성해서 한번 더 암호화
+    public String createRefreshToken(Long userId) throws Exception {
+        /*// 토큰 생성전 PK 암호화, 암호화 키를 별도로 생성해서 한번 더 암호화
         SecretKey secretKey = AESEncryption.getFixedKey();
-        String userNoEncrypt = AESEncryption.encrypt(String.valueOf(userNo), secretKey);
+        String userIdEncrypt = AESEncryption.encrypt(String.valueOf(userId), secretKey);*/
 
         return Jwts.builder()
-                .claim("userInfo", objectMapper.writeValueAsString(userNoEncrypt))
+                .claim("userId", userId)
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -73,6 +74,7 @@ public class JWTProvider {
 
     public void verifyToken(TokenType tokenType, String jwtToken) {
         try {
+            // Todo 기간 만료된 토큰 전달 시 여기서 오류 발생 예외 처리 안되고 있음 확인해야 됨
             Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8))).build().parseSignedClaims(jwtToken);
         } catch (SecurityException | MalformedJwtException e) {
             log.error(e.getMessage(), e);
@@ -137,14 +139,14 @@ public class JWTProvider {
     public Authentication getAuthentication(String token) {
         String username = getUsernameFromToken(token); // JWT에서 username 추출
         List<String> roles = getRolesFromToken(token); // JWT에서 roles 추출
+        Long userId = getUserIdFromToken(token);
 
         // 2. UserDetails 객체 생성
-        User userDetails = new User(
+        CustomUserDetails userDetails = new CustomUserDetails(
                 username,
-                "", // 비밀번호는 필요없음
-                roles.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .toList()
+                "",
+                roles.stream().map(SimpleGrantedAuthority::new).toList(),
+                userId
         );
 
         // 3. Authentication 객체 반환
@@ -177,5 +179,15 @@ public class JWTProvider {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    // JWT에서 Id 추출
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.get("id", Long.class);
     }
 }
