@@ -9,7 +9,7 @@ import java.util.Base64;
 public class AESEncryption {
 
     private static final String ALGORITHM = "AES";
-    private static final String FIXED_KEY = "1234567890123456";  // 고정된 16바이트 키
+    private static final String FIXED_KEY = "9914771048101065";  // 고정된 16바이트 키
 
     // 고정된 키를 SecretKey로 변환
     public static SecretKey getFixedKey() {
