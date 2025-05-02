@@ -30,13 +30,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 /**
+                 * CSRF 보호 비활성화 POST, PUT, DELETE 등 상태를 변경하는 요청을 허용
+                 */
+                .csrf(csrf -> csrf.disable())
+                /**
                  * 경로별 접근 권한을 세밀하게 지정
                  * permitAll : 인증 없이 접근 가능
                  * hasRole("ADMIN") : ADMIN 역할을 가진 사용자만 접근 가능
                  * anyRequest().authenticated() : 위에 명시하지 않은 나머지 요청은 사용자만 접근, 즉 로그인 해야 접근 가능
                  */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login").permitAll()
+                        .requestMatchers("/", "/login", "/api/v1/**", "/sale-user-be/**").permitAll()
                         .requestMatchers("/admin/**", "/error-codes").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
