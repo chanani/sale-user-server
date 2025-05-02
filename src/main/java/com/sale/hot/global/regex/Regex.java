@@ -1,8 +1,12 @@
 package com.sale.hot.global.regex;
 
 public class Regex {
+    // 아이디
+    public static final String ID = "^[A-Za-z0-9]{8,20}$";
+    // 닉네임
+    public static final String KICKNAME = "^[가-힣a-zA-Z0-9_]{2,12}$";
     // 휴대폰 번호 및 지역 번호 포함
-    public static final String PHONE = "^(01[016789]\\d{7,8}|0[2-9]\\d{7,8})$";
+    public static final String PHONE = "^010\\d{8}$";
     // 이메일 주소
     public static final String EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
     // 비밀번호: 8~20자, 숫자/영문/특수문자 중 2종류 이상 포함

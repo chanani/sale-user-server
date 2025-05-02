@@ -40,7 +40,15 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_SUPPORT(1057, HttpStatus.FORBIDDEN.value(), "Refresh Token이 지원되지 않는 토큰 입니다. (해킹)"),
     REFRESH_TOKEN_EXPIRED(1058, HttpStatus.FORBIDDEN.value(), "만료되었습니다. 재로그인 하시기 바랍니다."),
     REFRESH_TOKEN_NO_SAME(1059, HttpStatus.FORBIDDEN.value(), "중복 로그인 또는 요청이 다릅니다. 재로그인 하시기 바랍니다."),
-    REFRESH_TOKEN_WRONG(1060, HttpStatus.FORBIDDEN.value(), "Refresh Token이 토큰이 잘못되었습니다. (해킹)");
+    REFRESH_TOKEN_WRONG(1060, HttpStatus.FORBIDDEN.value(), "Refresh Token이 토큰이 잘못되었습니다. (해킹)"),
+
+    // 1100 ~ 1149 회원 관련 예외
+    EXISTS_USER_ID(1100, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 아아디입니다."),
+    NOT_EQUAL_PASSWORD(1101, HttpStatus.BAD_REQUEST.value(), "두 비밀번호가 일치하지 않습니다."),
+    EXISTS_USER_PHONE(1102, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 연락처입니다."),
+    EXISTS_USER_EMAIL(1103, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다."),
+    EXISTS_USER_NICKNAME(1104, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 닉네임입니다."),
+    NOT_EQUAL_ID_PASSWORD(1105, HttpStatus.BAD_REQUEST.value(), "아이디 또는 패스워드를 확인하세요.");
 
 
     private final int code;

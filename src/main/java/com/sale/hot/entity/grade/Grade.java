@@ -27,6 +27,9 @@ public class Grade extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "ranking")
+    private Integer ranking;
+
     @OneToMany(mappedBy = "grade", cascade = CascadeType.PERSIST)
     private List<User> user;
 
