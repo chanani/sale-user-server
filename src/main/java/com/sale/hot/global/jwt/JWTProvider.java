@@ -52,6 +52,7 @@ public class JWTProvider {
 
         return Jwts.builder()
                 .claim("id", userId)
+                .claim("roles", Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -67,6 +68,7 @@ public class JWTProvider {
 
         return Jwts.builder()
                 .claim("userId", userId)
+                .claim("roles", Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -124,7 +126,7 @@ public class JWTProvider {
     }
 
     public String getPayload(String jwtToken) {
-        String [] splitStr = StringUtils.tokenizeToStringArray(jwtToken, ".");
+        String[] splitStr = StringUtils.tokenizeToStringArray(jwtToken, ".");
         if (splitStr.length < 1) {
             return null;
         }
@@ -136,6 +138,7 @@ public class JWTProvider {
 
     /**
      * Token -> Authentication
+     *
      * @param token
      * @return Authentication(Security 에서 사용)
      */
@@ -196,7 +199,7 @@ public class JWTProvider {
 
     /**
      * 회원 정보 반환
-     * */
+     */
     public User getUserInfo(Long userNo) {
         return userRepository.findByIdAndStatus(userNo, StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));

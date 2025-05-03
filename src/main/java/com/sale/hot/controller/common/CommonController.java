@@ -11,9 +11,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class CommonController {
 
-    @GetMapping(value = "/login")
-    public String login(){
-        return "login";
-    }
 
 }
