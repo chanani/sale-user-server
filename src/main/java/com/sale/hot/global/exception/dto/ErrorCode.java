@@ -48,7 +48,8 @@ public enum ErrorCode {
     EXISTS_USER_PHONE(1102, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 연락처입니다."),
     EXISTS_USER_EMAIL(1103, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다."),
     EXISTS_USER_NICKNAME(1104, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 닉네임입니다."),
-    NOT_EQUAL_ID_PASSWORD(1105, HttpStatus.BAD_REQUEST.value(), "아이디 또는 패스워드를 확인하세요.");
+    NOT_EQUAL_ID_PASSWORD(1105, HttpStatus.BAD_REQUEST.value(), "아이디 또는 패스워드를 확인하세요."),
+    NOT_FOUND_USER(1106, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 회원입니다.");
 
 
     private final int code;
