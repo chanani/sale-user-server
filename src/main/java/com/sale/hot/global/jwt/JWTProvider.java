@@ -1,7 +1,11 @@
 package com.sale.hot.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sale.hot.domain.user.repository.UserRepository;
+import com.sale.hot.entity.common.constant.StatusType;
+import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.AccountTokenException;
+import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.security.CustomUserDetails;
 import io.jsonwebtoken.*;
@@ -12,11 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -29,6 +31,7 @@ import java.util.List;
 public class JWTProvider {
 
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -141,7 +144,7 @@ public class JWTProvider {
         List<String> roles = getRolesFromToken(token); // JWT에서 roles 추출
         Long userId = getUserIdFromToken(token);
 
-        // 2. UserDetails 객체 생성
+        // UserDetails 객체 생성
         CustomUserDetails userDetails = new CustomUserDetails(
                 username,
                 "",
@@ -149,14 +152,14 @@ public class JWTProvider {
                 userId
         );
 
-        // 3. Authentication 객체 반환
+        // Authentication 객체 반환
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
     // JWT에서 username 추출
     public String getUsernameFromToken(String token) {
         Claims claims = parseClaims(token);
-        return claims.getSubject(); // 일반적으로 subject에 username 저장
+        return claims.getSubject();
     }
 
     // JWT에서 roles 추출
@@ -189,5 +192,13 @@ public class JWTProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.get("id", Long.class);
+    }
+
+    /**
+     * 회원 정보 반환
+     * */
+    public User getUserInfo(Long userNo) {
+        return userRepository.findByIdAndStatus(userNo, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
     }
 }

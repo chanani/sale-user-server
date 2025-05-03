@@ -19,5 +19,11 @@ public class CustomUserDetails extends User {
         this.id = id;
     }
 
-
+    @Override
+    public String toString() {
+        return String.format(
+                "CustomUserDetails(id=%d, username=%s, authorities=%s)",
+                id, getUsername(), getAuthorities()
+        );
+    }
 }

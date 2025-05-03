@@ -1,13 +1,12 @@
 package com.sale.hot.global.web.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sale.hot.entity.user.User;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.exception.AccountTokenException;
 import com.sale.hot.global.exception.ForbiddenException;
-import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.jwt.JWTProvider;
-import com.sale.hot.global.jwt.TokenType;
 import com.sale.hot.global.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,13 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +28,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private final JWTProvider jwtProvider;
     private final ObjectMapper objectMapper;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -46,14 +41,19 @@ public class AuthInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-            // SecurityContext에서 인증 정보 추출
+            /* SecurityContext에서 인증 정보 추출
+             * 정상일 경우 CustomUserDetails 반환
+             * Token이 인증되지 않으면 AnonymousAuthenticationToken 반환 */
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-            System.out.println("userDetails = " + userDetails);
 
             if (auth == null || !auth.isAuthenticated()) {
                 throw new AccountTokenException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
             }
+
+            // 회원 정보 반환
+            User user = jwtProvider.getUserInfo(userDetails.getId());
+            request.setAttribute("loginUser", user);
         }
         return true;
     }
@@ -72,6 +72,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         throw new ForbiddenException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
     }
+
 
 
 }
