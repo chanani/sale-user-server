@@ -15,4 +15,10 @@ public interface NoticeService {
      * @return 페이징 된 공지사항 리스트
      */
     Page<List<NoticeResponse>> getNotices(NoticesInput input, PageInput pageInput);
+
+    /**
+     * 공지사항 조회수 증가
+     * @param id 공지사항 식별자
+     */
+    void plusNoticeViewCount(Long id);
 }

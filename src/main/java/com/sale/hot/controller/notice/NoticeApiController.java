@@ -6,15 +6,13 @@ import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
+import com.sale.hot.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +35,15 @@ public class NoticeApiController {
         PageInput pageInput = PageInput.builder().page(page).size(size).build();
         Page<List<NoticeResponse>> notices = noticeService.getNotices(input, pageInput);
         return ResponseEntity.ok(notices);
+    }
+
+    @Operation(summary = "공지사항 조회수 증가 API",
+            description = "")
+    @NoneAuth
+    @PutMapping("/api/v1/none/notice/{id}")
+    public ResponseEntity<ApiResponse> noticeViewCount(@PathVariable(value = "id") Long id) {
+        noticeService.plusNoticeViewCount(id);
+        return ResponseEntity.ok(ApiResponse.ok());
     }
 
 }

@@ -40,5 +40,11 @@ public class Notice extends BaseEntity {
     @Builder.Default
     private Integer viewCount = 0;
 
+    /**
+     * 조회수 증가
+     */
+    public void addViewCount(){
+        this.viewCount++;
+    }
 
 }
