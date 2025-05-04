@@ -2,6 +2,7 @@ package com.sale.hot.domain.notice.service.dto.response;
 
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.notice.Notice;
+import com.sale.hot.global.util.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -28,7 +29,7 @@ public class NoticeResponse {
     private Integer viewCount;
 
     @Schema(description = "작성일")
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public NoticeResponse(Notice notice) {
         this.id = notice.getId();
@@ -37,6 +38,6 @@ public class NoticeResponse {
         this.pin = notice.getPin();
         this.active = notice.getActive();
         this.viewCount = notice.getViewCount();
-        this.createdAt = notice.getCreatedAt();
+        this.createdAt = DateUtil.localDateTimeTolocalDateTimeString(notice.getCreatedAt());
     }
 }
