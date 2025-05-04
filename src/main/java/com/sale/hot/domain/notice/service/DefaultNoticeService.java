@@ -28,7 +28,7 @@ public class DefaultNoticeService implements NoticeService {
         // 해당 조건의 공지사항 수 조회
         Long totalCount = noticeRepository.countQuery(condition);
         // pageable 객체 생성
-        Pageable pageable = new Pageable(pageInput.page(), totalCount.intValue());
+        Pageable pageable = new Pageable(pageInput.page(), totalCount.intValue(), pageInput.size());
         // 해당 조건의 공지사항 리스트 조회
         List<NoticeResponse> notices = noticeRepository.findQuery(condition, pageable).stream()
                 .map(NoticeResponse::new)
