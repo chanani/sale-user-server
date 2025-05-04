@@ -1,5 +1,6 @@
 package com.sale.hot.global.page;
 
+import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
 import lombok.Builder;
 
 /**
@@ -7,11 +8,12 @@ import lombok.Builder;
  * page : 페이지 <br>
  * size : 한번에 가져올 아이템 수 <br>
  * sort : 기준 정렬 ex) createdAt : 생성일기준 asc 정렬 / -createdAt : 생성일기준 desc 정렬
- * */
+ */
 @Builder
 public record PageInput(
         int page,
         int size,
         String sort
 ) {
+
 }
