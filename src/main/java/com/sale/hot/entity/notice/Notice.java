@@ -28,10 +28,6 @@ public class Notice extends BaseEntity {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "pinned")
-    @Enumerated(EnumType.STRING)
-    private BooleanYn pin;
-
     @Column(name = "active")
     @Enumerated(EnumType.STRING)
     private BooleanYn active;

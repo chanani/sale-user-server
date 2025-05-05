@@ -31,7 +31,7 @@ public class UserApiController {
                     연락처 형식 : 01000000000
                     """)
     @NoneAuth
-    @PostMapping("/api/v1/join")
+    @PostMapping("/api/v1/none/join")
     public ResponseEntity<ApiResponse> join(@Valid @RequestBody JoinRequest request) {
         userService.join(request);
         return ResponseEntity.ok(ApiResponse.ok());
@@ -42,11 +42,8 @@ public class UserApiController {
                     로그인 요청 시 accessToken, refreshToken 반환됩니다.(추후 수정 될 수 있습니다.)
                     """)
     @NoneAuth
-    @PostMapping("/api/v1/login")
-    public ResponseEntity<DataResponse> login(
-            @Valid @RequestBody LoginRequest request,
-            @Parameter(hidden = true) User user
-    ) throws Exception {
+    @PostMapping("/api/v1/none/login")
+    public ResponseEntity<DataResponse> login(@Valid @RequestBody LoginRequest request) throws Exception {
         LoginResponse response = userService.login(request);
         return ResponseEntity.ok(DataResponse.send(response));
     }

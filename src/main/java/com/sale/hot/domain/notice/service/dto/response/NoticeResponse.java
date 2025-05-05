@@ -19,9 +19,6 @@ public class NoticeResponse {
     @Schema(description = "내용")
     private String content;
 
-    @Schema(description = "상단 고정 여부")
-    private BooleanYn pin;
-
     @Schema(description = "활성화 여부")
     private BooleanYn active;
 
@@ -35,7 +32,6 @@ public class NoticeResponse {
         this.id = notice.getId();
         this.title = notice.getTitle();
         this.content = notice.getContent();
-        this.pin = notice.getPin();
         this.active = notice.getActive();
         this.viewCount = notice.getViewCount();
         this.createdAt = DateUtil.localDateTimeTolocalDateTimeString(notice.getCreatedAt());

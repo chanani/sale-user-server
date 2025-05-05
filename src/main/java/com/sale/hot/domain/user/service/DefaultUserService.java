@@ -6,6 +6,7 @@ import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.common.constant.StatusType;
+import com.sale.hot.entity.common.constant.UserType;
 import com.sale.hot.entity.grade.Grade;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
@@ -68,9 +69,9 @@ public class DefaultUserService implements UserService {
         }
 
         // accessToken 발급
-        String accessToken = jwtProvider.createAccessToken(user.getId());
+        String accessToken = jwtProvider.createAccessToken(user.getId(), UserType.USER);
         // refreshToken 발급
-        String refreshToken = jwtProvider.createRefreshToken(user.getId());
+        String refreshToken = jwtProvider.createRefreshToken(user.getId(), UserType.USER);
 
         return LoginResponse.builder()
                 .accessToken(accessToken)

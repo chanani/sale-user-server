@@ -1,8 +1,11 @@
 package com.sale.hot.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sale.hot.domain.operator.repository.OperatorRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.common.constant.StatusType;
+import com.sale.hot.entity.common.constant.UserType;
+import com.sale.hot.entity.operator.Operator;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.AccountTokenException;
 import com.sale.hot.global.exception.OperationErrorException;
@@ -32,6 +35,7 @@ public class JWTProvider {
 
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
+    private final OperatorRepository operatorRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -45,14 +49,17 @@ public class JWTProvider {
     @Value("${jwt.refreshToken-expired-time}")
     private Long refreshTokenExpiredTime;
 
-    public String createAccessToken(Long userId) throws Exception {
+    public String createAccessToken(Long userId, UserType type) throws Exception {
        /* // 토큰 생성전 PK 암호화, 암호화 키를 별도로 생성해서 한번 더 암호화
         SecretKey secretKey = AESEncryption.getFixedKey();
         String userIdEncrypt = AESEncryption.encrypt(String.valueOf(userId), secretKey);*/
 
+        // 권한별 Role 조회
+        List<String> role = TypeToRole(type);
+
         return Jwts.builder()
                 .claim("id", userId)
-                .claim("roles", Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
+                .claim("roles", role)
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -61,14 +68,15 @@ public class JWTProvider {
                 .compact();
     }
 
-    public String createRefreshToken(Long userId) throws Exception {
+    public String createRefreshToken(Long userId, UserType type) throws Exception {
         /*// 토큰 생성전 PK 암호화, 암호화 키를 별도로 생성해서 한번 더 암호화
         SecretKey secretKey = AESEncryption.getFixedKey();
         String userIdEncrypt = AESEncryption.encrypt(String.valueOf(userId), secretKey);*/
-
+        // 권한별 Role 조회
+        List<String> role = TypeToRole(type);
         return Jwts.builder()
                 .claim("userId", userId)
-                .claim("roles", Arrays.asList("ROLE_ADMIN", "ROLE_USER"))
+                .claim("roles", role)
                 .subject("AUTH")
                 .issuer(issuerUri)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -123,6 +131,18 @@ public class JWTProvider {
                 throw new AccountTokenException(ErrorCode.REFRESH_TOKEN_WRONG);
             }
         }
+    }
+
+    /**
+     * 권한별 Role 조회
+     */
+    private List<String> TypeToRole(UserType type) {
+        if (type.equals(UserType.OPERATOR)) {
+            return Arrays.asList("ROLE_ADMIN");
+        } else if (type.equals(UserType.USER)) {
+            return Arrays.asList("ROLE_USER");
+        }
+        return null;
     }
 
     public String getPayload(String jwtToken) {
@@ -200,8 +220,16 @@ public class JWTProvider {
     /**
      * 회원 정보 반환
      */
-    public User getUserInfo(Long userNo) {
-        return userRepository.findByIdAndStatus(userNo, StatusType.ACTIVE)
+    public User getUserInfo(Long userId) {
+        return userRepository.findByIdAndStatus(userId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+    }
+
+    /**
+     * 회원 정보 반환
+     */
+    public Operator getOperatorInfo(Long operatorId) {
+        return operatorRepository.findByIdAndStatus(operatorId, StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
     }
 }

@@ -58,6 +58,7 @@ public class Post extends BaseEntity {
     private String itemName;
 
     @Column(name = "price")
+    @Builder.Default
     private Integer price = 0;
 
     @Column(name = "delivery_price")
