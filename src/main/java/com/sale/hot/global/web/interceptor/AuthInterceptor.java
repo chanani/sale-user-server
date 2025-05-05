@@ -1,6 +1,8 @@
 package com.sale.hot.global.web.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sale.hot.entity.common.constant.UserType;
+import com.sale.hot.entity.operator.Operator;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.exception.AccountTokenException;
@@ -15,11 +17,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,13 +57,38 @@ public class AuthInterceptor implements HandlerInterceptor {
                 throw new AccountTokenException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
             }
 
-            // 회원 정보 반환
-            User user = jwtProvider.getUserInfo(userDetails.getId());
-            request.setAttribute("loginUser", user);
+            // 회원 & 관리자 정보 조회
+            getUserOrOperatorInfo(userDetails, request);
+
         }
         return true;
     }
 
+    /**
+     * 회원 & 관리자 정보 조회
+     */
+    private void getUserOrOperatorInfo(CustomUserDetails userDetails, HttpServletRequest request) {
+        List<String> roleList = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        System.out.println("roleList = " + roleList.get(0));
+        System.out.println("UserType = " + UserType.USER.getRole());
+        System.out.println("aa = " + roleList.contains(UserType.USER.getRole()));
+
+        if (roleList.contains(UserType.USER.getRole())) {
+            // 회원일 경우
+            // 회원 정보 반환
+            User user = jwtProvider.getUserInfo(userDetails.getId());
+            request.setAttribute("loginUser", user);
+
+        } else if (roleList.contains(UserType.OPERATOR.getRole())) {
+            // 관리자일 경우
+            // 관리자 정보 반환
+            Operator operator = jwtProvider.getOperatorInfo(userDetails.getId());
+            request.setAttribute("loginOperator", operator);
+        }
+
+    }
 
     /**
      * 인증 토큰 추출
@@ -72,7 +103,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         throw new ForbiddenException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
     }
-
 
 
 }

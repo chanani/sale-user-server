@@ -15,7 +15,7 @@ public interface UserService {
     /**
      * 사용자 로그인
      * @param request 로그인 요청 객체
-     * @return accessToken, refreshToken
+     * @return accessToken, refreshToken 객체 반환
      */
     LoginResponse login(LoginRequest request) throws Exception;
 }

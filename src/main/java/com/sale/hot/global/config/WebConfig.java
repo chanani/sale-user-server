@@ -1,5 +1,6 @@
 package com.sale.hot.global.config;
 
+import com.sale.hot.global.web.argumentResolver.OperatorAuthArgumentResolver;
 import com.sale.hot.global.web.argumentResolver.UserAuthArgumentResolver;
 import com.sale.hot.global.web.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new UserAuthArgumentResolver());
+        argumentResolvers.add(new OperatorAuthArgumentResolver());
+
     }
 
 }

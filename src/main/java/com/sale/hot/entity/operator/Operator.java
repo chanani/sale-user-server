@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @Builder
 @Table(name = "operator")
+@ToString
 public class Operator extends BaseEntity {
 
     @Id
@@ -35,6 +36,7 @@ public class Operator extends BaseEntity {
     private String name;
 
     @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "birth")
