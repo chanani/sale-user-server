@@ -57,8 +57,10 @@ public enum ErrorCode {
     // 1200 ~ 1249 카테고리 관련 예외
     EXISTS_CATEGORY_NAME(1200, HttpStatus.BAD_REQUEST.value(), "이미 등록된 카테고리명입니다."),
     NOT_FOUND_CATEGORY(1201, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 카테고리입니다."),
-    NOT_EQUAL_CATEGORY_ORDER(1202, HttpStatus.BAD_REQUEST.value(), "동일한 순서의 번호로 변경할 수 없습니다.");
+    NOT_EQUAL_CATEGORY_ORDER(1202, HttpStatus.BAD_REQUEST.value(), "동일한 순서의 번호로 변경할 수 없습니다."),
 
+    // 1250 ~ 1299 등급 관련 예외
+    EXISTS_GRADE_NAME(1250, HttpStatus.BAD_REQUEST.value(), "이미 등록된 등급명입니다.");
 
     private final int code;
     private final int status;
