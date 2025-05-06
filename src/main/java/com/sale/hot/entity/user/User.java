@@ -172,7 +172,27 @@ public class User extends BaseEntity {
     }
 
     /**
-     * TODO: 4/22/25 개인 정보 수정
+     * 회원 정보 수정
      */
+    public void update(User user){
+        if(user.name != null){
+            this.name = user.name;
+        }
+        if(user.nickname != null){
+            this.nickname = user.nickname;
+        }
+        if(user.phone != null){
+            this.phone = user.phone;
+        }
+        if(user.email != null){
+            this.email = user.email;
+        }
+        if(user.gender != null){
+            this.gender = user.gender;
+        }
+        if(user.birth != null){
+            this.birth = user.birth;
+        }
+    }
 
 }

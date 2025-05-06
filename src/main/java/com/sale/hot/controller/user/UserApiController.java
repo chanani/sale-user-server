@@ -3,6 +3,7 @@ package com.sale.hot.controller.user;
 import com.sale.hot.domain.user.service.UserService;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
+import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.annotation.NoneAuth;
@@ -48,5 +49,15 @@ public class UserApiController {
         return ResponseEntity.ok(DataResponse.send(response));
     }
 
+    @Operation(summary = "회원정보 수정 API",
+            description = "비밀번호를 제외한 회원정보를 수정합니다.")
+    @PutMapping("/api/v1/user/update-user")
+    public ResponseEntity<ApiResponse> updateUser(
+            @Valid @RequestBody UserUpdateRequest request,
+            @Parameter(hidden = true) User user
+    ) {
+        userService.updateUser(request, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
 
 }

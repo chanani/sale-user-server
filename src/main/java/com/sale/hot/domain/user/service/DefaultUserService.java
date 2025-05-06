@@ -4,6 +4,7 @@ import com.sale.hot.domain.grade.repository.GradeRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
+import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.common.constant.UserType;
@@ -83,6 +84,22 @@ public class DefaultUserService implements UserService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public void updateUser(UserUpdateRequest request, User user) {
+        // 연락처 중복 검사
+        checkUserPhoneNotId(request.phone(), user.getId());
+        // 이메일 중복 검사
+        checkUserEmailNotId(request.email(), user.getId());
+        // 닉네임 중복 검사
+        checkUserNicknameNotId(request.nickname(), user.getId());
+
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        User newUser = request.toEntity();
+        findUser.update(newUser);
+    }
+
 
     /**
      * 회원 아이디 중복 체크(탈퇴한 아이디로 가입 불가)
@@ -122,14 +139,38 @@ public class DefaultUserService implements UserService {
     }
 
     /**
-     * 회원 연락처 중복 체크
+     * 회원 연락처 중복 체크(본인 연락처 제외)
      * 중복일 경우 바로 예외 발생
      *
-     * @param email 연락처
+     * @param phone 연락처
+     */
+    private void checkUserPhoneNotId(String phone, Long userId) {
+        if (userRepository.existsByPhoneAndStatusAndIdNot(phone, StatusType.ACTIVE, userId)) {
+            throw new OperationErrorException(ErrorCode.EXISTS_USER_PHONE);
+        }
+    }
+
+    /**
+     * 회원 이메일 중복 체크
+     * 중복일 경우 바로 예외 발생
+     *
+     * @param email 이메일
      */
     private void checkUserEmail(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new OperationErrorException(ErrorCode.EXISTS_USER_ID);
+        }
+    }
+
+    /**
+     * 회원 이메일 중복 체크(본인 이메일 제외)
+     * 중복일 경우 바로 예외 발생
+     *
+     * @param email 이메일
+     */
+    private void checkUserEmailNotId(String email, Long userId) {
+        if (userRepository.existsByEmailAndIdNot(email, userId)) {
+            throw new OperationErrorException(ErrorCode.EXISTS_USER_EMAIL);
         }
     }
 
@@ -141,7 +182,19 @@ public class DefaultUserService implements UserService {
      */
     private void checkUserNickname(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
-            throw new OperationErrorException(ErrorCode.EXISTS_USER_ID);
+            throw new OperationErrorException(ErrorCode.EXISTS_USER_NICKNAME);
+        }
+    }
+
+    /**
+     * 회원 닉네임 중복 체크(본인 닉네임 제외)
+     * 중복일 경우 바로 예외 발생
+     *
+     * @param nickname 닉네임
+     */
+    private void checkUserNicknameNotId(String nickname, Long userId) {
+        if (userRepository.existsByNicknameAndIdNot(nickname, userId)) {
+            throw new OperationErrorException(ErrorCode.EXISTS_USER_NICKNAME);
         }
     }
 
