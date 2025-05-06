@@ -51,7 +51,7 @@ public class DefaultGradeService implements GradeService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_GRADE));
 
         // 등급명 중복 체크(해당 레코드 제외)
-        checkGradeNameNeId(gradeId, request.name());
+        checkGradeNameNotId(gradeId, request.name());
 
         Grade newGrade = request.toEntity(findGrade.getRanking());
         findGrade.update(newGrade);
@@ -85,7 +85,7 @@ public class DefaultGradeService implements GradeService {
      *
      * @param name 등급명
      */
-    private void checkGradeNameNeId(Long gradeId, String name) {
+    private void checkGradeNameNotId(Long gradeId, String name) {
         if (gradeRepository.existsByNameAndStatusAndIdNot(name, StatusType.ACTIVE, gradeId)) {
             throw new OperationErrorException(ErrorCode.EXISTS_GRADE_NAME);
         }

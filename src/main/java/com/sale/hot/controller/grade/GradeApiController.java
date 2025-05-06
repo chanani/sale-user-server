@@ -61,5 +61,4 @@ public class GradeApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
-
 }
