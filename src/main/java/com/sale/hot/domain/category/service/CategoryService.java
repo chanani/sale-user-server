@@ -26,4 +26,10 @@ public interface CategoryService {
      * @param request 카테고리 수정 요청 객체
      */
     void updateCategory(Long categoryId, CategoryUpdateRequest request);
+
+    /**
+     * 카테고리 삭제
+     * @param categoryId 카테고리 식별자
+     */
+    void deleteCategory(Long categoryId);
 }

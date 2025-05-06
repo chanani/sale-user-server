@@ -51,5 +51,12 @@ public class CategoryApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
-
+    @Operation(summary = "카테고리 삭제 API",description = "카테고리를 삭제합니다.")
+    @DeleteMapping("/api/v1/admin/category/{categoryId}")
+    public ResponseEntity<ApiResponse> deleteCategory(
+            @PathVariable(name = "categoryId") Long categoryId
+    ) {
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
 }
