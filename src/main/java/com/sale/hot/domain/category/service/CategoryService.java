@@ -1,6 +1,7 @@
 package com.sale.hot.domain.category.service;
 
 import com.sale.hot.domain.category.service.dto.request.CategoryCreateRequest;
+import com.sale.hot.domain.category.service.dto.request.CategoryUpdateOrderRequest;
 import com.sale.hot.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.sale.hot.domain.category.service.dto.response.CategoriesResponse;
 import com.sale.hot.entity.category.Category;
@@ -28,8 +29,16 @@ public interface CategoryService {
     void updateCategory(Long categoryId, CategoryUpdateRequest request);
 
     /**
+     * 카테고리 순서 수정
+     * @param categoryId 카테고리 식별자
+     * @param request 카테고리 수정 요청 객체
+     */
+    void updateOrderCategory(Long categoryId, CategoryUpdateOrderRequest request);
+
+    /**
      * 카테고리 삭제
      * @param categoryId 카테고리 식별자
      */
     void deleteCategory(Long categoryId);
+
 }

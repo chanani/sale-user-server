@@ -2,6 +2,7 @@ package com.sale.hot.domain.category.service;
 
 import com.sale.hot.domain.category.repository.CategoryRepository;
 import com.sale.hot.domain.category.service.dto.request.CategoryCreateRequest;
+import com.sale.hot.domain.category.service.dto.request.CategoryUpdateOrderRequest;
 import com.sale.hot.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.sale.hot.domain.category.service.dto.response.CategoriesResponse;
 import com.sale.hot.entity.category.Category;
@@ -55,6 +56,40 @@ public class DefaultCategoryService implements CategoryService {
         // 카테고리 수정
         Category newCategory = request.toEntity();
         findCategory.update(newCategory);
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderCategory(Long categoryId, CategoryUpdateOrderRequest request) {
+        Category findCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        int currentOrder = findCategory.getOrder(); // 원래 순서
+        int changeOrder = request.order(); // 변경할 순서
+
+        // 동일한 순서일 경우 변경할 수 없음
+        if(currentOrder == changeOrder){
+            throw new OperationErrorException(ErrorCode.NOT_EQUAL_CATEGORY_ORDER);
+        }
+
+        // 타켓 식별자 이외 순서 변경
+        changeOrderCategory(currentOrder, changeOrder);
+
+        // 기존 순서 변경
+        findCategory.updateOrder(changeOrder);
+
+    }
+
+    /**
+     * 타켓 식별자 이외 순서 변경
+     * @param currentOrder 현재 카테고리의 순서
+     * @param changeOrder 변경 요청한 카테고리의 순서
+     */
+    private void changeOrderCategory(int currentOrder, int changeOrder) {
+        if(currentOrder > changeOrder){
+             categoryRepository.plusOrderAll(changeOrder, currentOrder);
+        } else if (currentOrder < changeOrder) {
+            categoryRepository.minusOrderAll(changeOrder, currentOrder);
+        }
     }
 
     @Override
