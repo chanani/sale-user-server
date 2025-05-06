@@ -2,6 +2,7 @@ package com.sale.hot.controller.grade;
 
 import com.sale.hot.domain.grade.service.GradeService;
 import com.sale.hot.domain.grade.service.dto.request.GradeCreateRequest;
+import com.sale.hot.domain.grade.service.dto.request.GradeUpdateRequest;
 import com.sale.hot.domain.grade.service.dto.response.GradeResponse;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.global.annotation.NoneAuth;
@@ -38,6 +39,16 @@ public class GradeApiController {
             @Valid @RequestBody GradeCreateRequest request
     ) {
         gradeService.addGrade(request);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "등급 수정 API",description = "등급 수정합니다.")
+    @PutMapping("/api/v1/admin/grade/{gradeId}")
+    public ResponseEntity<ApiResponse> updateGrade(
+            @PathVariable(name = "gradeId") Long gradeId,
+            @Valid @RequestBody GradeUpdateRequest request
+    ) {
+        gradeService.updateGrade(gradeId, request);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
