@@ -40,7 +40,7 @@ public class SecurityConfig {
                  * anyRequest().authenticated() : 위에 명시하지 않은 나머지 요청은 사용자만 접근, 즉 로그인 해야 접근 가능
                  */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/v1/**", "/sale-user-be/**").permitAll()
+                        .requestMatchers("/", "/login", "/api/v1/none/**", "/sale-user-be/**").permitAll()
                         .requestMatchers("/admin/**", "/error-codes").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

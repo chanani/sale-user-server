@@ -28,7 +28,7 @@ public class OperatorApiController {
 
     @Operation(summary = "관리자 계정 추가 API",
             description = "")
-    @PostMapping(value = "/api/v1/none/operator-join")
+    @PostMapping(value = "/api/v1/admin/operator-join")
     public ResponseEntity<ApiResponse> operatorJoin(
             @Valid @RequestBody OperatorJoinRequest request,
             @Parameter(hidden = true) Operator operator

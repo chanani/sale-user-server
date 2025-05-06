@@ -4,10 +4,13 @@ import com.sale.hot.controller.notice.input.NoticesInput;
 import com.sale.hot.domain.notice.service.NoticeService;
 import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
+import com.sale.hot.entity.notice.Notice;
+import com.sale.hot.entity.operator.Operator;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.response.ApiResponse;
+import com.sale.hot.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +31,7 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 목록 API")
     @NoneAuth
-    @GetMapping("/api/v1/all/notices")
+    @GetMapping("/api/v1/none/notices")
     public ResponseEntity<Page<List<NoticeResponse>>> notices(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
@@ -41,7 +44,7 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 조회수 증가 API")
     @NoneAuth
-    @PutMapping("/api/v1/all/notice/{id}")
+    @PutMapping("/api/v1/none/notice/{id}")
     public ResponseEntity<ApiResponse> noticeViewCount(@PathVariable(value = "id") Long id) {
         noticeService.plusNoticeViewCount(id);
         return ResponseEntity.ok(ApiResponse.ok());
@@ -50,11 +53,12 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 등록 API")
     @PostMapping("/api/v1/admin/notice")
-    public ResponseEntity<ApiResponse> addNotice(
-            @Valid @RequestBody NoticeCreateRequest request
+    public ResponseEntity<DataResponse> addNotice(
+            @Valid @RequestBody NoticeCreateRequest request,
+            @Parameter(hidden = true) Operator operator
     ) {
-        //todo 여기부터 진행
-        return ResponseEntity.ok(ApiResponse.ok());
+        Long noticeId = noticeService.save(request);
+        return ResponseEntity.ok(DataResponse.send(noticeId));
     }
 
 

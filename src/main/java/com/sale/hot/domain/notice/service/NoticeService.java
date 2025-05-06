@@ -1,7 +1,9 @@
 package com.sale.hot.domain.notice.service;
 
 import com.sale.hot.controller.notice.input.NoticesInput;
+import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
+import com.sale.hot.entity.notice.Notice;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
 
@@ -21,4 +23,11 @@ public interface NoticeService {
      * @param id 공지사항 식별자
      */
     void plusNoticeViewCount(Long id);
+
+    /**
+     * 공지사항 등록
+     * @param request 공지사항 등록 요청 객체
+     * @return 생성된 공지사항 객체
+     */
+    Long save(NoticeCreateRequest request);
 }
