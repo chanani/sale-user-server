@@ -3,6 +3,7 @@ package com.sale.hot.controller.notice;
 import com.sale.hot.controller.notice.input.NoticesInput;
 import com.sale.hot.domain.notice.service.NoticeService;
 import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
+import com.sale.hot.domain.notice.service.dto.request.NoticeUpdateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.entity.notice.Notice;
 import com.sale.hot.entity.operator.Operator;
@@ -54,10 +55,18 @@ public class NoticeApiController {
     @Operation(summary = "공지사항 등록 API")
     @PostMapping("/api/v1/admin/notice")
     public ResponseEntity<DataResponse> addNotice(
-            @Valid @RequestBody NoticeCreateRequest request,
-            @Parameter(hidden = true) Operator operator
+            @Valid @RequestBody NoticeCreateRequest request
     ) {
         Long noticeId = noticeService.save(request);
+        return ResponseEntity.ok(DataResponse.send(noticeId));
+    }
+
+    @Operation(summary = "공지사항 수정 API")
+    @PutMapping("/api/v1/admin/notice")
+    public ResponseEntity<DataResponse> updateNotice(
+            @Valid @RequestBody NoticeUpdateRequest request
+    ) {
+        Long noticeId = noticeService.update(request);
         return ResponseEntity.ok(DataResponse.send(noticeId));
     }
 

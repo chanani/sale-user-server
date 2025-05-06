@@ -4,6 +4,7 @@ import com.sale.hot.controller.notice.input.NoticesInput;
 import com.sale.hot.domain.notice.repository.NoticeRepository;
 import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
 import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
+import com.sale.hot.domain.notice.service.dto.request.NoticeUpdateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.notice.Notice;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -57,6 +59,17 @@ public class DefaultNoticeService implements NoticeService {
         Notice newNotice = request.toEntity();
         // 공지사항 등록
         Notice notice = noticeRepository.save(newNotice);
+        return notice.getId();
+    }
+
+    @Override
+    @Transactional
+    public Long update(NoticeUpdateRequest request) {
+        Notice notice = noticeRepository.findById(request.id())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
+
+        Notice updateNotice = request.toEntity();
+        notice.update(updateNotice);
         return notice.getId();
     }
 }
