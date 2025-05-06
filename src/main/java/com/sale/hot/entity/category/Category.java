@@ -32,10 +32,6 @@ public class Category extends BaseEntity {
     @Column(name = "sort_order")
     private Integer order;
 
-    @Column(name = "active")
-    @Enumerated(EnumType.STRING)
-    private BooleanYn active;
-
     @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     @Builder.Default
     private List<Post> posts = new ArrayList<>();
