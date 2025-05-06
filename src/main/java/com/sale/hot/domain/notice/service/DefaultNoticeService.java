@@ -67,7 +67,6 @@ public class DefaultNoticeService implements NoticeService {
     public void updateNotice(Long noticeId, NoticeUpdateRequest request) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
-
         Notice updateNotice = request.toEntity();
         notice.update(updateNotice);
     }

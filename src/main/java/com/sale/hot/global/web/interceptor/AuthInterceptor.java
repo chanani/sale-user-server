@@ -73,9 +73,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         List<String> roleList = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        System.out.println("roleList = " + roleList.get(0));
-        System.out.println("UserType = " + UserType.USER.getRole());
-        System.out.println("aa = " + roleList.contains(UserType.USER.getRole()));
 
         if (roleList.contains(UserType.USER.getRole())) {
             // 회원일 경우
