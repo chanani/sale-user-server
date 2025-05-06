@@ -2,6 +2,7 @@ package com.sale.hot.domain.user.service;
 
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
+import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.user.User;
@@ -27,4 +28,11 @@ public interface UserService {
      * @param user 로그인 회원 객체
      */
     void updateUser(UserUpdateRequest request, User user);
+
+    /**
+     * 회원 비밀번호 수정
+     * @param request 비밀번호 수정 요청 객체
+     * @param user 로그인 회원 객체
+     */
+    void updateUserPassword(UserUpdatePasswordRequest request, User user);
 }

@@ -3,6 +3,7 @@ package com.sale.hot.controller.user;
 import com.sale.hot.domain.user.service.UserService;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
+import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.user.User;
@@ -57,6 +58,17 @@ public class UserApiController {
             @Parameter(hidden = true) User user
     ) {
         userService.updateUser(request, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "비밀번호 수정 API",
+            description = "비밀번호 수정합니다.")
+    @PutMapping("/api/v1/user/update-password")
+    public ResponseEntity<ApiResponse> updateUserPassword(
+            @Valid @RequestBody UserUpdatePasswordRequest request,
+            @Parameter(hidden = true) User user
+    ) {
+        userService.updateUserPassword(request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
