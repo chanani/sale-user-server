@@ -61,7 +61,10 @@ public enum ErrorCode {
 
     // 1250 ~ 1299 등급 관련 예외
     EXISTS_GRADE_NAME(1250, HttpStatus.BAD_REQUEST.value(), "이미 등록된 등급명입니다."),
-    NOT_FOUND_GRADE(1251, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 등급입니다.");
+    NOT_FOUND_GRADE(1251, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 등급입니다."),
+
+    // 1300 ~ 1349 게시글 관련 예외
+    NOT_FOUND_POST(1300, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 게시글입니다.");
 
     private final int code;
     private final int status;
