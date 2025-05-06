@@ -48,4 +48,11 @@ public class Category extends BaseEntity {
             this.name = category.getName();
         }
     }
+
+    /**
+     * 순서 변경
+     */
+    public void updateOrder(int order){
+        this.order = order;
+    }
 }
