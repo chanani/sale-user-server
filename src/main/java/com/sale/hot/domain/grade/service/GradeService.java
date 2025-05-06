@@ -25,4 +25,10 @@ public interface GradeService {
      * @param request 등급 수정 요청 객체
      */
     void updateGrade(Long gradeId, GradeUpdateRequest request);
+
+    /**
+     * 등급 삭제
+     * @param gradeId 등급 식별자
+     */
+    void deleteGrade(Long gradeId);
 }
