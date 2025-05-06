@@ -58,6 +58,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public LoginResponse login(LoginRequest request) throws Exception {
         // 아이디로 정보 조회
         User user = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
@@ -72,6 +73,9 @@ public class DefaultUserService implements UserService {
         String accessToken = jwtProvider.createAccessToken(user.getId(), UserType.USER);
         // refreshToken 발급
         String refreshToken = jwtProvider.createRefreshToken(user.getId(), UserType.USER);
+
+        // 최근 접속일 정보 업데이트
+        user.updateLastVisit();
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
