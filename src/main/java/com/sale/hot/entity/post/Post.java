@@ -99,7 +99,7 @@ public class Post extends BaseEntity {
     /**
      * 관심 게시글 등록
      */
-    public void addPostLikes(PostLike postLike){
+    public void addPostLikes(PostLike postLike) {
         this.postLikes.add(postLike);
         postLike.setPost(this);
     }
@@ -107,7 +107,7 @@ public class Post extends BaseEntity {
     /**
      * 댓글 등록
      */
-    public void addComments(Comment comment){
+    public void addComments(Comment comment) {
         this.comments.add(comment);
         comment.setPost(this);
     }
@@ -115,9 +115,38 @@ public class Post extends BaseEntity {
     /**
      * 결제 내역 등록
      */
-    public void addPayment(Payment payment){
+    public void addPayment(Payment payment) {
         this.payments.add(payment);
         payment.setPost(this);
     }
 
+    /**
+     * 게시글 수정
+     */
+    public void update(Post post) {
+        if (post.title != null) {
+            this.title = post.title;
+        }
+        if (post.content != null) {
+            this.content = post.content;
+        }
+        if (post.link != null) {
+            this.link = post.link;
+        }
+        if (post.shopName != null) {
+            this.shopName = post.shopName;
+        }
+        if (post.itemName != null) {
+            this.itemName = post.itemName;
+        }
+        if (post.price != null) {
+            this.price = post.price;
+        }
+        if (post.category != null) {
+            this.category = post.category;
+        }
+        if (post.promotion != null) {
+            this.promotion = post.promotion;
+        }
+    }
 }
