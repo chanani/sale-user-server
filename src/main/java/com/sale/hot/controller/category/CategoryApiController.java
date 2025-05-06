@@ -2,6 +2,7 @@ package com.sale.hot.controller.category;
 
 import com.sale.hot.domain.category.service.CategoryService;
 import com.sale.hot.domain.category.service.dto.request.CategoryCreateRequest;
+import com.sale.hot.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.sale.hot.domain.category.service.dto.response.CategoriesResponse;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.global.annotation.NoneAuth;
@@ -39,4 +40,16 @@ public class CategoryApiController {
         categoryService.addCategory(request);
         return ResponseEntity.ok(ApiResponse.ok());
     }
+
+    @Operation(summary = "카테고리 수정 API",description = "카테고리를 수정합니다.")
+    @PutMapping("/api/v1/admin/category/{categoryId}")
+    public ResponseEntity<ApiResponse> updateCategory(
+            @PathVariable(name = "categoryId") Long categoryId,
+            @Valid @RequestBody CategoryUpdateRequest request
+    ) {
+        categoryService.updateCategory(categoryId, request);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+
 }

@@ -39,4 +39,13 @@ public class Category extends BaseEntity {
     public void setPost(Post post) {
         this.posts.add(post);
     }
+
+    /**
+     * 카테고리 수정
+     */
+    public void update(Category category){
+        if(category.getName() != null){
+            this.name = category.getName();
+        }
+    }
 }

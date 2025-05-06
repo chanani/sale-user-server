@@ -2,6 +2,7 @@ package com.sale.hot.domain.category.service;
 
 import com.sale.hot.domain.category.repository.CategoryRepository;
 import com.sale.hot.domain.category.service.dto.request.CategoryCreateRequest;
+import com.sale.hot.domain.category.service.dto.request.CategoryUpdateRequest;
 import com.sale.hot.domain.category.service.dto.response.CategoriesResponse;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.common.constant.StatusType;
@@ -43,5 +44,16 @@ public class DefaultCategoryService implements CategoryService {
         // 카테고리 등록
         Category newCategory = request.toEntity(++order);
         categoryRepository.save(newCategory);
+    }
+
+    @Override
+    @Transactional
+    public void updateCategory(Long categoryId, CategoryUpdateRequest request) {
+        Category findCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+
+        // 카테고리 수정
+        Category newCategory = request.toEntity();
+        findCategory.update(newCategory);
     }
 }
