@@ -56,4 +56,12 @@ public class DefaultCategoryService implements CategoryService {
         Category newCategory = request.toEntity();
         findCategory.update(newCategory);
     }
+
+    @Override
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        Category findCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        findCategory.remove();
+    }
 }
