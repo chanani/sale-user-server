@@ -3,6 +3,7 @@ package com.sale.hot.domain.notice.service;
 import com.sale.hot.controller.notice.input.NoticesInput;
 import com.sale.hot.domain.notice.repository.NoticeRepository;
 import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
+import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.notice.Notice;
@@ -47,5 +48,15 @@ public class DefaultNoticeService implements NoticeService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
         // 공지사항 조회수 증가
         notice.addViewCount();
+    }
+
+    @Override
+    @Transactional
+    public Long save(NoticeCreateRequest request) {
+        // Notice Entity로 변경
+        Notice newNotice = request.toEntity();
+        // 공지사항 등록
+        Notice notice = noticeRepository.save(newNotice);
+        return notice.getId();
     }
 }
