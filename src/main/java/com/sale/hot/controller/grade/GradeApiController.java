@@ -52,5 +52,14 @@ public class GradeApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @Operation(summary = "등급 삭제 API",description = "등급 삭제합니다.")
+    @DeleteMapping("/api/v1/admin/grade/{gradeId}")
+    public ResponseEntity<ApiResponse> deleteGrade(
+            @PathVariable(name = "gradeId") Long gradeId
+    ) {
+        gradeService.deleteGrade(gradeId);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
 
 }

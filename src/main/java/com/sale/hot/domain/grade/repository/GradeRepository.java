@@ -15,4 +15,6 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
 
     @Query("SELECT MAX(g.ranking) FROM Grade g WHERE g.status = :statusType")
     Optional<Integer> findMaxRanking(StatusType statusType);
+
+    boolean existsByNameAndStatusAndIdNot(String name, StatusType statusType, Long gradeId);
 }
