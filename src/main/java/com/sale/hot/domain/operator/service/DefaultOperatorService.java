@@ -30,6 +30,7 @@ public class DefaultOperatorService implements OperatorService {
     private final JWTProvider jwtProvider;
 
     @Override
+    @Transactional
     public LoginResponse login(OperatorLoginRequest request) throws Exception {
         // 아이디로 정보 조회
         Operator operator = operatorRepository.findByOperatorIdAndStatus(request.operatorId(), StatusType.ACTIVE)
@@ -44,6 +45,9 @@ public class DefaultOperatorService implements OperatorService {
         String accessToken = jwtProvider.createAccessToken(operator.getId(), UserType.OPERATOR);
         // refreshToken 발급
         String refreshToken = jwtProvider.createRefreshToken(operator.getId(), UserType.OPERATOR);
+
+        // 최근 접속일 정보 업데이트
+        operator.updateLastVisit();
 
         return LoginResponse.builder()
                 .accessToken(accessToken)

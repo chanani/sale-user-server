@@ -165,6 +165,13 @@ public class User extends BaseEntity {
     }
 
     /**
+     * 최근 접속일 수정
+     */
+    public void updateLastVisit(){
+        this.lastVisit = LocalDateTime.now();
+    }
+
+    /**
      * TODO: 4/22/25 개인 정보 수정
      */
 

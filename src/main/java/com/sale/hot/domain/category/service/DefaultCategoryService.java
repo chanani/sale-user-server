@@ -76,7 +76,14 @@ public class DefaultCategoryService implements CategoryService {
 
         // 기존 순서 변경
         findCategory.updateOrder(changeOrder);
+    }
 
+    @Override
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        Category findCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        findCategory.remove();
     }
 
     /**
@@ -86,17 +93,9 @@ public class DefaultCategoryService implements CategoryService {
      */
     private void changeOrderCategory(int currentOrder, int changeOrder) {
         if(currentOrder > changeOrder){
-             categoryRepository.plusOrderAll(changeOrder, currentOrder);
+            categoryRepository.plusOrderAll(changeOrder, currentOrder);
         } else if (currentOrder < changeOrder) {
             categoryRepository.minusOrderAll(changeOrder, currentOrder);
         }
-    }
-
-    @Override
-    @Transactional
-    public void deleteCategory(Long categoryId) {
-        Category findCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
-        findCategory.remove();
     }
 }

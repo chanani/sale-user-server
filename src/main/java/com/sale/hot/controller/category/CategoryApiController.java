@@ -37,7 +37,6 @@ public class CategoryApiController {
     @Operation(summary = "카테고리 추가 API",description = "카테고리를 추가합니다.")
     @PostMapping("/api/v1/admin/category")
     public ResponseEntity<ApiResponse> addCategory(@Valid @RequestBody CategoryCreateRequest request) {
-
         categoryService.addCategory(request);
         return ResponseEntity.ok(ApiResponse.ok());
     }

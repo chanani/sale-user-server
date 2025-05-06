@@ -30,7 +30,7 @@ public class NoticeApiController {
     @Operation(summary = "공지사항 목록 API",description = "공지사항 목록을 조회합니다.(페이징된 값 반환)")
     @NoneAuth
     @GetMapping("/api/v1/none/notices")
-    public ResponseEntity<Page<List<NoticeResponse>>> notices(
+    public ResponseEntity<Page<List<NoticeResponse>>> getNotices(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @ParameterObject @ModelAttribute NoticesInput input

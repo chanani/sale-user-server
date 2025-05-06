@@ -44,4 +44,11 @@ public class Operator extends BaseEntity {
 
     @Column(name = "last_visit")
     private LocalDateTime lastVisit;
+
+    /**
+     * 최근 접속일 수정
+     */
+    public void updateLastVisit(){
+        this.lastVisit = LocalDateTime.now();
+    }
 }
