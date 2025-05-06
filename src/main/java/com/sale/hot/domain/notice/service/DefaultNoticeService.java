@@ -64,12 +64,19 @@ public class DefaultNoticeService implements NoticeService {
 
     @Override
     @Transactional
-    public Long update(NoticeUpdateRequest request) {
-        Notice notice = noticeRepository.findById(request.id())
+    public void updateNotice(Long noticeId, NoticeUpdateRequest request) {
+        Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
 
         Notice updateNotice = request.toEntity();
         notice.update(updateNotice);
-        return notice.getId();
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotice(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
+        notice.remove();
     }
 }
