@@ -7,10 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record NoticeUpdateRequest(
-        @Schema(description = "공지사항 고유번호")
-        @NotNull(message = "공지사항 번호는 필수입니다.")
-        Long id,
-
         @Schema(description = "제목")
         @NotBlank(message = "제목은 필수입니다.")
         String title,
