@@ -1,8 +1,14 @@
 package com.sale.hot.domain.category.service;
 
-public interface CategoryService {
+import com.sale.hot.domain.category.service.dto.response.CategoriesResponse;
+import com.sale.hot.entity.category.Category;
 
+import java.util.List;
+
+public interface CategoryService {
     /**
-     * 작업할 때 주석은 여기에 작성할 것
+     * 카테고리 목록 조회
+     * @return 카테고리 리스트
      */
+    List<CategoriesResponse> getCategories();
 }
