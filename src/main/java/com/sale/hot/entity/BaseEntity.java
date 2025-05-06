@@ -39,9 +39,16 @@ public class BaseEntity {
     private StatusType status;
 
     /**
-     * state = 1 처리 (삭제처리)
-     * */
+     * state = DELETED 처리 (삭제처리)
+     */
     public void remove() {
+        this.status = StatusType.DELETED;
+    }
+
+    /**
+     * state = INACTIVE 처리 (비활성화)
+     */
+    public void inactive() {
         this.status = StatusType.DELETED;
     }
 
