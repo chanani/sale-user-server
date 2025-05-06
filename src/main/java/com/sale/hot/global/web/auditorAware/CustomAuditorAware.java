@@ -1,5 +1,6 @@
 package com.sale.hot.global.web.auditorAware;
 
+import com.sale.hot.entity.operator.Operator;
 import com.sale.hot.entity.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,14 @@ public class CustomAuditorAware implements AuditorAware<Long> {
         if (attr != null) {
             HttpServletRequest request = attr.getRequest();
             Object user = request.getAttribute("loginUser");
+            Object Operator = request.getAttribute("loginOperator");
             if (user instanceof User u) {
                 log.info("CustomAuditorAware USER : {}", u.getId());
                 return Optional.ofNullable(u.getId());
+            }
+            if (Operator instanceof Operator o) {
+                log.info("CustomAuditorAware OPERATOR : {}", o.getId());
+                return Optional.ofNullable(o.getId());
             }
         }
         return Optional.empty();
