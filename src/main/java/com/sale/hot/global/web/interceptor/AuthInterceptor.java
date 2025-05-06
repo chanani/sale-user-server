@@ -51,15 +51,17 @@ public class AuthInterceptor implements HandlerInterceptor {
              * 정상일 경우 CustomUserDetails 반환
              * Token이 인증되지 않으면 AnonymousAuthenticationToken 반환 */
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 
-            if (auth == null || !auth.isAuthenticated()) {
+            // auth가 없을 경우, 또는 anonymous 객체일 경우 예외 발생
+            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
                 throw new AccountTokenException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
             }
 
+            // CustomUserDetails 객체로 형변환
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+
             // 회원 & 관리자 정보 조회
             getUserOrOperatorInfo(userDetails, request);
-
         }
         return true;
     }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record OperatorLoginRequest(
-        @Schema(description = "아이디", example = "***REMOVED***12")
+        @Schema(description = "아이디", example = "admin")
         @NotBlank(message = "아이디는 필수입니다.")
         String operatorId,
 
