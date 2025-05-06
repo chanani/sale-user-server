@@ -43,4 +43,18 @@ public class Notice extends BaseEntity {
         this.viewCount++;
     }
 
+    /**
+     * 공지사항 수정
+     */
+    public void update(Notice notice){
+        if(notice.getTitle() != null){
+            this.title = notice.getTitle();
+        }
+        if(notice.getContent() != null){
+            this.content = notice.getContent();
+        }
+        if(notice.getActive() != null){
+            this.active = notice.getActive();
+        }
+    }
 }
