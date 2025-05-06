@@ -55,7 +55,8 @@ public enum ErrorCode {
     NOT_FOUND_NOTICE(1150, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 공지사항입니다."),
 
     // 1200 ~ 1249 카테고리 관련 예외
-    EXISTS_CATEGORY_NAME(1200, HttpStatus.BAD_REQUEST.value(), "이미 등록된 카테고리명입니다.");
+    EXISTS_CATEGORY_NAME(1200, HttpStatus.BAD_REQUEST.value(), "이미 등록된 카테고리명입니다."),
+    NOT_FOUND_CATEGORY(1201, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 카테고리입니다.");
 
 
     private final int code;
