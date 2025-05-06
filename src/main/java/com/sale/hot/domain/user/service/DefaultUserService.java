@@ -4,6 +4,7 @@ import com.sale.hot.domain.grade.repository.GradeRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
+import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.common.constant.StatusType;
@@ -98,6 +99,18 @@ public class DefaultUserService implements UserService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         User newUser = request.toEntity();
         findUser.update(newUser);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserPassword(UserUpdatePasswordRequest request, User user) {
+        // 비밀번호 일치 여부 확인
+        equalPassword(request.password(), request.passwordCheck());
+        // 회원 정보 조회
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // 비밀번호 변경
+        findUser.updatePassword(request.password());
     }
 
 

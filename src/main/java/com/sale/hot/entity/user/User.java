@@ -13,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -105,15 +106,15 @@ public class User extends BaseEntity {
     /**
      * 프로필 변경
      */
-    public void addProfile(String profile){
+    public void updateProfile(String profile){
         this.profile = profile;
     }
 
     /**
      * 비밀번호 변경
      */
-    public void addPassword(String password){
-        this.password = password;
+    public void updatePassword(String password){
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     /**
