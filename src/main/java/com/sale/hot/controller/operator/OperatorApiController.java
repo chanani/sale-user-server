@@ -1,6 +1,7 @@
 package com.sale.hot.controller.operator;
 
 import com.sale.hot.domain.operator.service.OperatorService;
+import com.sale.hot.domain.operator.service.dto.request.OperatorJoinRequest;
 import com.sale.hot.domain.operator.service.dto.request.OperatorLoginRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.entity.operator.Operator;
@@ -29,10 +30,10 @@ public class OperatorApiController {
             description = "")
     @PostMapping(value = "/api/v1/none/operator-join")
     public ResponseEntity<ApiResponse> operatorJoin(
-            @Valid @RequestBody OperatorLoginRequest request,
+            @Valid @RequestBody OperatorJoinRequest request,
             @Parameter(hidden = true) Operator operator
-    )  {
-        System.out.println("operator = " + operator);
+    ) {
+        operatorService.join(request, operator);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
@@ -40,7 +41,7 @@ public class OperatorApiController {
             description = """
                     로그인 요청 시 accessToken, refreshToken 반환됩니다.(추후 수정 될 수 있습니다.)
                     """)
-    // @NoneAuth
+    @NoneAuth
     @PostMapping(value = "/api/v1/none/operator-login")
     public ResponseEntity<DataResponse> operatorLogin(@Valid @RequestBody OperatorLoginRequest request) throws Exception {
         LoginResponse response = operatorService.login(request);
