@@ -4,12 +4,14 @@ import com.sale.hot.controller.post.input.PostsInput;
 import com.sale.hot.domain.post.service.PostService;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
 import com.sale.hot.domain.post.service.dto.request.PostUpdateRequest;
+import com.sale.hot.domain.post.service.dto.response.PostResponse;
 import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.response.ApiResponse;
+import com.sale.hot.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +37,7 @@ public class PostApiController {
             """)
     @NoneAuth
     @GetMapping("/api/v1/none/posts")
-    public ResponseEntity<Page<List<PostsResponse>>> getNotices(
+    public ResponseEntity<Page<List<PostsResponse>>> getPosts(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @ParameterObject @ModelAttribute PostsInput input
@@ -43,6 +45,16 @@ public class PostApiController {
         PageInput pageInput = PageInput.builder().page(page).size(size).build();
         Page<List<PostsResponse>> posts = postService.getPosts(input, pageInput);
         return ResponseEntity.ok(posts);
+    }
+
+    @Operation(summary = "게시글 단건 조회 API", description = "게시글 상세내용을 조회합니다.")
+    @NoneAuth
+    @GetMapping("/api/v1/none/post/{postId}")
+    public ResponseEntity<DataResponse> getPost(
+        @PathVariable(name = "postId") Long postId
+    ) {
+        PostResponse post = postService.getPost(postId);
+        return ResponseEntity.ok(DataResponse.send(post));
     }
 
     @Operation(summary = "게시글 등록 API", description = """
