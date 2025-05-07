@@ -142,6 +142,9 @@ public class Post extends BaseEntity {
         if (post.price != null) {
             this.price = post.price;
         }
+        if (post.deliveryPrice != null) {
+            this.deliveryPrice = post.deliveryPrice;
+        }
         if (post.category != null) {
             this.category = post.category;
         }

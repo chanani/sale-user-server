@@ -28,6 +28,9 @@ public record PostCreateRequest(
         @Schema(description = "가격", example = "10000")
         Integer price,
 
+        @Schema(description = "배송비", example = "3000")
+        Integer deliveryPrice,
+
         @Schema(description = "카테고리 고유번호", example = "1")
         Long categoryId,
 
@@ -43,6 +46,7 @@ public record PostCreateRequest(
                 .shopName(this.shopName)
                 .itemName(this.itemName)
                 .price(this.price)
+                .deliveryPrice(this.deliveryPrice)
                 .category(category)
                 .user(user)
                 .promotion(promotion ? BooleanYn.Y : BooleanYn.N)

@@ -1,6 +1,5 @@
 package com.sale.hot.domain.notice.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.notice.repository.condition.NoticeCondition;

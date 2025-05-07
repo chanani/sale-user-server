@@ -1,6 +1,5 @@
 package com.sale.hot.global.page;
 
-import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
 import lombok.Builder;
 
 /**
