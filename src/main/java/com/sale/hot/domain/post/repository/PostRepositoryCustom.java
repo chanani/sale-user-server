@@ -1,6 +1,7 @@
 package com.sale.hot.domain.post.repository;
 
 import com.sale.hot.domain.post.repository.condition.PostCondition;
+import com.sale.hot.domain.post.service.dto.response.PostResponse;
 import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.global.page.Pageable;
@@ -22,4 +23,6 @@ public interface PostRepositoryCustom {
      * @return 페이징된 게시글 리스트
      */
     List<PostsResponse> findQuery(PostCondition condition, Pageable pageable);
+
+    PostResponse findByIdQuery(Long postId);
 }

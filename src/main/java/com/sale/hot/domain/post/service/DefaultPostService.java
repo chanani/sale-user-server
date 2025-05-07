@@ -8,6 +8,7 @@ import com.sale.hot.domain.post.repository.PostRepository;
 import com.sale.hot.domain.post.repository.condition.PostCondition;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
 import com.sale.hot.domain.post.service.dto.request.PostUpdateRequest;
+import com.sale.hot.domain.post.service.dto.response.PostResponse;
 import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.post.Post;
@@ -45,6 +46,17 @@ public class DefaultPostService implements PostService {
         // 해당 조건의 게시글 리스트 조회
         List<PostsResponse> posts = postRepository.findQuery(condition, pageable);
         return new Page<>(pageable, posts);
+    }
+
+    @Override
+    public PostResponse getPost(Long postId) {
+        // 게시글 존재 여부 확인
+        if(!postRepository.existsById(postId)){
+            throw new OperationErrorException(ErrorCode.NOT_FOUND_POST);
+        }
+
+        // 게시글 정보 조회
+        return postRepository.findByIdQuery(postId);
     }
 
     @Override

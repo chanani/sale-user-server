@@ -4,6 +4,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.post.repository.condition.PostCondition;
+import com.sale.hot.domain.post.service.dto.response.PostCategoryResponse;
+import com.sale.hot.domain.post.service.dto.response.PostResponse;
+import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
 import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.global.page.Pageable;
@@ -65,11 +68,69 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public PostResponse findByIdQuery(Long postId) {
+        return queryFactory.select(Projections.constructor(
+                        PostResponse.class,
+                        post.id,
+                        Projections.constructor(
+                                PostUserResponse.class,
+                                user.id,
+                                user.nickname,
+                                user.profile
+                        ),
+                        Projections.constructor(
+                                PostCategoryResponse.class,
+                                category.id,
+                                category.name
+                        ),
+                        comment.count(), post.promotion, post.title,
+                        post.content, post.shopName, post.itemName,
+                        post.link, post.price, post.deliveryPrice,
+                        post.likeCount, post.dislikeCount, post.createdAt
+                ))
+                .from(post)
+                .join(post.user, user)
+                .leftJoin(comment)
+                .on(post.id.eq(comment.post.id),
+                        notDeleteComment())
+                .join(category)
+                .on(post.category.id.eq(category.id))
+                .where(
+                        post.id.eq(postId),
+                        notDeletePost(),
+                        notDeleteUser(),
+                        notDeleteCategory()
+                )
+                .fetchOne();
+    }
+
     /**
-     * 삭제 되지 않은 데이터
+     * 삭제 되지 않은 게시글 데이터
      */
     private BooleanExpression notDeletePost() {
         return post.status.eq(StatusType.ACTIVE);
+    }
+
+    /**
+     * 삭제 되지 않은 회원 데이터
+     */
+    private BooleanExpression notDeleteUser() {
+        return user.status.eq(StatusType.ACTIVE);
+    }
+
+    /**
+     * 삭제 되지 않은 카테고리 데이터
+     */
+    private BooleanExpression notDeleteCategory() {
+        return category.status.eq(StatusType.ACTIVE);
+    }
+
+    /**
+     * 삭제 되지 않은 댓글 데이터
+     */
+    private BooleanExpression notDeleteComment() {
+        return comment.status.eq(StatusType.ACTIVE);
     }
 
     /**
