@@ -39,7 +39,7 @@ public class DefaultNoticeService implements NoticeService {
         List<NoticeResponse> notices = noticeRepository.findQuery(condition, pageable).stream()
                 .map(NoticeResponse::new)
                 .toList();
-        return new com.sale.hot.global.page.Page<>(pageable, notices);
+        return new Page<>(pageable, notices);
     }
 
     @Override
