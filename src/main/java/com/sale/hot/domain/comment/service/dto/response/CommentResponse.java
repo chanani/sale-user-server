@@ -14,6 +14,9 @@ public class CommentResponse {
     @Schema(description = "댓글 고유번호")
     private Long id;
 
+    @Schema(description = "상위 댓글 고유번호")
+    private Long parentId;
+
     @Schema(description = "작성자 정보")
     private PostUserResponse user;
 
@@ -32,15 +35,23 @@ public class CommentResponse {
     @Schema(description = "대댓글 목록")
     private List<CommentResponse> reComments;
 
-    public CommentResponse(Long id, PostUserResponse user,
+    public CommentResponse(Long id, PostUserResponse user, Long parentId,
                            String content, Integer likeCount,
                            Integer dislikeCount, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
+        this.parentId = parentId;
         this.content = content;
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
         this.createdAt = DateUtil.localDateTimeTolocalDateTimeString(createdAt);
+    }
+
+    /**
+     * 대댓글 등록
+     */
+    public void addRecomment(List<CommentResponse> reComments) {
+        this.reComments = reComments;
     }
 
 }
