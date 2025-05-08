@@ -53,5 +53,15 @@ public class CommentApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @Operation(summary = "댓글 삭제 API", description = "댓글을 삭제합니다.")
+    @DeleteMapping("/api/v1/user/comments/{commentId}")
+    public ResponseEntity<ApiResponse> deleteComment(
+            @PathVariable(name = "commentId") Long commentId,
+            @Parameter(hidden = true) User user
+    ) {
+        commentService.deleteComment(commentId, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
 
 }

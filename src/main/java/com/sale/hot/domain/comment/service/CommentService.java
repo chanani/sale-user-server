@@ -25,4 +25,11 @@ public interface CommentService {
      * @return 등록된 댓글 식별자
      */
     Long addComment(Long postId, User user, @Valid CommentCreateRequest request);
+
+    /**
+     * 댓글 삭제
+     * @param commentId 댓글 식별자
+     * @param user 로그인 사용자 객체
+     */
+    void deleteComment(Long commentId, User user);
 }

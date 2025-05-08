@@ -73,4 +73,18 @@ public class DefaultCommentService implements CommentService {
         Comment saveComment = commentRepository.save(newComment);
         return saveComment.getId();
     }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long commentId, User user) {
+        // 댓글 조회
+        Comment findComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_COMMENT));
+        // 삭제 요청한 댓글이 로그인한 유저의 댓글인지 확인
+        if(!findComment.getCreatedBy().equals(user.getId())){
+            throw new OperationErrorException(ErrorCode.NOT_EQUAL_WRITER);
+        }
+        // 댓글 삭제
+        findComment.remove();
+    }
 }
