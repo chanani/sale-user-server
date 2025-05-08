@@ -16,7 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +38,19 @@ public class DefaultCommentService implements CommentService {
         Pageable pageable = new Pageable(pageInput.page(), totalCount.intValue(), pageInput.size());
         // 댓글 조회
         List<CommentResponse> comments = commentRepository.findQuery(postId, pageable);
+        // 댓글 Id 리스트 생성
+        List<Long> parents = comments.stream().map(CommentResponse::getId).toList();
         // 대댓글 조회
+        List<CommentResponse> reComments = commentRepository.findReCommentsQuery(postId, parents);
+        // 대댓글을 부모 ID별로 그룹화
+        Map<Long, List<CommentResponse>> reCommentsMap = reComments.stream()
+                .collect(Collectors.groupingBy(CommentResponse::getParentId));
 
+        // 각 댓글에 해당하는 대댓글 목록 설정
+        comments.forEach(comment ->
+                comment.addRecomment(reCommentsMap.getOrDefault(comment.getId(), new ArrayList<>()))
+        );
 
-
-        return null;
+        return new Page<>(pageable, comments);
     }
 }

@@ -22,4 +22,12 @@ public interface CommentRepositoryCustom {
      * @return 댓글 목록 리스트
      */
     List<CommentResponse> findQuery(Long postId, Pageable pageable);
+
+    /**
+     * 대댓글 목록 조회
+     * @param postId 게시글 식별자
+     * @param parents 조회된 댓글 식별자 리스트
+     * @return 페이징 된 댓글 목록
+     */
+    List<CommentResponse> findReCommentsQuery(Long postId, List<Long> parents);
 }

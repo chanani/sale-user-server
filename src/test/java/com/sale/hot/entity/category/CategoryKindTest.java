@@ -20,7 +20,6 @@ class CategoryKindTest {
         Category category = Category.builder()
                 .name("먹거리")
                 .order(1)
-                .active(BooleanYn.Y)
                 .build();
         Category result = categoryRepository.save(category);
         System.out.println("result = " + result.getName());

@@ -2,6 +2,7 @@ package com.sale.hot.domain.comment.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
 import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
@@ -45,13 +46,14 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                                 user.nickname,
                                 user.profile
                         ),
+                        comment.parent.id,
                         comment.content,
                         comment.likeCount,
                         comment.dislikeCount,
                         comment.createdAt
                 ))
                 .from(comment)
-                .join(user)
+                .join(comment.user, user)
                 .where(
                         notDeleteComment(),
                         eqPostId(postId)
@@ -59,6 +61,34 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .orderBy(comment.createdAt.asc())
                 .limit(pageable.getLimit())
                 .offset(pageable.getOffset())
+                .fetch();
+    }
+
+    @Override
+    public List<CommentResponse> findReCommentsQuery(Long postId, List<Long> parents) {
+        return queryFactory.select(Projections.constructor(
+                        CommentResponse.class,
+                        comment.id,
+                        Projections.constructor(
+                                PostUserResponse.class,
+                                user.id,
+                                user.nickname,
+                                user.profile
+                        ),
+                        comment.parent.id,
+                        comment.content,
+                        comment.likeCount,
+                        comment.dislikeCount,
+                        comment.createdAt
+                ))
+                .from(comment)
+                .join(comment.user, user)
+                .where(
+                        notDeleteComment(),
+                        eqPostId(postId),
+                        comment.parent.id.in(parents)
+                )
+                .orderBy(comment.createdAt.asc())
                 .fetch();
     }
 
@@ -75,6 +105,13 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
      */
     private BooleanExpression eqPostId(Long postId) {
         return comment.post.id.eq(postId);
+    }
+
+    /**
+     * 대댓글인 데이터만 조회
+     */
+    private BooleanExpression notNullParent() {
+        return comment.parent.isNotNull();
     }
 }
 
