@@ -1,12 +1,11 @@
 package com.sale.hot.domain.comment.repository;
 
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
 import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
-import com.sale.hot.entity.comment.Comment;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.global.page.Pageable;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.sale.hot.entity.comment.QComment.*;
-import static com.sale.hot.entity.post.QPost.*;
 import static com.sale.hot.entity.user.QUser.*;
 
 @Repository
@@ -30,7 +28,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .from(comment)
                 .where(
                         notDeleteComment(),
-                        eqPostId(postId)
+                        eqPostId(postId),
+                        parentIdIsNull()
                 )
                 .fetchOne();
     }
@@ -56,13 +55,16 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .join(comment.user, user)
                 .where(
                         notDeleteComment(),
-                        eqPostId(postId)
+                        eqPostId(postId),
+                        parentIdIsNull()
                 )
                 .orderBy(comment.createdAt.asc())
                 .limit(pageable.getLimit())
                 .offset(pageable.getOffset())
                 .fetch();
     }
+
+
 
     @Override
     public List<CommentResponse> findReCommentsQuery(Long postId, List<Long> parents) {
@@ -112,6 +114,13 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
      */
     private BooleanExpression notNullParent() {
         return comment.parent.isNotNull();
+    }
+
+    /**
+     * 대댓글이 아닌 데이터만 조회
+     */
+    private Predicate parentIdIsNull() {
+        return comment.parent.id.isNull();
     }
 }
 

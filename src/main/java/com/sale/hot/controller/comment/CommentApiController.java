@@ -1,13 +1,18 @@
 package com.sale.hot.controller.comment;
 
 import com.sale.hot.domain.comment.service.CommentService;
+import com.sale.hot.domain.comment.service.dto.request.CommentCreateRequest;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
+import com.sale.hot.entity.user.User;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
+import com.sale.hot.global.response.ApiResponse;
 import com.sale.hot.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +35,23 @@ public class CommentApiController {
             @PathVariable(name = "postId") Long postId
     ) {
         PageInput pageInput = PageInput.builder().page(page).size(size).build();
-        Page<List<CommentResponse>> comments = commentService.getComments(pageInput ,postId);
+        Page<List<CommentResponse>> comments = commentService.getComments(pageInput, postId);
         return ResponseEntity.ok(comments);
     }
+
+    @Operation(summary = "댓글 등록 API", description = """
+            댓글을 등록합니다.
+            상위 댓글이 없을 경우 parentId는 null 또는 0으로 전달해주세요.
+            """)
+    @PostMapping("/api/v1/user/comments/{postId}")
+    public ResponseEntity<ApiResponse> addComment(
+            @PathVariable(name = "postId") Long postId,
+            @Parameter(hidden = true) User user,
+            @Valid @RequestBody CommentCreateRequest request
+    ) {
+        commentService.addComment(postId, user, request);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+
 }
