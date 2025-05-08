@@ -44,7 +44,7 @@ spring:
               enable: true
 # jwt
 jwt:
-  secret-key: sale-2025-delivery+1004kksale-2025-delivery+1004kksale-2025-delivery+1004kk
+  secret-key: sale-2025-delivery+1004kksale-2025-delivery+1004kksale-2025-delivery+1004k
   issuer-uri: www.hotDelivery.com
   accessToken-expired-time: 3600000
   refreshToken-expired-time: 86400000

@@ -50,8 +50,8 @@ public class PostApiController {
     @Operation(summary = "게시글 단건 조회 API", description = "게시글 상세내용을 조회합니다.")
     @NoneAuth
     @GetMapping("/api/v1/none/post/{postId}")
-    public ResponseEntity<DataResponse> getPost(
-        @PathVariable(name = "postId") Long postId
+    public ResponseEntity<DataResponse<PostResponse>> getPost(
+            @PathVariable(name = "postId") Long postId
     ) {
         PostResponse post = postService.getPost(postId);
         return ResponseEntity.ok(DataResponse.send(post));
