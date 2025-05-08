@@ -20,4 +20,5 @@ public class PostUserResponse {
         this.nickname = nickname;
         this.profile = profile;
     }
+
 }
