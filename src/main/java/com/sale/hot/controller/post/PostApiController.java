@@ -18,8 +18,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -61,11 +63,13 @@ public class PostApiController {
             게시글을 등록합니다. 제목, 내용은 필수입니다.
             기업이 아닌 기본 사용자가 게시글을 등록할 경우 promotion은 꼭 false로 전달해주세요.
             """)
-    @PostMapping("/api/v1/user/post")
+    @PostMapping(value = "/api/v1/user/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> addNotice(
-            @Valid @RequestBody PostCreateRequest request, @Parameter(hidden = true) User user
+            @Valid @ModelAttribute PostCreateRequest request,
+            @RequestParam("file") MultipartFile thumbnail,
+            @Parameter(hidden = true) User user
     ) {
-        postService.addPost(request, user);
+        // postService.addPost(request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
@@ -89,4 +93,19 @@ public class PostApiController {
         postService.deletePost(postId, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
+
+    @Operation(summary = "게시글 좋아요 & 싫어요 API", description = """
+            게시글 좋아요와 싫어요를 등록 및 삭제합니다.
+            type은 like, dislike로 전달 부탁드립니다.
+            """)
+    @PostMapping("/api/v1/user/posts/{postId}/{type}")
+    public ResponseEntity<ApiResponse> addPostLike(
+            @PathVariable(name = "postId") Long postId,
+            @PathVariable(name = "type") String type,
+            @Parameter(hidden = true) User user
+    ) {
+        postService.toggleLikeAndDisLike(postId, type, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
 }

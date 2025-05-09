@@ -3,10 +3,13 @@ package com.sale.hot.domain.comment.service;
 import com.sale.hot.domain.comment.repository.CommentRepository;
 import com.sale.hot.domain.comment.service.dto.request.CommentCreateRequest;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
+import com.sale.hot.domain.commentLike.repository.CommentLikeRepository;
 import com.sale.hot.domain.post.repository.PostRepository;
-import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.comment.Comment;
+import com.sale.hot.entity.commentLike.CommentLike;
+import com.sale.hot.entity.common.constant.LikeType;
+import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 public class DefaultCommentService implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
@@ -81,10 +85,48 @@ public class DefaultCommentService implements CommentService {
         Comment findComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_COMMENT));
         // 삭제 요청한 댓글이 로그인한 유저의 댓글인지 확인
-        if(!findComment.getCreatedBy().equals(user.getId())){
+        if (!findComment.getCreatedBy().equals(user.getId())) {
             throw new OperationErrorException(ErrorCode.NOT_EQUAL_WRITER);
         }
         // 댓글 삭제
         findComment.remove();
+    }
+
+    @Override
+    @Transactional
+    public void toggleLikeAndDisLike(Long commentId, String type, User user) {
+        // type 확인
+        if(!type.equalsIgnoreCase("like") && !type.equalsIgnoreCase("dislike")){
+            throw new OperationErrorException(ErrorCode.FAIL_TO_KEYWORD_TYPE);
+        }
+        // 댓글 조회
+        Comment comment = commentRepository.findByIdAndStatus(commentId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_COMMENT));
+        // type -> Enum
+        LikeType likeType = type.equalsIgnoreCase("like") ? LikeType.LIKE : LikeType.DISLIKE;
+        // 기존 좋아요/싫어요 기록 조회
+        CommentLike findCommentLike = commentLikeRepository.findByCommentIdAndUserIdAndStatus(commentId, user.getId(), StatusType.ACTIVE)
+                .orElse(null);
+
+        if (findCommentLike != null) { // 기록이 존재할 경우
+            if (findCommentLike.getType().equals(likeType)) { // 같은 버튼을 눌렀을 경우 삭제
+                findCommentLike.remove();
+                // 댓글 누적 좋아요/싫어요 증가
+                comment.updateLikeAndDisCount(likeType, false);
+            } else { // 누른 버튼 이외의 버튼을 누를경우 예외 발생
+                throw new OperationErrorException(ErrorCode.CONFLICT_LIKE_AND_DISLIKE);
+            }
+        } else { // 기록이 존재하지 않을 경우
+            // 댓글 좋아요/싫어요 Entity 생성
+            CommentLike newEntity = CommentLike.builder()
+                    .comment(comment)
+                    .user(user)
+                    .type(likeType)
+                    .build();
+            // 등록
+            commentLikeRepository.save(newEntity);
+            // 댓글 누적 좋아요/싫어요 증가
+            comment.updateLikeAndDisCount(likeType, true);
+        }
     }
 }

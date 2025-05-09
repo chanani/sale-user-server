@@ -12,6 +12,7 @@ import java.util.List;
 public interface CommentService {
     /**
      * 댓글 목록 조회
+     *
      * @param postId 게시글 식별자
      * @return 댓글 목록 리스트
      */
@@ -19,8 +20,9 @@ public interface CommentService {
 
     /**
      * 댓글 등록
-     * @param postId 게시글 식별자
-     * @param user 로그인 사용자 객체
+     *
+     * @param postId  게시글 식별자
+     * @param user    로그인 사용자 객체
      * @param request 댓글 등록 요청 객체
      * @return 등록된 댓글 식별자
      */
@@ -28,8 +30,18 @@ public interface CommentService {
 
     /**
      * 댓글 삭제
+     *
      * @param commentId 댓글 식별자
-     * @param user 로그인 사용자 객체
+     * @param user      로그인 사용자 객체
      */
     void deleteComment(Long commentId, User user);
+
+    /**
+     * 댓글 좋아요 & 싫어요 등록 및 삭제
+     *
+     * @param commentId 댓글 식별자
+     * @param type      좋아요, 싫어요 타입
+     * @param user      로그인 사용자 객체
+     */
+    void toggleLikeAndDisLike(Long commentId, String type, User user);
 }

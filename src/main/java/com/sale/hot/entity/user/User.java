@@ -2,6 +2,7 @@ package com.sale.hot.entity.user;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.comment.Comment;
+import com.sale.hot.entity.commentLike.CommentLike;
 import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.grade.Grade;
@@ -96,6 +97,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Report> reports = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<CommentLike> CommentLike = new ArrayList<>();
+
     /**
      * 등급 변경
      */
@@ -163,6 +168,14 @@ public class User extends BaseEntity {
     public void addReport(Report report){
         this.reports.add(report);
         report.setUser(this);
+    }
+
+    /**
+     * 댓글 좋아요 / 싫어요 등록
+     */
+    public void addCommentLike(CommentLike commentLike){
+        this.CommentLike.add(commentLike);
+        commentLike.setUser(this);
     }
 
     /**
