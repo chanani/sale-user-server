@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,12 +68,15 @@ public class DefaultPostService implements PostService {
 
     @Override
     @Transactional
-    public void addPost(PostCreateRequest request, User user) {
+    public void addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
         // 카테고리 엔티티 조회
-        Category findCategory = categoryRepository.findById(request.categoryId())
+        Category findCategory = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        // 썸네일 있을 경우 이미지 저장
+        // Todo 이미지 저장 관련 로직 제작 해야됨
+        String thumbnailPath = thumbnail == null ? null : thumbnail.getOriginalFilename(); // originalName이 아닌 업로드 경로로 넣어줘야함
         // 게시글 객체로 변환
-        Post newPost = request.toEntity(findCategory, user);
+        Post newPost = request.toEntity(findCategory, user, thumbnailPath);
         // 게시글 등록
         Post savePost = postRepository.save(newPost);
     }

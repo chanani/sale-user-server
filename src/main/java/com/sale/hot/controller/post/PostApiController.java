@@ -28,6 +28,7 @@ import java.util.List;
 @Tag(name = "Post API Controller", description = "게시글 관련 API를 제공합니다.")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(produces = "application/json")
 public class PostApiController {
 
     private final PostService postService;
@@ -63,13 +64,16 @@ public class PostApiController {
             게시글을 등록합니다. 제목, 내용은 필수입니다.
             기업이 아닌 기본 사용자가 게시글을 등록할 경우 promotion은 꼭 false로 전달해주세요.
             """)
-    @PostMapping(value = "/api/v1/user/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/api/v1/user/post", consumes = {
+            MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+    })
     public ResponseEntity<ApiResponse> addNotice(
-            @Valid @ModelAttribute PostCreateRequest request,
-            @RequestParam("file") MultipartFile thumbnail,
+            @Valid @RequestPart(value = "postCreateRequest") PostCreateRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile thumbnail,
             @Parameter(hidden = true) User user
     ) {
-        // postService.addPost(request, user);
+        postService.addPost(request, user, thumbnail);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

@@ -8,6 +8,7 @@ import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public interface PostService {
      * @param request 게시글 등록 요청 객체
      * @param user    로그인 회원 객체
      */
-    void addPost(PostCreateRequest request, User user);
+    void addPost(PostCreateRequest request, User user, MultipartFile thumbnail);
 
     /**
      * 게시글 수정
