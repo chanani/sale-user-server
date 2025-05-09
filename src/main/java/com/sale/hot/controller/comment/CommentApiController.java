@@ -63,5 +63,19 @@ public class CommentApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @Operation(summary = "댓글 좋아요 & 싫어요 API", description = """
+            댓글 좋아요와 싫어요를 등록 및 삭제합니다.
+            type은 like, dislike로 전달 부탁드립니다.
+            """)
+    @PostMapping("/api/v1/user/comments/{commentId}/{type}")
+    public ResponseEntity<ApiResponse> addCommentLike(
+            @PathVariable(name = "commentId") Long commentId,
+            @PathVariable(name = "type") String type,
+            @Parameter(hidden = true) User user
+    ) {
+        commentService.toggleLikeAndDisLike(commentId, type, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
 
 }
