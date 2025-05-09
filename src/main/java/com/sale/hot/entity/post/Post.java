@@ -4,6 +4,7 @@ import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.comment.Comment;
 import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.common.constant.LikeType;
 import com.sale.hot.entity.payment.Payment;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
@@ -37,6 +38,9 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Column(name = "thumbnail")
+    private String thumbnail;
 
     @Column(name = "promotion_status")
     @Enumerated(EnumType.STRING)
@@ -150,6 +154,27 @@ public class Post extends BaseEntity {
         }
         if (post.promotion != null) {
             this.promotion = post.promotion;
+        }
+    }
+
+    /**
+     * 댓글 좋아요/싫어요 증감
+     * @param likeType 좋아요/싫어요 타입
+     * @param increment 증가/감소 타입(true = 증가, false = 감소)
+     */
+    public void updateLikeAndDisCount(LikeType likeType, boolean increment) {
+        if (likeType == LikeType.LIKE) {
+            if (increment) {
+                this.likeCount += 1;
+            } else {
+                this.likeCount -= 1;
+            }
+        } else if (likeType == LikeType.DISLIKE) {
+            if (increment) {
+                this.dislikeCount += 1;
+            } else {
+                this.dislikeCount -= 1;
+            }
         }
     }
 }

@@ -10,8 +10,14 @@ import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
 import com.sale.hot.domain.post.service.dto.request.PostUpdateRequest;
 import com.sale.hot.domain.post.service.dto.response.PostResponse;
 import com.sale.hot.domain.post.service.dto.response.PostsResponse;
+import com.sale.hot.domain.postLike.repository.PostLikeRepository;
 import com.sale.hot.entity.category.Category;
+import com.sale.hot.entity.comment.Comment;
+import com.sale.hot.entity.commentLike.CommentLike;
+import com.sale.hot.entity.common.constant.LikeType;
+import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.post.Post;
+import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
@@ -33,6 +39,7 @@ import java.util.Optional;
 public class DefaultPostService implements PostService {
 
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
     private final CategoryRepository categoryRepository;
 
     @Override
@@ -99,5 +106,43 @@ public class DefaultPostService implements PostService {
         }
         // 게시글 삭제
         findPost.remove();
+    }
+
+    @Override
+    @Transactional
+    public void toggleLikeAndDisLike(Long postId, String type, User user) {
+        // type 확인
+        if(!type.equalsIgnoreCase("like") && !type.equalsIgnoreCase("dislike")){
+            throw new OperationErrorException(ErrorCode.FAIL_TO_KEYWORD_TYPE);
+        }
+        // 게시글 조회
+        Post findPost = postRepository.findByIdAndStatus(postId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
+        // type -> Enum
+        LikeType likeType = type.equalsIgnoreCase("like") ? LikeType.LIKE : LikeType.DISLIKE;
+        // 기존 좋아요/싫어요 기록 조회
+        PostLike findPostLike = postLikeRepository.findByPostIdAndUserIdAndStatus(postId, user.getId(), StatusType.ACTIVE)
+                .orElse(null);
+
+        if (findPostLike != null) { // 기록이 존재할 경우
+            if (findPostLike.getType().equals(likeType)) { // 같은 버튼을 눌렀을 경우 삭제
+                findPostLike.remove();
+                // 댓글 누적 좋아요/싫어요 증가
+                findPost.updateLikeAndDisCount(likeType, false);
+            } else { // 누른 버튼 이외의 버튼을 누를경우 예외 발생
+                throw new OperationErrorException(ErrorCode.CONFLICT_LIKE_AND_DISLIKE);
+            }
+        } else { // 기록이 존재하지 않을 경우
+            // 댓글 좋아요/싫어요 Entity 생성
+            PostLike newEntity = PostLike.builder()
+                    .post(findPost)
+                    .user(user)
+                    .type(likeType)
+                    .build();
+            // 등록
+            postLikeRepository.save(newEntity);
+            // 댓글 누적 좋아요/싫어요 증가
+            findPost.updateLikeAndDisCount(likeType, true);
+        }
     }
 }
