@@ -40,13 +40,14 @@ public interface PostService {
      * @param postId 게시글 식별자
      * @param request 게시글 수정 요청 객체
      */
-    void updatePost(Long postId, PostUpdateRequest request);
+    void updatePost(Long postId, PostUpdateRequest request, User user);
 
     /**
      * 게시글 삭제
      * @param postId 게시글 식별자
+     * @param user 로그인 사용자 객체
      */
-    void deletePost(Long postId);
+    void deletePost(Long postId, User user);
 
 
 }

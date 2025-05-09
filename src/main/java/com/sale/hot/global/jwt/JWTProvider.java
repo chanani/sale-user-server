@@ -101,7 +101,7 @@ public class JWTProvider {
             log.error(e.getMessage(), e);
             log.info("Exception Token Value : {}, Type : {}", jwtToken, tokenType.name());
             if (tokenType == TokenType.ACCESS_TOKEN) {
-                System.out.println("eMessage = " + e);
+                log.error(e.getMessage(), e);
                 throw new AccountTokenException(ErrorCode.ACCESS_TOKEN_EXPIRED);
             } else {
                 throw new AccountTokenException(ErrorCode.REFRESH_TOKEN_EXPIRED);

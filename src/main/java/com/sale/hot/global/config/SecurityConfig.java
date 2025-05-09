@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -69,15 +70,10 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                 )
-                /**
-                 * 세션 관리 정책 설정
-                 * maximumSessions : 한 계정당 동시에 허용되는 최대 세션 수
-                 * .expiredUrl : 세션이 만료되었을 때 이동할 Url
-                 */
                 .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .expiredUrl("/login?expired")
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
+
         return http.build();
     }
 

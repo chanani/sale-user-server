@@ -73,9 +73,6 @@ public class RedisProvider {
     }
     public void setDataExpire(String key,String value,long duration){//지정된 키(key)에 값을 저장하고, 지정된 시간(duration) 후에 데이터가 만료되도록 설정하는 메서드
         ValueOperations<String,String> valueOperations=redisTemplates.opsForValue();
-
-        System.out.println("key : "+ key);
-        System.out.println("value : "+ value);
         Duration expireDuration=Duration.ofSeconds(duration);
         valueOperations.set(key,value,expireDuration);
     }
