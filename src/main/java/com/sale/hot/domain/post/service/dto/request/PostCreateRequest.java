@@ -6,42 +6,50 @@ import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import org.apache.poi.util.StringUtil;
+import org.thymeleaf.util.StringUtils;
 
-public record PostCreateRequest(
-        @Schema(description = "제목", example = "게시글 제목입니다.")
-        @NotBlank(message = "제목은 필수입니다.")
-        String title,
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class PostCreateRequest{
 
-        @Schema(description = "내용", example = "게시글 내용입니다.")
-        @NotBlank(message = "내용은 필수입니다.")
-        String content,
+    @Schema(description = "제목", example = "게시글 제목입니다.")
+    @NotBlank(message = "제목은 필수입니다.")
+    private String title;
 
-        @Schema(description = "링크", example = "https://naver.com")
-        String link,
+    @Schema(description = "내용", example = "게시글 내용입니다.")
+    @NotBlank(message = "내용은 필수입니다.")
+    private String content;
 
-        @Schema(description = "판매처명", example = "쿠팡")
-        String shopName,
+    @Schema(description = "링크", example = "https://naver.com")
+    private String link;
 
-        @Schema(description = "상품명", example = "햇반")
-        String itemName,
+    @Schema(description = "판매처명", example = "쿠팡")
+    private String shopName;
 
-        @Schema(description = "가격", example = "10000")
-        Integer price,
+    @Schema(description = "상품명", example = "햇반")
+    private String itemName;
 
-        @Schema(description = "배송비", example = "3000")
-        Integer deliveryPrice,
+    @Schema(description = "가격", example = "10000")
+    private Integer price;
 
-        @Schema(description = "카테고리 고유번호", example = "1")
-        Long categoryId,
+    @Schema(description = "배송비", example = "3000")
+    private Integer deliveryPrice;
 
-        @Schema(description = "광고 진행 여부", example = "false")
-        boolean promotion
-) {
+    @Schema(description = "카테고리 고유번호", example = "1")
+    private Long categoryId;
 
-    public Post toEntity(Category category, User user){
+    @Schema(description = "광고 진행 여부", example = "false")
+    private Boolean promotion;
+
+    public Post toEntity(Category category, User user, String thumbnail) {
         return Post.builder()
-                .title(this.title())
+                .title(this.title)
                 .content(this.content)
+                .thumbnail(StringUtils.isEmpty(thumbnail) ? null : thumbnail)
                 .link(this.link)
                 .shopName(this.shopName)
                 .itemName(this.itemName)
