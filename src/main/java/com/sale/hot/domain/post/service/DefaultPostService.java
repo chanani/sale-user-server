@@ -54,7 +54,6 @@ public class DefaultPostService implements PostService {
         if(!postRepository.existsById(postId)){
             throw new OperationErrorException(ErrorCode.NOT_FOUND_POST);
         }
-
         // 게시글 정보 조회
         return postRepository.findByIdQuery(postId);
     }
@@ -73,10 +72,14 @@ public class DefaultPostService implements PostService {
 
     @Override
     @Transactional
-    public void updatePost(Long postId, PostUpdateRequest request) {
+    public void updatePost(Long postId, PostUpdateRequest request, User user) {
         // 게시글 조회
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
+        // 본인 게시글인지 체크
+        if(!findPost.getCreatedBy().equals(user.getId())){
+            throw new OperationErrorException(ErrorCode.NOT_EQUAL_WRITER);
+        }
         // 카테고리 엔티티 조회
         Category findCategory = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
@@ -86,10 +89,14 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, User user) {
         // 게시글 조회
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
+        // 본인 게시글인지 체크
+        if(!findPost.getCreatedBy().equals(user.getId())){
+            throw new OperationErrorException(ErrorCode.NOT_EQUAL_WRITER);
+        }
         // 게시글 삭제
         findPost.remove();
     }

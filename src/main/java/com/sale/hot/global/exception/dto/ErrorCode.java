@@ -27,6 +27,7 @@ public enum ErrorCode {
     NOT_FOUND_USER_INFO(1001, HttpStatus.BAD_REQUEST.value(), "유저정보가 확인되지 않습니다."),
     FAILED_TO_WITHDRAWAL(1002, HttpStatus.BAD_REQUEST.value(), "회원 탈퇴에 실패하였습니다."),
     INVALID_SORT_FIELD(1003, HttpStatus.BAD_REQUEST.value(), "올바르지 않은 정렬 조건입니다."),
+    NOT_EQUAL_WRITER(1004, HttpStatus.BAD_REQUEST.value(), "작성자만 수정 및 삭제 할 수 있습니다."),
 
     // 1050 ~ 1099 토큰 관련 예외
     // UNAUTHORIZED:401(리프레시토큰요청필요할때) , FORBIDDEN:403(팅겨내야할때)
@@ -67,8 +68,7 @@ public enum ErrorCode {
     NOT_FOUND_POST(1300, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 게시글입니다."),
 
     // 1350 ~ 1399 댓글 관련 예외
-    NOT_FOUND_COMMENT(1350, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 댓글입니다."),
-    NOT_EQUAL_WRITER(1351, HttpStatus.BAD_REQUEST.value(), "작성자만 댓글을 삭제할 수 있습니다.");
+    NOT_FOUND_COMMENT(1350, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 댓글입니다.");
 
     private final int code;
     private final int status;

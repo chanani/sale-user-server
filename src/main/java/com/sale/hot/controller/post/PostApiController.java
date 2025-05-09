@@ -72,16 +72,21 @@ public class PostApiController {
     @Operation(summary = "게시글 수정 API", description = "게시글을 수정합니다.")
     @PutMapping("/api/v1/user/post/{postId}")
     public ResponseEntity<ApiResponse> updateNotice(
-            @PathVariable(name = "postId") Long postId, @Valid @RequestBody PostUpdateRequest request
+            @PathVariable(name = "postId") Long postId,
+            @Valid @RequestBody PostUpdateRequest request,
+            @Parameter(hidden = true) User user
     ) {
-        postService.updatePost(postId, request);
+        postService.updatePost(postId, request, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
     @Operation(summary = "게시글 삭제 API", description = "게시글을 삭제합니다.")
     @DeleteMapping("/api/v1/user/post/{postId}")
-    public ResponseEntity<ApiResponse> deleteNotice(@PathVariable(name = "postId") Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<ApiResponse> deleteNotice(
+            @PathVariable(name = "postId") Long postId,
+            @Parameter(hidden = true) User user
+    ) {
+        postService.deletePost(postId, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 }
