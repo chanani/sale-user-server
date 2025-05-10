@@ -78,13 +78,17 @@ public class PostApiController {
     }
 
     @Operation(summary = "게시글 수정 API", description = "게시글을 수정합니다.")
-    @PutMapping("/api/v1/user/post/{postId}")
+    @PutMapping(value = "/api/v1/user/post/{postId}", consumes = {
+            MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+    })
     public ResponseEntity<ApiResponse> updateNotice(
             @PathVariable(name = "postId") Long postId,
-            @Valid @RequestBody PostUpdateRequest request,
+            @Valid @RequestPart(value = "postUpdateRequest") PostUpdateRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile thumbnail,
             @Parameter(hidden = true) User user
     ) {
-        postService.updatePost(postId, request, user);
+        postService.updatePost(postId, request, user, thumbnail);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

@@ -155,6 +155,9 @@ public class Post extends BaseEntity {
         if (post.promotion != null) {
             this.promotion = post.promotion;
         }
+        if(post.thumbnail != null){
+            this.thumbnail = post.thumbnail;
+        }
     }
 
     /**

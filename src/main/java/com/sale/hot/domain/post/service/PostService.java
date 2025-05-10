@@ -45,7 +45,7 @@ public interface PostService {
      * @param postId  게시글 식별자
      * @param request 게시글 수정 요청 객체
      */
-    void updatePost(Long postId, PostUpdateRequest request, User user);
+    void updatePost(Long postId, PostUpdateRequest request, User user, MultipartFile thumbnail);
 
     /**
      * 게시글 삭제
