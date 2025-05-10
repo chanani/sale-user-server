@@ -83,7 +83,7 @@ public class DefaultPostService implements PostService {
 
     @Override
     @Transactional
-    public void updatePost(Long postId, PostUpdateRequest request, User user) {
+    public void updatePost(Long postId, PostUpdateRequest request, User user, MultipartFile thumbnail) {
         // 게시글 조회
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
@@ -94,8 +94,11 @@ public class DefaultPostService implements PostService {
         // 카테고리 엔티티 조회
         Category findCategory = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+        // 썸네일 있을 경우 이미지 저장
+        // Todo 이미지 저장 관련 로직 제작 해야됨
+        String thumbnailPath = thumbnail == null ? null : thumbnail.getOriginalFilename(); // originalName이 아닌 업로드 경로로 넣어줘야함
         // 게시글 수정
-        Post newEntity = request.toEntity(findCategory);
+        Post newEntity = request.toEntity(findCategory, thumbnailPath);
         findPost.update(newEntity);
     }
 

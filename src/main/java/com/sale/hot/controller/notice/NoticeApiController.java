@@ -42,9 +42,9 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 조회수 증가 API",description = "공지사항 조회수를 증가합니다.")
     @NoneAuth
-    @PutMapping("/api/v1/none/notice/{id}")
-    public ResponseEntity<ApiResponse> noticeViewCount(@PathVariable(value = "id") Long id) {
-        noticeService.plusNoticeViewCount(id);
+    @PutMapping("/api/v1/none/notice/{noticeId}")
+    public ResponseEntity<ApiResponse> noticeViewCount(@PathVariable(value = "noticeId") Long noticeId) {
+        noticeService.plusNoticeViewCount(noticeId);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

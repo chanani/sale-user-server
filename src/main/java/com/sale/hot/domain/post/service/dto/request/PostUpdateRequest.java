@@ -6,6 +6,7 @@ import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import org.thymeleaf.util.StringUtils;
 
 public record PostUpdateRequest(
         @Schema(description = "제목", example = "게시글 제목입니다.")
@@ -35,10 +36,11 @@ public record PostUpdateRequest(
         boolean promotion
 ) {
 
-    public Post toEntity(Category category){
+    public Post toEntity(Category category, String thumbnail){
         return Post.builder()
                 .title(this.title())
                 .content(this.content)
+                .thumbnail(StringUtils.isEmpty(thumbnail) ? null : thumbnail)
                 .link(this.link)
                 .shopName(this.shopName)
                 .itemName(this.itemName)
