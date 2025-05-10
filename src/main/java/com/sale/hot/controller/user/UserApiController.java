@@ -45,7 +45,7 @@ public class UserApiController {
                     """)
     @NoneAuth
     @PostMapping("/api/v1/none/login")
-    public ResponseEntity<DataResponse> login(@Valid @RequestBody LoginRequest request) throws Exception {
+    public ResponseEntity<DataResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) throws Exception {
         LoginResponse response = userService.login(request);
         return ResponseEntity.ok(DataResponse.send(response));
     }

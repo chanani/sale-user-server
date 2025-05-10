@@ -65,6 +65,8 @@ public class DefaultCommentService implements CommentService {
     @Override
     @Transactional
     public Long addComment(Long postId, User user, CommentCreateRequest request) {
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 존재하는 게시글인지 체크
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
@@ -75,12 +77,16 @@ public class DefaultCommentService implements CommentService {
         Comment newComment = request.toEntity(post, user, parent);
         // comment 등록
         Comment saveComment = commentRepository.save(newComment);
+        // 회원 정보에 댓글 수 증가
+        findUser.updateCommentCount(true);
         return saveComment.getId();
     }
 
     @Override
     @Transactional
     public void deleteComment(Long commentId, User user) {
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 댓글 조회
         Comment findComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_COMMENT));
@@ -90,6 +96,8 @@ public class DefaultCommentService implements CommentService {
         }
         // 댓글 삭제
         findComment.remove();
+        // 회원 정보에 댓글 수 감소
+        findUser.updateCommentCount(false);
     }
 
     @Override

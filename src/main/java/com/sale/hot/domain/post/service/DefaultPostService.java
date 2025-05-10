@@ -11,6 +11,7 @@ import com.sale.hot.domain.post.service.dto.request.PostUpdateRequest;
 import com.sale.hot.domain.post.service.dto.response.PostResponse;
 import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.domain.postLike.repository.PostLikeRepository;
+import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.comment.Comment;
 import com.sale.hot.entity.commentLike.CommentLike;
@@ -42,6 +43,7 @@ public class DefaultPostService implements PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Page<List<PostsResponse>> getPosts(PostsInput input, PageInput pageInput) {
@@ -69,6 +71,8 @@ public class DefaultPostService implements PostService {
     @Override
     @Transactional
     public void addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 카테고리 엔티티 조회
         Category findCategory = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
@@ -79,6 +83,8 @@ public class DefaultPostService implements PostService {
         Post newPost = request.toEntity(findCategory, user, thumbnailPath);
         // 게시글 등록
         Post savePost = postRepository.save(newPost);
+        // 회원 정보에 게시글 수 증가
+        findUser.updatePostCount(true);
     }
 
     @Override
@@ -103,7 +109,10 @@ public class DefaultPostService implements PostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(Long postId, User user) {
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 게시글 조회
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
@@ -113,6 +122,8 @@ public class DefaultPostService implements PostService {
         }
         // 게시글 삭제
         findPost.remove();
+        // 회원 정보에 게시글 수 감소
+        findUser.updatePostCount(false);
     }
 
     @Override
