@@ -3,6 +3,7 @@ package com.sale.hot.domain.grade.service;
 import com.sale.hot.domain.grade.service.dto.request.GradeCreateRequest;
 import com.sale.hot.domain.grade.service.dto.request.GradeUpdateRequest;
 import com.sale.hot.domain.grade.service.dto.response.GradeResponse;
+import com.sale.hot.entity.user.User;
 
 import java.util.List;
 
@@ -31,4 +32,9 @@ public interface GradeService {
      * @param gradeId 등급 식별자
      */
     void deleteGrade(Long gradeId);
+
+    /**
+     * 등급 등업
+     */
+    // Boolean upgradeGrade(User user);
 }
