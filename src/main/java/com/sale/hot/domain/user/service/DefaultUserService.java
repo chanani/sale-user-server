@@ -90,7 +90,10 @@ public class DefaultUserService implements UserService {
         LocalDate now = LocalDate.now();
         boolean checkAttend = attendRepository.existsByUserIdAndAttendDate(user.getId(), now);
         if (!checkAttend) {
+            // 출석 체크
             attendService.save(user, now);
+            // 회원 정보에 출석 + 1
+            user.plusAttendCount();
         }
 
         return LoginResponse.builder()
