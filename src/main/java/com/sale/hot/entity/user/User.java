@@ -7,6 +7,7 @@ import com.sale.hot.entity.commentLike.CommentLike;
 import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.grade.Grade;
+import com.sale.hot.entity.keyword.Keyword;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.postLike.PostLike;
@@ -115,6 +116,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Attend> attends = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Keyword> keywords = new ArrayList<>();
+
 
     /**
      * 등급 변경
@@ -200,6 +205,14 @@ public class User extends BaseEntity {
     public void addAttend(Attend attend) {
         this.attends.add(attend);
         attend.setUser(this);
+    }
+
+    /**
+     * 키워드 등록
+     */
+    public void addKeyword(Keyword keyword) {
+        this.keywords.add(keyword);
+        keyword.setUser(this);
     }
 
     /**
