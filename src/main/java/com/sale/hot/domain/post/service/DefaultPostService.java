@@ -49,7 +49,7 @@ public class DefaultPostService implements PostService {
     public Page<List<PostsResponse>> getPosts(PostsInput input, PageInput pageInput) {
         // input -> condition
         PostCondition condition = input.toCondition();
-        // 해당 조건의 공지사항 수 조회
+        // 해당 조건의 게시글 수 조회
         Long totalCount = postRepository.countQuery(condition);
         // pageable 객체 생성
         Pageable pageable = new Pageable(pageInput.page(), totalCount.intValue(), pageInput.size());

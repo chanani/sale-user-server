@@ -1,5 +1,6 @@
 package com.sale.hot.global.page;
 
+import com.sale.hot.domain.postLike.repository.condition.PostLikeCondition;
 import lombok.Builder;
 
 /**
