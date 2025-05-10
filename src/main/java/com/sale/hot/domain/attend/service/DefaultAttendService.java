@@ -19,6 +19,7 @@ public class DefaultAttendService implements AttendService{
     private final AttendRepository attendRepository;
 
     @Override
+    @Transactional
     public void save(User user, LocalDate now) {
         Attend attend = Attend.builder()
                 .user(user)
