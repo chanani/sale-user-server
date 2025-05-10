@@ -1,6 +1,8 @@
 package com.sale.hot.global.config;
 
 import com.sale.hot.global.security.JwtAuthenticationFilter;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -41,22 +45,14 @@ public class SecurityConfig {
                  * anyRequest().authenticated() : 위에 명시하지 않은 나머지 요청은 사용자만 접근, 즉 로그인 해야 접근 가능
                  */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/v1/none/**", "/sale-user-be/**").permitAll()
+                        .requestMatchers("/", "/api/v1/none/login", "/api/v1/none/**", "/sale-user-be/**").permitAll()
                         .requestMatchers("/api/v1/admin/**", "/error-codes").hasRole("ADMIN")
                         .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 /**
-                 * 폼 기반 로그인 기능 활성화
-                 * loginPage : 커스텀 로그인 페이지의 URL 위에서 permitAll로 허용되어 있어야 정상 적동
-                 * defaultSuccessUrl : 로그인에 성공하면 이동할 기본 URL을 설정
-                 * permitAll : 인증 없이 접근할 수 있도록 허용
+                 * 필터 실행
                  */
-                /*.formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/")
-                        .permitAll()
-                )*/
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 /**

@@ -1,5 +1,7 @@
 package com.sale.hot.domain.user.service;
 
+import com.sale.hot.domain.attend.repository.AttendRepository;
+import com.sale.hot.domain.attend.service.AttendService;
 import com.sale.hot.domain.grade.repository.GradeRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
@@ -7,6 +9,7 @@ import com.sale.hot.domain.user.service.dto.request.LoginRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
+import com.sale.hot.entity.attend.Attend;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.common.constant.UserType;
 import com.sale.hot.entity.grade.Grade;
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +34,8 @@ public class DefaultUserService implements UserService {
 
     private final UserRepository userRepository;
     private final GradeRepository gradeRepository;
+    private final AttendRepository attendRepository;
+    private final AttendService attendService;
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
 
@@ -78,6 +85,13 @@ public class DefaultUserService implements UserService {
 
         // 최근 접속일 정보 업데이트
         user.updateLastVisit();
+
+        // 추석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
+        LocalDate now = LocalDate.now();
+        boolean checkAttend = attendRepository.existsByUserIdAndAttendDate(user.getId(), now);
+        if (!checkAttend) {
+            attendService.save(user, now);
+        }
 
         return LoginResponse.builder()
                 .accessToken(accessToken)

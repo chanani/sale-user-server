@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Order(0)
@@ -27,6 +28,19 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTProvider jwtProvider;
+    private static final String[] EXCLUDE_PATHS = {
+            "/api/v1/none/login",
+            "/api/v1/none/operator-login"
+    };
+
+    /**
+     * EXCLUDE_PATHS의 경로는 doFilterInternal 제외
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return Arrays.stream(EXCLUDE_PATHS).anyMatch(path::startsWith);
+    }
 
     @Override
     protected void doFilterInternal(
