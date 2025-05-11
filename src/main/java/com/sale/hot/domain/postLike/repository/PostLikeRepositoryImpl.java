@@ -1,9 +1,11 @@
 package com.sale.hot.domain.postLike.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.postLike.repository.condition.PostLikeCondition;
 import com.sale.hot.domain.postLike.service.dto.response.PostLikeResponse;
+import com.sale.hot.entity.category.QCategory;
 import com.sale.hot.entity.common.constant.LikeType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.global.page.Pageable;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.sale.hot.entity.category.QCategory.*;
 import static com.sale.hot.entity.comment.QComment.comment;
 import static com.sale.hot.entity.post.QPost.post;
 import static com.sale.hot.entity.postLike.QPostLike.*;
@@ -44,7 +47,41 @@ public class PostLikeRepositoryImpl implements PostLikeRepositoryCustom {
 
     @Override
     public List<PostLikeResponse> findQuery(PostLikeCondition condition, Pageable pageable) {
-        return List.of();
+        return queryFactory.select(Projections.constructor(
+                        PostLikeResponse.class,
+                        postLike.id,
+                        post.id,
+                        post.user.nickname,
+                        post.category.name,
+                        comment.count(),
+                        post.promotion,
+                        post.title,
+                        post.content,
+                        post.shopName,
+                        post.price,
+                        post.deliveryPrice,
+                        post.likeCount,
+                        post.dislikeCount
+                ))
+                .from(postLike)
+                .join(postLike.post, post)
+                .join(post.category, category)
+                .leftJoin(comment)
+                .on(
+                        post.id.eq(comment.post.id),
+                        notDeleteComment()
+                )
+                .where(
+                        searchKeyword(condition),
+                        notDeletePostLike(),
+                        eqUserId(condition),
+                        eqLikeType()
+                )
+                .orderBy(postLike.createdAt.desc())
+                .groupBy(postLike.id)
+                .limit(pageable.getLimit())
+                .offset(pageable.getOffset())
+                .fetch();
     }
 
     /**

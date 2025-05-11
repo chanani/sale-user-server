@@ -7,8 +7,11 @@ import lombok.Getter;
 @Getter
 public class PostLikeResponse {
 
-    @Schema(description = "게시글 고유번호")
+    @Schema(description = "관심 게시글 고유번호")
     private Long id;
+
+    @Schema(description = "게시글 고유번호")
+    private Long postId;
 
     @Schema(description = "회원 정보")
     private String userNickname;
@@ -43,12 +46,13 @@ public class PostLikeResponse {
     @Schema(description = "싫어요 수")
     private Integer dislikeCount;
 
-    public PostLikeResponse(Long id, String userNickname, String categoryName,
+    public PostLikeResponse(Long id, Long postId, String userNickname, String categoryName,
                          Long commentCount, BooleanYn promotion,
                          String title, String content, String shopName,
                          Integer price, Integer deliveryPrice,
                          Integer likeCount, Integer dislikeCount) {
         this.id = id;
+        this.postId = postId;
         this.userNickname = userNickname;
         this.categoryName = categoryName;
         this.commentCount = commentCount;

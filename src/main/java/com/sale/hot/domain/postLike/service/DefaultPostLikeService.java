@@ -33,7 +33,6 @@ public class DefaultPostLikeService implements PostLikeService {
         Pageable pageable = new Pageable(pageInput.page(), totalCount.intValue(), pageInput.size());
         // 해당 조건의 관심 게시글 리스트 조회
         List<PostLikeResponse> postLikes = postLikeRepository.findQuery(condition, pageable);
-
-        return null;
+        return new Page<>(pageable, postLikes);
     }
 }
