@@ -1,5 +1,6 @@
 package com.sale.hot.entity.keyword;
 
+import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "keyword")
 @Builder
-public class Keyword {
+public class Keyword extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
