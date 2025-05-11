@@ -22,12 +22,23 @@ public class KeywordApiController {
 
     @Operation(summary = "알림 받을 키워드 등록 API",
             description = "알림 받을 키워드를 등록합니다.")
-    @PostMapping("/api/v1/user/keyword")
+    @PostMapping("/api/v1/user/keywords")
     public ResponseEntity<ApiResponse> addKeyword(
             @Valid @RequestBody KeywordCreateRequest request,
             @Parameter(hidden = true) User user
     ){
         keywordService.addKeyword(request, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
+    @Operation(summary = "알림 받을 키워드 삭제 API",
+            description = "알림 받을 키워드를 삭제합니다.")
+    @DeleteMapping("/api/v1/user/keywords/{keywordId}")
+    public ResponseEntity<ApiResponse> deleteKeyword(
+            @PathVariable(name = "keywordId") Long keywordId,
+            @Parameter(hidden = true) User user
+    ){
+        keywordService.deleteKeyword(keywordId, user);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

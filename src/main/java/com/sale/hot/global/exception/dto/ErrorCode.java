@@ -73,7 +73,8 @@ public enum ErrorCode {
     FAIL_TO_KEYWORD_TYPE(1352, HttpStatus.BAD_REQUEST.value(), "타입은 like, disLike만 전달 가능합니다."),
 
     // 1400 ~ 1449 키워드 관련 예외
-    EXISTS_KEYWORD_NAME(1400, HttpStatus.BAD_REQUEST.value(), "이미 등록된 키워드입니다.");
+    EXISTS_KEYWORD_NAME(1400, HttpStatus.BAD_REQUEST.value(), "이미 등록된 키워드입니다."),
+    NOT_FOUND_KEYWORD(1401, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 키워드입니다.");
 
 
     private final int code;

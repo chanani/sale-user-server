@@ -12,4 +12,11 @@ public interface KeywordService {
      * @param user 로그인 사용자 객체
      */
     void addKeyword(@Valid KeywordCreateRequest request, User user);
+
+    /**
+     * 알림 받을 키워드 삭제
+     * @param keywordId 키워드 식별자
+     * @param user 로그인 사용자 객체
+     */
+    void deleteKeyword(Long keywordId, User user);
 }
