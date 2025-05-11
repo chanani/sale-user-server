@@ -70,7 +70,10 @@ public enum ErrorCode {
     // 1350 ~ 1399 댓글 관련 예외
     NOT_FOUND_COMMENT(1350, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 댓글입니다."),
     CONFLICT_LIKE_AND_DISLIKE(1351, HttpStatus.BAD_REQUEST.value(), "좋아요/싫어요는 동시에 선택할 수 없습니다."),
-    FAIL_TO_KEYWORD_TYPE(1352, HttpStatus.BAD_REQUEST.value(), "타입은 like, disLike만 전달 가능합니다.");
+    FAIL_TO_KEYWORD_TYPE(1352, HttpStatus.BAD_REQUEST.value(), "타입은 like, disLike만 전달 가능합니다."),
+
+    // 1400 ~ 1449 키워드 관련 예외
+    EXISTS_KEYWORD_NAME(1400, HttpStatus.BAD_REQUEST.value(), "이미 등록된 키워드입니다.");
 
 
     private final int code;
