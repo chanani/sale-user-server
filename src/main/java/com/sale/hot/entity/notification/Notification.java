@@ -4,10 +4,7 @@ import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,7 +14,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "Notification")
+@Table(name = "notification")
+@Builder
 public class Notification extends BaseEntity {
 
     @Id

@@ -46,8 +46,8 @@ public class DefaultKeywordService implements KeywordService {
         // Keywrod 조회
         Keyword findKeyword = keywordRepository.findByIdAndUserIdAndStatus(keywordId, user.getId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_KEYWORD));
-        // 삭제
-        findKeyword.remove();
+        // 삭제(Hard)
+        keywordRepository.delete(findKeyword);
     }
 
     @Override
