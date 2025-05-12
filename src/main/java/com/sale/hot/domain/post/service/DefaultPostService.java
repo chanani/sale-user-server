@@ -20,6 +20,7 @@ import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
+import com.sale.hot.global.eventListener.keyword.dto.KeywordEvent;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.page.Page;
@@ -27,6 +28,7 @@ import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.page.Pageable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +46,7 @@ public class DefaultPostService implements PostService {
     private final PostLikeRepository postLikeRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Page<List<PostsResponse>> getPosts(PostsInput input, PageInput pageInput) {
@@ -85,6 +88,8 @@ public class DefaultPostService implements PostService {
         Post savePost = postRepository.save(newPost);
         // 회원 정보에 게시글 수 증가
         findUser.updatePostCount(true);
+        // 키워드 알림 대상자에게 알람 전달
+        eventPublisher.publishEvent(savePost.toCreateKeywordEvent());
     }
 
     @Override

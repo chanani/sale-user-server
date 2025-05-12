@@ -8,6 +8,7 @@ import com.sale.hot.entity.common.constant.LikeType;
 import com.sale.hot.entity.payment.Payment;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
+import com.sale.hot.global.eventListener.keyword.dto.KeywordEvent;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -179,5 +180,12 @@ public class Post extends BaseEntity {
                 this.dislikeCount -= 1;
             }
         }
+    }
+
+    /**
+     * 키워드 이벤트 객체 생성
+     */
+    public KeywordEvent toCreateKeywordEvent() {
+        return new KeywordEvent(this);
     }
 }
