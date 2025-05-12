@@ -85,6 +85,9 @@ dependencies {
     // excel
     implementation 'org.apache.poi:poi-ooxml:5.4.1'
 
+    // Aho-corasick Trie
+    implementation 'org.ahocorasick:ahocorasick:0.4.0'
+
 }
 
 tasks.named('test') {
