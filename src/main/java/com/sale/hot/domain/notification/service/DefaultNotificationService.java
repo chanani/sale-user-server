@@ -16,8 +16,5 @@ public class DefaultNotificationService implements NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    @Override
-    public void save(Notification notification) {
-        notificationRepository.save(notification);
-    }
+
 }

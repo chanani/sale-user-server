@@ -1,6 +1,7 @@
 package com.sale.hot.global.eventListener.keyword;
 
 import com.sale.hot.domain.keyword.repository.KeywordRepository;
+import com.sale.hot.domain.notification.repository.NotificationRepository;
 import com.sale.hot.domain.notification.service.NotificationService;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.common.constant.BooleanYn;
@@ -24,7 +25,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class KeywordEventListener {
 
-    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
     private final KeywordRepository keywordRepository;
     private final UserRepository userRepository;
 
@@ -75,7 +76,7 @@ public class KeywordEventListener {
                         .content(entry.getValue() + " : " + postTitle)
                         .isRead(BooleanYn.N)
                         .build();
-                notificationService.save(notification);
+                notificationRepository.save(notification);
             }
         }
     }

@@ -2,8 +2,6 @@ package com.sale.hot.domain.post.service;
 
 import com.sale.hot.controller.post.input.PostsInput;
 import com.sale.hot.domain.category.repository.CategoryRepository;
-import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
-import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.domain.post.repository.PostRepository;
 import com.sale.hot.domain.post.repository.condition.PostCondition;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
@@ -13,14 +11,12 @@ import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.domain.postLike.repository.PostLikeRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.category.Category;
-import com.sale.hot.entity.comment.Comment;
-import com.sale.hot.entity.commentLike.CommentLike;
 import com.sale.hot.entity.common.constant.LikeType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
-import com.sale.hot.global.eventListener.keyword.dto.KeywordEvent;
+import com.sale.hot.global.eventListener.post.dto.PostLikeEvent;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.page.Page;
@@ -34,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +59,7 @@ public class DefaultPostService implements PostService {
     @Override
     public PostResponse getPost(Long postId) {
         // 게시글 존재 여부 확인
-        if(!postRepository.existsById(postId)){
+        if (!postRepository.existsById(postId)) {
             throw new OperationErrorException(ErrorCode.NOT_FOUND_POST);
         }
         // 게시글 정보 조회
@@ -99,7 +94,7 @@ public class DefaultPostService implements PostService {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
         // 본인 게시글인지 체크
-        if(!findPost.getCreatedBy().equals(user.getId())){
+        if (!findPost.getCreatedBy().equals(user.getId())) {
             throw new OperationErrorException(ErrorCode.NOT_EQUAL_WRITER);
         }
         // 카테고리 엔티티 조회
@@ -122,7 +117,7 @@ public class DefaultPostService implements PostService {
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
         // 본인 게시글인지 체크
-        if(!findPost.getCreatedBy().equals(user.getId())){
+        if (!findPost.getCreatedBy().equals(user.getId())) {
             throw new OperationErrorException(ErrorCode.NOT_EQUAL_WRITER);
         }
         // 게시글 삭제
@@ -135,7 +130,7 @@ public class DefaultPostService implements PostService {
     @Transactional
     public void toggleLikeAndDisLike(Long postId, String type, User user) {
         // type 확인
-        if(!type.equalsIgnoreCase("like") && !type.equalsIgnoreCase("dislike")){
+        if (!type.equalsIgnoreCase("like") && !type.equalsIgnoreCase("dislike")) {
             throw new OperationErrorException(ErrorCode.FAIL_TO_KEYWORD_TYPE);
         }
         // 게시글 조회
@@ -166,6 +161,10 @@ public class DefaultPostService implements PostService {
             postLikeRepository.save(newEntity);
             // 댓글 누적 좋아요/싫어요 증가
             findPost.updateLikeAndDisCount(likeType, true);
+            if (!user.getId().equals(findPost.getUser().getId())) {
+                // 좋아요 알림 등록
+                eventPublisher.publishEvent(new PostLikeEvent(findPost));
+            }
         }
     }
 }
