@@ -150,16 +150,6 @@ public class User extends BaseEntity {
     }
 
     /**
-     * 알림 등록
-     *
-     * @param notification : 알림 엔티티
-     */
-    public void addNotification(Notification notification) {
-        this.notifications.add(notification);
-        notification.setUser(this);
-    }
-
-    /**
      * 게시글 등록
      */
     public void addPost(Post post) {

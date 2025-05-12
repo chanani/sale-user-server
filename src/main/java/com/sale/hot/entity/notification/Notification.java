@@ -2,6 +2,8 @@ package com.sale.hot.entity.notification;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.common.constant.NotificationType;
+import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +29,14 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private NotificationType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
     @Column(name = "title")
     private String title;
 
@@ -37,7 +47,4 @@ public class Notification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BooleanYn isRead;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
