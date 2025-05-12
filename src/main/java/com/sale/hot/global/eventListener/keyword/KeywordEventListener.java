@@ -4,6 +4,7 @@ import com.sale.hot.domain.keyword.repository.KeywordRepository;
 import com.sale.hot.domain.notification.service.NotificationService;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.common.constant.NotificationType;
 import com.sale.hot.entity.keyword.Keyword;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
@@ -68,6 +69,7 @@ public class KeywordEventListener {
             User user = userRepository.findById(entry.getKey()).orElse(null);
             if (user != null) {
                 Notification notification = Notification.builder()
+                        .type(NotificationType.KEYWORD)
                         .user(user)
                         .title("키워드 알람이 도착하였습니다.")
                         .content(entry.getValue() + " : " + postTitle)

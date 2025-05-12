@@ -12,6 +12,7 @@ import com.sale.hot.entity.common.constant.LikeType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
+import com.sale.hot.global.eventListener.comment.dto.CommentEvent;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.page.Page;
@@ -19,6 +20,7 @@ import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.page.Pageable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class DefaultCommentService implements CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Page<List<CommentResponse>> getComments(PageInput pageInput, Long postId) {
@@ -68,17 +71,21 @@ public class DefaultCommentService implements CommentService {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 존재하는 게시글인지 체크
-        Post post = postRepository.findById(postId)
+        Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
         // 상위 게시글 존재할 경우 조회
         Comment parent = commentRepository.findById(request.parentId())
                 .orElse(null);
         // 등록할 Comment Entity 생성
-        Comment newComment = request.toEntity(post, user, parent);
+        Comment newComment = request.toEntity(findPost, user, parent);
         // comment 등록
         Comment saveComment = commentRepository.save(newComment);
         // 회원 정보에 댓글 수 증가
         findUser.updateCommentCount(true);
+        // 댓글 알림 이벤트 등록(본인 게시글이 아닐 경우 이벤트 발행
+        if (!findPost.getUser().getId().equals(user.getId())) {
+            eventPublisher.publishEvent(new CommentEvent(findPost.getUser(), findPost, newComment));
+        }
         return saveComment.getId();
     }
 
@@ -104,7 +111,7 @@ public class DefaultCommentService implements CommentService {
     @Transactional
     public void toggleLikeAndDisLike(Long commentId, String type, User user) {
         // type 확인
-        if(!type.equalsIgnoreCase("like") && !type.equalsIgnoreCase("dislike")){
+        if (!type.equalsIgnoreCase("like") && !type.equalsIgnoreCase("dislike")) {
             throw new OperationErrorException(ErrorCode.FAIL_TO_KEYWORD_TYPE);
         }
         // 댓글 조회
