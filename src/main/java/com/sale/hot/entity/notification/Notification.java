@@ -47,4 +47,11 @@ public class Notification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BooleanYn isRead;
 
+    /**
+     * 알림 읽음 처리
+     */
+    public void updateRead(){
+        this.isRead = BooleanYn.Y;
+    }
+
 }

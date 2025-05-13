@@ -75,7 +75,10 @@ public enum ErrorCode {
     // 1400 ~ 1449 키워드 관련 예외
     EXISTS_KEYWORD_NAME(1400, HttpStatus.BAD_REQUEST.value(), "이미 등록된 키워드입니다."),
     NOT_FOUND_KEYWORD(1401, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 키워드입니다."),
-    EXCESS_KEYWORD(1402, HttpStatus.BAD_REQUEST.value(), "키워드는 30개 이상 등록할 수 없습니다.");
+    EXCESS_KEYWORD(1402, HttpStatus.BAD_REQUEST.value(), "키워드는 30개 이상 등록할 수 없습니다."),
+
+    // 1450 ~ 1499 알림 관련 예외
+    NOT_FOUND_NOTIFICATION(1450, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 알림입니다.");
 
 
     private final int code;
