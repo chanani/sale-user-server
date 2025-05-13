@@ -28,7 +28,6 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom{
                 .from(notification)
                 .where(
                         notDeleteNotification(),
-                        notIsRead(),
                         eqUserId(user)
                 )
                 .orderBy(notification.createdAt.desc())
