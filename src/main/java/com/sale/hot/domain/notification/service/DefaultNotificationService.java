@@ -6,6 +6,8 @@ import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.user.User;
+import com.sale.hot.global.exception.OperationErrorException;
+import com.sale.hot.global.exception.dto.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
 @Slf4j
 public class DefaultNotificationService implements NotificationService {
 
@@ -37,6 +39,16 @@ public class DefaultNotificationService implements NotificationService {
         // Slice 객체 생성
         Slice<NotificationResponse> notificationSlice = new SliceImpl<>(notifications, returnPageable, hasNextPage(notifications, pageable.getPageSize() - 1));
         return notificationSlice;
+    }
+
+    @Override
+    @Transactional
+    public void readNotification(Long notificationId, User user) {
+        // 알림 Entity 조회
+        Notification findNotification = notificationRepository.findByIdAndStatus(notificationId, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTIFICATION));
+        // 알림 읽음 처리
+        findNotification.updateRead();
     }
 
     /**
