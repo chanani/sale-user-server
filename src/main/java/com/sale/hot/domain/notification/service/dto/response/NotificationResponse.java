@@ -1,5 +1,6 @@
 package com.sale.hot.domain.notification.service.dto.response;
 
+import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.common.constant.NotificationType;
 import com.sale.hot.entity.notification.Notification;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,6 +24,9 @@ public class NotificationResponse {
     @Schema(description = "내용")
     private String content;
 
+    @Schema(description = "읽음 여부")
+    private Boolean isRead;
+
     @Schema(description = "등록일")
     private String createdAt;
 
@@ -32,6 +36,7 @@ public class NotificationResponse {
         this.type = notification.getType();
         this.title = notification.getTitle();
         this.content = notification.getContent();
+        this.isRead = notification.getIsRead().equals(BooleanYn.Y);
         this.createdAt = String.valueOf(notification.getCreatedAt());
     }
 }
