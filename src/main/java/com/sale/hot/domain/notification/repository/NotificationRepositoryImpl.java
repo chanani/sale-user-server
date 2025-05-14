@@ -1,12 +1,10 @@
 package com.sale.hot.domain.notification.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.notification.Notification;
-import com.sale.hot.entity.notification.QNotification;
 import com.sale.hot.entity.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

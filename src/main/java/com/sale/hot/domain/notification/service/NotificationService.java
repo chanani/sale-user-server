@@ -23,4 +23,10 @@ public interface NotificationService {
      * @param user 로그인 사용자 객체
      */
     void readNotification(Long notificationId, User user);
+
+    /**
+     * 사용자 알림 모두 읽음 처리
+     * @param user 로그인 사용자 객체
+     */
+    void readAllNotification(User user);
 }

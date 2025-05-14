@@ -37,9 +37,7 @@ public class NotificationApiController {
         return ResponseEntity.ok(notifications);
     }
 
-    @Operation(summary = "사용자 알림 읽음 처리 API", description = """
-            사용자 알림 읽음 처리를합니다.
-            """)
+    @Operation(summary = "사용자 알림 읽음 처리 API", description = "사용자 알림 읽음 처리를합니다.")
     @PutMapping("/api/v1/user/notifications/{notificationId}")
     public ResponseEntity<ApiResponse> readNotification(
             @PathVariable(name = "notificationId") Long notificationId,
@@ -49,6 +47,12 @@ public class NotificationApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @Operation(summary = "사용자 알림 모두 읽음 처리 API", description = "사용자 알림 모두 읽음 처리를합니다.")
+    @PutMapping("/api/v1/user/notifications")
+    public ResponseEntity<ApiResponse> readAllNotification(@Parameter(hidden = true) User user) {
+        notificationService.readAllNotification(user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
 
 
 }
