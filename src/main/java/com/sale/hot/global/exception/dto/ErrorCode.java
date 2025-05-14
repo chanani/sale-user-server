@@ -78,7 +78,12 @@ public enum ErrorCode {
     EXCESS_KEYWORD(1402, HttpStatus.BAD_REQUEST.value(), "키워드는 30개 이상 등록할 수 없습니다."),
 
     // 1450 ~ 1499 알림 관련 예외
-    NOT_FOUND_NOTIFICATION(1450, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 알림입니다.");
+    NOT_FOUND_NOTIFICATION(1450, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 알림입니다."),
+
+    // 1500 ~ 1549 신고 관련 예외
+    NOT_FOUND_REPORT(1500, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 신고 내역입니다."),
+    MIN_LENGTH_REPORT(1501, HttpStatus.BAD_REQUEST.value(), "신고 내용은 10자 이상 입력해주세요."),
+    EXISTS_REPORT(1502, HttpStatus.BAD_REQUEST.value(), "이미 신고 내역이 존재합니다.");
 
 
     private final int code;
