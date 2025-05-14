@@ -6,6 +6,7 @@ import com.sale.hot.domain.user.service.dto.request.LoginRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
+import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.response.ApiResponse;
@@ -50,9 +51,17 @@ public class UserApiController {
         return ResponseEntity.ok(DataResponse.send(response));
     }
 
+    @Operation(summary = "회원 정보 조회 API",
+            description = "회원 정보를 조회합니다.")
+    @GetMapping("/api/v1/user/info")
+    public ResponseEntity<DataResponse<UserInfoResponse>> getUserInfo(@Parameter(hidden = true) User user) throws Exception {
+        UserInfoResponse userInfo = userService.getInfo(user);
+        return ResponseEntity.ok(DataResponse.send(userInfo));
+    }
+
     @Operation(summary = "회원정보 수정 API",
             description = "비밀번호를 제외한 회원정보를 수정합니다.")
-    @PutMapping("/api/v1/user/update-user")
+    @PutMapping("/api/v1/user/info")
     public ResponseEntity<ApiResponse> updateUser(
             @Valid @RequestBody UserUpdateRequest request,
             @Parameter(hidden = true) User user
