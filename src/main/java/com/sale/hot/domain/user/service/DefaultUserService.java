@@ -9,6 +9,7 @@ import com.sale.hot.domain.user.service.dto.request.LoginRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
+import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
 import com.sale.hot.entity.attend.Attend;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.common.constant.UserType;
@@ -128,6 +129,13 @@ public class DefaultUserService implements UserService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 비밀번호 변경
         findUser.updatePassword(request.password());
+    }
+
+    @Override
+    public UserInfoResponse getInfo(User user) {
+        User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        return new UserInfoResponse(findUser);
     }
 
 
