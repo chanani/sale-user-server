@@ -51,6 +51,17 @@ public class DefaultNotificationService implements NotificationService {
         findNotification.updateRead();
     }
 
+    @Override
+    @Transactional
+    public void readAllNotification(User user) {
+        // 사용자가 읽지 않은 전체 알림 조회
+        List<Notification> findAll = notificationRepository.findAllByUserIdAndStatus(user.getId(), StatusType.ACTIVE);
+        for (Notification notification : findAll) {
+            // 업데이트
+            notification.updateRead();
+        }
+    }
+
     /**
      * Slice에서 사용할 메서드
      */
