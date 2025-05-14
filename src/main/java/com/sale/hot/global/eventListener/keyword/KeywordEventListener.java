@@ -33,7 +33,7 @@ public class KeywordEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void saveKeyword(KeywordEvent keywordEvent) {
         String postTitle = keywordEvent.post().getTitle();
-
+        Post post = keywordEvent.post();
         // 모든 키워드 조회 후 키워드별 사용자 ID 맵핑
         List<Keyword> allKeywords = keywordRepository.findAll();
         Map<String, List<Long>> keywordToUsersMap = new HashMap<>();
@@ -72,6 +72,7 @@ public class KeywordEventListener {
                 Notification notification = Notification.builder()
                         .type(NotificationType.KEYWORD)
                         .user(user)
+                        .post(post)
                         .title("키워드 알람이 도착하였습니다.")
                         .content(entry.getValue() + " : " + postTitle)
                         .isRead(BooleanYn.N)
