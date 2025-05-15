@@ -83,7 +83,12 @@ public enum ErrorCode {
     // 1500 ~ 1549 신고 관련 예외
     NOT_FOUND_REPORT(1500, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 신고 내역입니다."),
     MIN_LENGTH_REPORT(1501, HttpStatus.BAD_REQUEST.value(), "신고 내용은 10자 이상 입력해주세요."),
-    EXISTS_REPORT(1502, HttpStatus.BAD_REQUEST.value(), "이미 신고 내역이 존재합니다.");
+    EXISTS_REPORT(1502, HttpStatus.BAD_REQUEST.value(), "이미 신고 내역이 존재합니다."),
+
+    // 1550 ~ 1599 기업 관련 예외
+    EXISTS_COMPANY_ID(1550, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 아아디입니다."),
+    EXISTS_COMPANY_PHONE(1551, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 연락처입니다."),
+    EXISTS_COMPANY_EMAIL(1552, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다.");
 
 
     private final int code;

@@ -2,10 +2,8 @@ package com.sale.hot.controller.report;
 
 import com.sale.hot.domain.report.service.ReportService;
 import com.sale.hot.domain.report.service.dto.request.ReportRequest;
-import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.response.ApiResponse;
-import com.sale.hot.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

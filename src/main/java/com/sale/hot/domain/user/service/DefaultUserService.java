@@ -196,7 +196,7 @@ public class DefaultUserService implements UserService {
      */
     private void checkUserEmail(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new OperationErrorException(ErrorCode.EXISTS_USER_ID);
+            throw new OperationErrorException(ErrorCode.EXISTS_USER_EMAIL);
         }
     }
 
