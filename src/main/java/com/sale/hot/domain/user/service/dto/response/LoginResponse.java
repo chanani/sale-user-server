@@ -14,4 +14,6 @@ public class LoginResponse {
     @Schema(description = "refreshToken")
     private String refreshToken;
 
+    @Schema(description = "등업 여부 : null이 아닐 경우 등급명 노출")
+    private String gradeName;
 }

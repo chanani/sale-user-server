@@ -3,6 +3,7 @@ package com.sale.hot.domain.user.service;
 import com.sale.hot.domain.attend.repository.AttendRepository;
 import com.sale.hot.domain.attend.service.AttendService;
 import com.sale.hot.domain.grade.repository.GradeRepository;
+import com.sale.hot.domain.grade.service.GradeService;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
@@ -39,6 +40,7 @@ public class DefaultUserService implements UserService {
     private final AttendService attendService;
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
+    private final GradeService gradeService;
 
     @Override
     @Transactional
@@ -89,17 +91,21 @@ public class DefaultUserService implements UserService {
 
         // 추석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
         LocalDate now = LocalDate.now();
+        String nextGrade = null;
         boolean checkAttend = attendRepository.existsByUserIdAndAttendDate(user.getId(), now);
         if (!checkAttend) {
             // 출석 체크
             attendService.save(user, now);
             // 회원 정보에 출석 + 1
             user.plusAttendCount();
+            // 등업 대상자인지 확인
+            nextGrade = gradeService.upgradeGrade(user);
         }
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .gradeName(nextGrade)
                 .build();
     }
 
