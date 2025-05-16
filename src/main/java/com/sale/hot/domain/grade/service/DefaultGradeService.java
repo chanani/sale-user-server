@@ -4,8 +4,10 @@ import com.sale.hot.domain.grade.repository.GradeRepository;
 import com.sale.hot.domain.grade.service.dto.request.GradeCreateRequest;
 import com.sale.hot.domain.grade.service.dto.request.GradeUpdateRequest;
 import com.sale.hot.domain.grade.service.dto.response.GradeResponse;
+import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.grade.Grade;
+import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class DefaultGradeService implements GradeService {
 
     private final GradeRepository gradeRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<GradeResponse> getGrades() {
@@ -65,6 +68,47 @@ public class DefaultGradeService implements GradeService {
         Grade findGrade = gradeRepository.findById(gradeId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_GRADE));
         findGrade.remove();
+    }
+
+    @Override
+    @Transactional
+    public String upgradeGrade(User user) {
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        
+        // 회원의 다음 등급 조회 (현재 등급보다 ranking이 높은 가장 낮은 등급)
+        Grade nextGrade = gradeRepository.findFirstByRankingGreaterThanAndStatusOrderByRankingAsc(
+                findUser.getGrade().getRanking(), StatusType.ACTIVE)
+                .orElse(null);
+        
+        // 다음 등급이 없으면 이미 최고 등급
+        if (nextGrade == null) {
+            return null;
+        }
+        
+        // 등급 업그레이드 조건 확인 후 조건 만족 시 등급 업그레이드
+        if (checkUpgradeConditions(findUser, nextGrade)) {
+            findUser.addGrade(nextGrade);
+            return nextGrade.getName();
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 등급 업그레이드 조건 확인
+     * @param user 사용자
+     * @param nextGrade 다음 등급
+     * @return 업그레이드 가능 여부
+     */
+    private boolean checkUpgradeConditions(User user, Grade nextGrade) {
+        // 각 조건 충족 여부 확인
+        boolean attendanceCondition = user.getAttendCount() >= nextGrade.getAttendance();
+        boolean postCondition = user.getPostCount() >= nextGrade.getPost();
+        boolean commentCondition = user.getCommentCount() >= nextGrade.getComment();
+        
+        // 모든 조건을 만족해야 등급 업그레이드 가능
+        return attendanceCondition && postCondition && commentCondition;
     }
 
     /**

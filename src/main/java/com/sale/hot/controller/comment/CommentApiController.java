@@ -8,7 +8,6 @@ import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.response.ApiResponse;
-import com.sale.hot.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

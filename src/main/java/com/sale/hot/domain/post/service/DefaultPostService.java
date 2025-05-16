@@ -2,6 +2,7 @@ package com.sale.hot.domain.post.service;
 
 import com.sale.hot.controller.post.input.PostsInput;
 import com.sale.hot.domain.category.repository.CategoryRepository;
+import com.sale.hot.domain.grade.service.GradeService;
 import com.sale.hot.domain.post.repository.PostRepository;
 import com.sale.hot.domain.post.repository.condition.PostCondition;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
@@ -42,6 +43,7 @@ public class DefaultPostService implements PostService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final GradeService gradeService;
 
     @Override
     public Page<List<PostsResponse>> getPosts(PostsInput input, PageInput pageInput) {
@@ -71,18 +73,27 @@ public class DefaultPostService implements PostService {
     public void addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+
         // 카테고리 엔티티 조회
         Category findCategory = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
+
         // 썸네일 있을 경우 이미지 저장
         // Todo 이미지 저장 관련 로직 제작 해야됨
         String thumbnailPath = thumbnail == null ? null : thumbnail.getOriginalFilename(); // originalName이 아닌 업로드 경로로 넣어줘야함
+
         // 게시글 객체로 변환
         Post newPost = request.toEntity(findCategory, user, thumbnailPath);
+
         // 게시글 등록
         Post savePost = postRepository.save(newPost);
+
         // 회원 정보에 게시글 수 증가
         findUser.updatePostCount(true);
+
+        // 등업 대상자인지 확인
+        gradeService.upgradeGrade(user);
+
         // 키워드 알림 대상자에게 알람 전달
         eventPublisher.publishEvent(savePost.toCreateKeywordEvent());
     }

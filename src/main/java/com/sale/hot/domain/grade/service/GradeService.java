@@ -36,5 +36,5 @@ public interface GradeService {
     /**
      * 등급 등업
      */
-    // Boolean upgradeGrade(User user);
+    String upgradeGrade(User user);
 }

@@ -17,4 +17,14 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     Optional<Integer> findMaxRanking(StatusType statusType);
 
     boolean existsByNameAndStatusAndIdNot(String name, StatusType statusType, Long gradeId);
+    
+    /**
+     * 특정 순위 다음 등급 조회 (현재 등급보다 한 단계 높은 등급)
+     */
+    Optional<Grade> findByRankingAndStatus(Integer ranking, String status);
+    
+    /**
+     * 특정 순위보다 높은 등급 중 가장 낮은 등급 조회 (다음 등급)
+     */
+    Optional<Grade> findFirstByRankingGreaterThanAndStatusOrderByRankingAsc(Integer ranking, StatusType status);
 }

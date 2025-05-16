@@ -4,6 +4,7 @@ import com.sale.hot.domain.comment.repository.CommentRepository;
 import com.sale.hot.domain.comment.service.dto.request.CommentCreateRequest;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
 import com.sale.hot.domain.commentLike.repository.CommentLikeRepository;
+import com.sale.hot.domain.grade.service.GradeService;
 import com.sale.hot.domain.post.repository.PostRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.comment.Comment;
@@ -40,6 +41,7 @@ public class DefaultCommentService implements CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final GradeService gradeService;
 
     @Override
     public Page<List<CommentResponse>> getComments(PageInput pageInput, Long postId) {
@@ -86,6 +88,8 @@ public class DefaultCommentService implements CommentService {
         if (!findPost.getUser().getId().equals(user.getId())) {
             eventPublisher.publishEvent(new CommentEvent(findPost.getUser(), findPost, newComment));
         }
+        // 등업 대상자인지 확인
+        gradeService.upgradeGrade(user);
         return saveComment.getId();
     }
 
