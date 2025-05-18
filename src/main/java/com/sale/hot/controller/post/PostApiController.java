@@ -73,7 +73,7 @@ public class PostApiController {
             @RequestPart(value = "file", required = false) MultipartFile thumbnail,
             @Parameter(hidden = true) User user
     ) {
-        postService.addPost(request, user, thumbnail);
+        String a = postService.addPost(request, user, thumbnail);
         return ResponseEntity.ok(ApiResponse.ok());
     }
 

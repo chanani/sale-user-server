@@ -89,7 +89,7 @@ public class DefaultUserService implements UserService {
         // 최근 접속일 정보 업데이트
         user.updateLastVisit();
 
-        // 추석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
+        // 출석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
         LocalDate now = LocalDate.now();
         String nextGrade = null;
         boolean checkAttend = attendRepository.existsByUserIdAndAttendDate(user.getId(), now);
@@ -119,9 +119,11 @@ public class DefaultUserService implements UserService {
         // 닉네임 중복 검사
         checkUserNicknameNotId(request.nickname(), user.getId());
 
+        // 회원 Entity 조회
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         User newUser = request.toEntity();
+        // 수정
         findUser.update(newUser);
     }
 

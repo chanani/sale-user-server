@@ -70,7 +70,7 @@ public class DefaultPostService implements PostService {
 
     @Override
     @Transactional
-    public void addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
+    public String addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
 
@@ -92,7 +92,7 @@ public class DefaultPostService implements PostService {
         findUser.updatePostCount(true);
 
         // 등업 대상자인지 확인
-        gradeService.upgradeGrade(user);
+        String nextGrade = gradeService.upgradeGrade(user);
 
         // 키워드 알림 대상자에게 알람 전달
         eventPublisher.publishEvent(savePost.toCreateKeywordEvent());
