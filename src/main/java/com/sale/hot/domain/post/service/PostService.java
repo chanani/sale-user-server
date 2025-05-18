@@ -36,8 +36,9 @@ public interface PostService {
      *
      * @param request 게시글 등록 요청 객체
      * @param user    로그인 회원 객체
+     * @return 등업 여부(등업되었을 경우 등업명, 대상이 아닐 경우 null)
      */
-    void addPost(PostCreateRequest request, User user, MultipartFile thumbnail);
+    String addPost(PostCreateRequest request, User user, MultipartFile thumbnail);
 
     /**
      * 게시글 수정
