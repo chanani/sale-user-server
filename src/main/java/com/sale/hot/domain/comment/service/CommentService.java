@@ -2,6 +2,7 @@ package com.sale.hot.domain.comment.service;
 
 import com.sale.hot.domain.comment.service.dto.request.CommentCreateRequest;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
@@ -24,9 +25,9 @@ public interface CommentService {
      * @param postId  게시글 식별자
      * @param user    로그인 사용자 객체
      * @param request 댓글 등록 요청 객체
-     * @return 등록된 댓글 식별자
+     * @return 등급 등업 객체
      */
-    Long addComment(Long postId, User user, CommentCreateRequest request);
+    GradeUpdateResponse addComment(Long postId, User user, CommentCreateRequest request);
 
     /**
      * 댓글 삭제

@@ -5,6 +5,7 @@ import com.sale.hot.domain.comment.service.dto.request.CommentCreateRequest;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
 import com.sale.hot.domain.commentLike.repository.CommentLikeRepository;
 import com.sale.hot.domain.grade.service.GradeService;
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.domain.post.repository.PostRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.comment.Comment;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,28 +71,34 @@ public class DefaultCommentService implements CommentService {
 
     @Override
     @Transactional
-    public Long addComment(Long postId, User user, CommentCreateRequest request) {
+    public GradeUpdateResponse addComment(Long postId, User user, CommentCreateRequest request) {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 존재하는 게시글인지 체크
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
+
         // 상위 게시글 존재할 경우 조회
         Comment parent = commentRepository.findById(request.parentId())
                 .orElse(null);
+
         // 등록할 Comment Entity 생성
         Comment newComment = request.toEntity(findPost, user, parent);
+
         // comment 등록
         Comment saveComment = commentRepository.save(newComment);
+
         // 회원 정보에 댓글 수 증가
         findUser.updateCommentCount(true);
+
         // 댓글 알림 이벤트 등록(본인 게시글이 아닐 경우 이벤트 발행
         if (!findPost.getUser().getId().equals(user.getId())) {
             eventPublisher.publishEvent(new CommentEvent(findPost.getUser(), findPost, newComment));
         }
+
         // 등업 대상자인지 확인
-        gradeService.upgradeGrade(user);
-        return saveComment.getId();
+        String nextGrade = gradeService.upgradeGrade(user);
+        return new GradeUpdateResponse(StringUtils.hasText(nextGrade), nextGrade);
     }
 
     @Override

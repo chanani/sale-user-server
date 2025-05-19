@@ -4,6 +4,7 @@ import com.sale.hot.domain.attend.repository.AttendRepository;
 import com.sale.hot.domain.attend.service.AttendService;
 import com.sale.hot.domain.grade.repository.GradeRepository;
 import com.sale.hot.domain.grade.service.GradeService;
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.domain.user.service.dto.request.JoinRequest;
 import com.sale.hot.domain.user.service.dto.request.LoginRequest;
@@ -72,14 +73,10 @@ public class DefaultUserService implements UserService {
     @Override
     @Transactional
     public LoginResponse login(LoginRequest request) throws Exception {
-        // 아이디로 정보 조회
+        // 아이디로 정보 조회 및 비밀번호 일치 여부 조회
         User user = userRepository.findByUserIdAndStatus(request.userId(), StatusType.ACTIVE)
+                .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_EQUAL_ID_PASSWORD));
-
-        // 비밀번호 일치 여부 조회
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new OperationErrorException(ErrorCode.NOT_EQUAL_ID_PASSWORD);
-        }
 
         // accessToken 발급
         String accessToken = jwtProvider.createAccessToken(user.getId(), UserType.USER);
@@ -92,8 +89,7 @@ public class DefaultUserService implements UserService {
         // 출석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
         LocalDate now = LocalDate.now();
         String nextGrade = null;
-        boolean checkAttend = attendRepository.existsByUserIdAndAttendDate(user.getId(), now);
-        if (!checkAttend) {
+        if (!attendRepository.existsByUserIdAndAttendDate(user.getId(), now)) {
             // 출석 체크
             attendService.save(user, now);
             // 회원 정보에 출석 + 1
@@ -101,11 +97,13 @@ public class DefaultUserService implements UserService {
             // 등업 대상자인지 확인
             nextGrade = gradeService.upgradeGrade(user);
         }
+        // 등업 여부 확인(nextGrade가 null일 경우 false)
+        GradeUpdateResponse gradeUpdated = new GradeUpdateResponse(StringUtils.hasText(nextGrade), nextGrade);
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .gradeName(nextGrade)
+                .gradeUpdate(gradeUpdated)
                 .build();
     }
 
