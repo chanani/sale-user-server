@@ -1,5 +1,6 @@
 package com.sale.hot.domain.user.service.dto.response;
 
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,5 @@ public class LoginResponse {
     private String refreshToken;
 
     @Schema(description = "등업 여부 : null이 아닐 경우 등급명 노출")
-    private String gradeName;
+    private GradeUpdateResponse gradeUpdate;
 }

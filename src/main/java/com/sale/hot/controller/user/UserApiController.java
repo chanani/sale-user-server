@@ -54,7 +54,7 @@ public class UserApiController {
     @Operation(summary = "회원 정보 조회 API",
             description = "회원 정보를 조회합니다.")
     @GetMapping("/api/v1/user/info")
-    public ResponseEntity<DataResponse<UserInfoResponse>> getUserInfo(@Parameter(hidden = true) User user) throws Exception {
+    public ResponseEntity<DataResponse<UserInfoResponse>> getUserInfo(@Parameter(hidden = true) User user) {
         UserInfoResponse userInfo = userService.getInfo(user);
         return ResponseEntity.ok(DataResponse.send(userInfo));
     }
