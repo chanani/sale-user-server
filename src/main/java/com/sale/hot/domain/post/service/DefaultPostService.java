@@ -3,6 +3,7 @@ package com.sale.hot.domain.post.service;
 import com.sale.hot.controller.post.input.PostsInput;
 import com.sale.hot.domain.category.repository.CategoryRepository;
 import com.sale.hot.domain.grade.service.GradeService;
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.domain.post.repository.PostRepository;
 import com.sale.hot.domain.post.repository.condition.PostCondition;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -70,7 +72,7 @@ public class DefaultPostService implements PostService {
 
     @Override
     @Transactional
-    public String addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
+    public GradeUpdateResponse addPost(PostCreateRequest request, User user, MultipartFile thumbnail) {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
 
@@ -91,11 +93,12 @@ public class DefaultPostService implements PostService {
         // 회원 정보에 게시글 수 증가
         findUser.updatePostCount(true);
 
-        // 등업 대상자인지 확인
-        String nextGrade = gradeService.upgradeGrade(user);
-
         // 키워드 알림 대상자에게 알람 전달
         eventPublisher.publishEvent(savePost.toCreateKeywordEvent());
+
+        // 등업 대상자인지 확인 후 반환 데이터 생성
+        String nextGrade = gradeService.upgradeGrade(user);
+        return new GradeUpdateResponse(StringUtils.hasText(nextGrade), nextGrade);
     }
 
     @Override

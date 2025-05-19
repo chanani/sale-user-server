@@ -75,12 +75,11 @@ public class DefaultGradeService implements GradeService {
     public String upgradeGrade(User user) {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
-        
+
         // 회원의 다음 등급 조회 (현재 등급보다 ranking이 높은 가장 낮은 등급)
         Grade nextGrade = gradeRepository.findFirstByRankingGreaterThanAndStatusOrderByRankingAsc(
                 findUser.getGrade().getRanking(), StatusType.ACTIVE)
                 .orElse(null);
-        
         // 다음 등급이 없으면 이미 최고 등급
         if (nextGrade == null) {
             return null;
@@ -106,7 +105,6 @@ public class DefaultGradeService implements GradeService {
         boolean attendanceCondition = user.getAttendCount() >= nextGrade.getAttendance();
         boolean postCondition = user.getPostCount() >= nextGrade.getPost();
         boolean commentCondition = user.getCommentCount() >= nextGrade.getComment();
-        
         // 모든 조건을 만족해야 등급 업그레이드 가능
         return attendanceCondition && postCondition && commentCondition;
     }

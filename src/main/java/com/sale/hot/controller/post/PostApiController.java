@@ -1,6 +1,7 @@
 package com.sale.hot.controller.post;
 
 import com.sale.hot.controller.post.input.PostsInput;
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.domain.post.service.PostService;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
 import com.sale.hot.domain.post.service.dto.request.PostUpdateRequest;
@@ -68,13 +69,13 @@ public class PostApiController {
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE
     })
-    public ResponseEntity<ApiResponse> addNotice(
+    public ResponseEntity<DataResponse<GradeUpdateResponse>> addNotice(
             @Valid @RequestPart(value = "postCreateRequest") PostCreateRequest request,
             @RequestPart(value = "file", required = false) MultipartFile thumbnail,
             @Parameter(hidden = true) User user
     ) {
-        String a = postService.addPost(request, user, thumbnail);
-        return ResponseEntity.ok(ApiResponse.ok());
+        GradeUpdateResponse gradeUpdate = postService.addPost(request, user, thumbnail);
+        return ResponseEntity.ok(DataResponse.send(gradeUpdate));
     }
 
     @Operation(summary = "게시글 수정 API", description = "게시글을 수정합니다.")

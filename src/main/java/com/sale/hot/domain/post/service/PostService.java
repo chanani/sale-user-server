@@ -1,6 +1,7 @@
 package com.sale.hot.domain.post.service;
 
 import com.sale.hot.controller.post.input.PostsInput;
+import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.domain.post.service.dto.request.PostCreateRequest;
 import com.sale.hot.domain.post.service.dto.request.PostUpdateRequest;
 import com.sale.hot.domain.post.service.dto.response.PostResponse;
@@ -38,7 +39,7 @@ public interface PostService {
      * @param user    로그인 회원 객체
      * @return 등업 여부(등업되었을 경우 등업명, 대상이 아닐 경우 null)
      */
-    String addPost(PostCreateRequest request, User user, MultipartFile thumbnail);
+    GradeUpdateResponse addPost(PostCreateRequest request, User user, MultipartFile thumbnail);
 
     /**
      * 게시글 수정
