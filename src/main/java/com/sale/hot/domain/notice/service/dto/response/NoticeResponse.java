@@ -26,7 +26,7 @@ public class NoticeResponse {
     private Integer viewCount;
 
     @Schema(description = "작성일")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public NoticeResponse(Notice notice) {
         this.id = notice.getId();
@@ -34,6 +34,6 @@ public class NoticeResponse {
         this.content = notice.getContent();
         this.active = notice.getActive();
         this.viewCount = notice.getViewCount();
-        this.createdAt = DateUtil.localDateTimeTolocalDateTimeString(notice.getCreatedAt());
+        this.createdAt = notice.getCreatedAt();
     }
 }

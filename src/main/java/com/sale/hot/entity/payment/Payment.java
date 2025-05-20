@@ -5,7 +5,7 @@ import com.sale.hot.entity.common.constant.PaymentStatus;
 import com.sale.hot.entity.common.constant.PaymentType;
 import com.sale.hot.entity.company.Company;
 import com.sale.hot.entity.post.Post;
-import com.sale.hot.entity.promotion.Promotion;
+import com.sale.hot.entity.promotionItem.PromotionItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -38,7 +38,7 @@ public class Payment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "promotion_id")
-    private Promotion promotion;
+    private PromotionItem promotion;
 
     @Column(name = "payment_type")
     @Enumerated(EnumType.STRING)
@@ -80,7 +80,7 @@ public class Payment extends BaseEntity {
     /**
      * 상품 등록
      */
-    public void setPromotion(Promotion promotion){
+    public void setPromotion(PromotionItem promotion){
         this.promotion = promotion;
     }
 

@@ -1,4 +1,4 @@
-package com.sale.hot.domain.promotion.service;
+package com.sale.hot.domain.promotionItem.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,5 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-public class DefaultPromotionService implements PromotionService{
+public class DefaultPromotionItemItemService implements PromotionItemService {
 }
