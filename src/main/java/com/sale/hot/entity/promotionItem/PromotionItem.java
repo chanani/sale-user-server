@@ -1,8 +1,7 @@
-package com.sale.hot.entity.promotion;
+package com.sale.hot.entity.promotionItem;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.PaymentStatus;
-import com.sale.hot.entity.common.constant.PaymentType;
 import com.sale.hot.entity.common.constant.PromotionType;
 import com.sale.hot.entity.payment.Payment;
 import jakarta.persistence.*;
@@ -20,8 +19,8 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @Builder
-@Table(name = "promotion")
-public class Promotion extends BaseEntity {
+@Table(name = "promotion_item")
+public class PromotionItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
