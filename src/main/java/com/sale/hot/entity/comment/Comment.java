@@ -1,7 +1,9 @@
 package com.sale.hot.entity.comment;
 
 import com.sale.hot.entity.BaseEntity;
+import com.sale.hot.entity.common.constant.AuthorType;
 import com.sale.hot.entity.common.constant.LikeType;
+import com.sale.hot.entity.company.Company;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
 import jakarta.persistence.*;
@@ -31,9 +33,18 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Column(name = "author_type")
+    @Enumerated(EnumType.STRING)
+    private AuthorType authorType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
 
     /**
      * ------------　Self Join ------------
@@ -58,26 +69,6 @@ public class Comment extends BaseEntity {
     @Column(name = "dislike_count")
     private Integer dislikeCount;
 
-    /**
-     * 게시글 등록
-     */
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    /**
-     * 회원 등록
-     */
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    /**
-     * 대댓글 등록
-     */
-    public void setParent(Comment parent) {
-        this.parent = parent;
-    }
 
     /**
      * 댓글 좋아요/싫어요 증감

@@ -110,7 +110,7 @@ public class User extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<CommentLike> CommentLike = new ArrayList<>();
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
@@ -149,13 +149,6 @@ public class User extends BaseEntity {
         this.phone = phone;
     }
 
-    /**
-     * 게시글 등록
-     */
-    public void addPost(Post post) {
-        this.posts.add(post);
-        post.setUser(this);
-    }
 
     /**
      * 관심 게시글 등록
@@ -163,14 +156,6 @@ public class User extends BaseEntity {
     public void addPostLike(PostLike postLike) {
         this.postLikes.add(postLike);
         postLike.setUser(this);
-    }
-
-    /**
-     * 댓글 등록
-     */
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        comment.setUser(this);
     }
 
     /**
@@ -185,7 +170,7 @@ public class User extends BaseEntity {
      * 댓글 좋아요 / 싫어요 등록
      */
     public void addCommentLike(CommentLike commentLike) {
-        this.CommentLike.add(commentLike);
+        this.commentLikes.add(commentLike);
         commentLike.setUser(this);
     }
 
