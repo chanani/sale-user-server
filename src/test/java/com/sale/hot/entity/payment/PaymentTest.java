@@ -3,11 +3,11 @@ package com.sale.hot.entity.payment;
 import com.sale.hot.domain.company.repository.CompanyRepository;
 import com.sale.hot.domain.payment.repository.PaymentRepository;
 import com.sale.hot.domain.post.repository.PostRepository;
-import com.sale.hot.domain.promotion.repository.PromotionRepository;
+import com.sale.hot.domain.promotionItem.repository.PromotionItemRepository;
 import com.sale.hot.entity.common.constant.PaymentType;
 import com.sale.hot.entity.company.Company;
 import com.sale.hot.entity.post.Post;
-import com.sale.hot.entity.promotion.Promotion;
+import com.sale.hot.entity.promotionItem.PromotionItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Commit
@@ -34,13 +31,13 @@ class PaymentTest {
     CompanyRepository companyRepository;
 
     @Autowired
-    PromotionRepository promotionRepository;
+    PromotionItemRepository promotionRepository;
 
     @Test
     public void create() throws Exception {
         List<Post> posts = postRepository.findAll();
         List<Company> companies = companyRepository.findAll();
-        List<Promotion> promotions = promotionRepository.findAll();
+        List<PromotionItem> promotions = promotionRepository.findAll();
 
         Payment payment = Payment.builder()
                 .company(companies.get(0))

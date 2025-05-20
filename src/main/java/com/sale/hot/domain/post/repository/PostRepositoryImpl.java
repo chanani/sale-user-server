@@ -4,10 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.post.repository.condition.PostCondition;
-import com.sale.hot.domain.post.service.dto.response.PostCategoryResponse;
-import com.sale.hot.domain.post.service.dto.response.PostResponse;
-import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
-import com.sale.hot.domain.post.service.dto.response.PostsResponse;
+import com.sale.hot.domain.post.service.dto.response.*;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.global.page.Pageable;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,7 @@ import java.util.List;
 
 import static com.sale.hot.entity.category.QCategory.*;
 import static com.sale.hot.entity.comment.QComment.*;
+import static com.sale.hot.entity.company.QCompany.*;
 import static com.sale.hot.entity.post.QPost.*;
 import static com.sale.hot.entity.user.QUser.*;
 
@@ -30,7 +28,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     public Long countQuery(PostCondition condition) {
         return queryFactory.select(post.countDistinct())
                 .from(post)
-                .join(post.user, user)
+                .leftJoin(post.user, user)
+                .leftJoin(post.company, company)
                 .leftJoin(comment)
                 .on(post.id.eq(comment.post.id))
                 .where(
@@ -47,13 +46,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return queryFactory.select(
                         Projections.constructor(
                                 PostsResponse.class,
-                                post.id, user.nickname, category.name,
-                                comment.count(), post.promotion, post.title,
+                                post.id, post.authorType, user.nickname, company.companyName,
+                                category.name, comment.count(), post.promotion, post.title,
                                 post.content, post.shopName, post.price,
-                                post.deliveryPrice, post.likeCount, post.dislikeCount
+                                post.deliveryPrice, post.likeCount, post.dislikeCount,
+                                post.thumbnail, post.createdAt
                         ))
                 .from(post)
-                .join(post.user, user)
+                .leftJoin(post.user, user)
+                .leftJoin(post.company, company)
                 .join(post.category, category)
                 .leftJoin(comment)
                 .on(post.id.eq(comment.post.id))
@@ -80,26 +81,33 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                                 user.profile
                         ),
                         Projections.constructor(
+                                PostCompanyResponse.class,
+                                company.id,
+                                company.companyName
+                        ),
+                        Projections.constructor(
                                 PostCategoryResponse.class,
                                 category.id,
                                 category.name
                         ),
-                        comment.count(), post.promotion, post.title,
+                        post.authorType, comment.count(), post.promotion, post.title,
                         post.content, post.shopName, post.itemName,
-                        post.link, post.price, post.deliveryPrice,
-                        post.likeCount, post.dislikeCount, post.createdAt
+                        post.link, post.price, post.deliveryPrice, post.likeCount,
+                        post.dislikeCount, post.thumbnail, post.createdAt
                 ))
                 .from(post)
-                .join(post.user, user)
+                .leftJoin(post.user, user)
+                .leftJoin(post.company, company)
                 .leftJoin(comment)
-                .on(post.id.eq(comment.post.id),
-                        notDeleteComment())
+                .on(
+                        post.id.eq(comment.post.id),
+                        notDeleteComment()
+                )
                 .join(category)
                 .on(post.category.id.eq(category.id))
                 .where(
                         post.id.eq(postId),
                         notDeletePost(),
-                        notDeleteUser(),
                         notDeleteCategory()
                 )
                 .fetchOne();
@@ -111,6 +119,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private BooleanExpression notDeletePost() {
         return post.status.eq(StatusType.ACTIVE);
     }
+
+    /**
+     * 삭제 되지 않은 게시글 데이터
+     */
 
     /**
      * 삭제 되지 않은 회원 데이터
@@ -157,6 +169,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             return post.title.containsIgnoreCase(condition.keyword())
                     .or(post.content.containsIgnoreCase(condition.keyword()))
                     .or(post.user.nickname.containsIgnoreCase(condition.keyword()))
+                    .or(post.company.companyName.containsIgnoreCase(condition.keyword()))
                     .or(comment.content.containsIgnoreCase(condition.keyword()));
         }
 
@@ -164,7 +177,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return switch (condition.type().toLowerCase()) {
             case "title" -> post.title.containsIgnoreCase(condition.keyword());
             case "content" -> post.content.containsIgnoreCase(condition.keyword());
-            case "nickname" -> post.user.nickname.contains(condition.keyword());
+            case "nickname" -> post.user.nickname.contains(condition.keyword())
+                    .or(post.company.companyName.containsIgnoreCase(condition.keyword()));
             case "comment" -> comment.content.containsIgnoreCase(condition.keyword());
             default -> null;
         };

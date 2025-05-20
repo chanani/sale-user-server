@@ -3,7 +3,6 @@ package com.sale.hot.domain.post.service.dto.request;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.post.Post;
-import com.sale.hot.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import org.thymeleaf.util.StringUtils;

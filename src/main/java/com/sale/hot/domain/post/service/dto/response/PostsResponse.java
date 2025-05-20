@@ -1,9 +1,12 @@
 package com.sale.hot.domain.post.service.dto.response;
 
+import com.sale.hot.entity.common.constant.AuthorType;
 import com.sale.hot.entity.common.constant.BooleanYn;
-import com.sale.hot.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class PostsResponse {
@@ -12,6 +15,9 @@ public class PostsResponse {
 
     @Schema(description = "회원 정보")
     private String userNickname;
+
+    @Schema(description = "작성자 타입")
+    private AuthorType authorType;
 
     @Schema(description = "카테고리명")
     private String categoryName;
@@ -43,16 +49,23 @@ public class PostsResponse {
     @Schema(description = "싫어요 수")
     private Integer dislikeCount;
 
-    public PostsResponse(Long id, String userNickname, String categoryName,
+    @Schema(description = "썸네일")
+    private String thumbnail;
+
+    @Schema(description = "등록일")
+    private LocalDateTime createdAt;
+
+    public PostsResponse(Long id, AuthorType authorType, String userNickname, String companyName, String categoryName,
                          Long commentCount, BooleanYn promotion,
                          String title, String content, String shopName,
-                         Integer price, Integer deliveryPrice,
-                         Integer likeCount, Integer dislikeCount) {
+                         Integer price, Integer deliveryPrice, Integer likeCount,
+                         Integer dislikeCount, String thumbnail, LocalDateTime createdAt) {
         this.id = id;
-        this.userNickname = userNickname;
+        this.authorType = authorType;
+        this.userNickname = StringUtils.hasText(userNickname) ? userNickname : companyName;
         this.categoryName = categoryName;
         this.commentCount = commentCount;
-        this.promotion = promotion.equals(BooleanYn.Y) ? true : false;
+        this.promotion = promotion.equals(BooleanYn.Y);
         this.title = title;
         this.content = content;
         this.shopName = shopName;
@@ -60,5 +73,7 @@ public class PostsResponse {
         this.deliveryPrice = deliveryPrice;
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
+        this.thumbnail = thumbnail;
+        this.createdAt = createdAt;
     }
 }

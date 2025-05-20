@@ -1,6 +1,7 @@
 package com.sale.hot.domain.post.service.dto.request;
 
 import com.sale.hot.entity.category.Category;
+import com.sale.hot.entity.common.constant.AuthorType;
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.entity.user.User;
@@ -43,7 +44,7 @@ public class PostCreateRequest{
     private Long categoryId;
 
     @Schema(description = "광고 진행 여부", example = "false")
-    private Boolean promotion;
+    private boolean promotion;
 
     public Post toEntity(Category category, User user, String thumbnail) {
         return Post.builder()
@@ -57,6 +58,7 @@ public class PostCreateRequest{
                 .deliveryPrice(this.deliveryPrice)
                 .category(category)
                 .user(user)
+                .authorType(AuthorType.USER)
                 .promotion(promotion ? BooleanYn.Y : BooleanYn.N)
                 .build();
     }
