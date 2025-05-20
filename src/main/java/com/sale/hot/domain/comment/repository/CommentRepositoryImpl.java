@@ -5,8 +5,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
+import com.sale.hot.domain.post.service.dto.response.PostCompanyResponse;
 import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
 import com.sale.hot.entity.common.constant.StatusType;
+import com.sale.hot.entity.company.QCompany;
 import com.sale.hot.global.page.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.sale.hot.entity.comment.QComment.*;
+import static com.sale.hot.entity.company.QCompany.*;
 import static com.sale.hot.entity.user.QUser.*;
 
 @Repository
@@ -45,6 +48,12 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                                 user.nickname,
                                 user.profile
                         ),
+                        Projections.constructor(
+                                PostCompanyResponse.class,
+                                company.id,
+                                company.companyName
+                        ),
+                        comment.authorType,
                         comment.parent.id,
                         comment.content,
                         comment.likeCount,
@@ -52,7 +61,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.createdAt
                 ))
                 .from(comment)
-                .join(comment.user, user)
+                .leftJoin(comment.user, user)
+                .leftJoin(comment.company, company)
                 .where(
                         notDeleteComment(),
                         eqPostId(postId),
@@ -63,7 +73,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .offset(pageable.getOffset())
                 .fetch();
     }
-
 
 
     @Override
@@ -77,6 +86,12 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                                 user.nickname,
                                 user.profile
                         ),
+                        Projections.constructor(
+                                PostCompanyResponse.class,
+                                company.id,
+                                company.companyName
+                        ),
+                        comment.authorType,
                         comment.parent.id,
                         comment.content,
                         comment.likeCount,
@@ -84,7 +99,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.createdAt
                 ))
                 .from(comment)
-                .join(comment.user, user)
+                .leftJoin(comment.user, user)
+                .leftJoin(comment.company, company)
                 .where(
                         notDeleteComment(),
                         eqPostId(postId),

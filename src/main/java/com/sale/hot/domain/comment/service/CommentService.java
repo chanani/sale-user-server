@@ -6,7 +6,6 @@ import com.sale.hot.domain.grade.service.dto.response.GradeUpdateResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
-import jakarta.validation.Valid;
 
 import java.util.List;
 
