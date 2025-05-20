@@ -3,8 +3,10 @@ package com.sale.hot.entity.post;
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.category.Category;
 import com.sale.hot.entity.comment.Comment;
+import com.sale.hot.entity.common.constant.AuthorType;
 import com.sale.hot.entity.common.constant.BooleanYn;
 import com.sale.hot.entity.common.constant.LikeType;
+import com.sale.hot.entity.company.Company;
 import com.sale.hot.entity.payment.Payment;
 import com.sale.hot.entity.postLike.PostLike;
 import com.sale.hot.entity.user.User;
@@ -32,9 +34,17 @@ public class Post extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "author_type")
+    @Enumerated(EnumType.STRING)
+    private AuthorType authorType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -94,36 +104,6 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<Payment> payments = new ArrayList<>();
 
-    /**
-     * 회원 등록
-     */
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    /**
-     * 관심 게시글 등록
-     */
-    public void addPostLikes(PostLike postLike) {
-        this.postLikes.add(postLike);
-        postLike.setPost(this);
-    }
-
-    /**
-     * 댓글 등록
-     */
-    public void addComments(Comment comment) {
-        this.comments.add(comment);
-        comment.setPost(this);
-    }
-
-    /**
-     * 결제 내역 등록
-     */
-    public void addPayment(Payment payment) {
-        this.payments.add(payment);
-        payment.setPost(this);
-    }
 
     /**
      * 게시글 수정
@@ -156,14 +136,15 @@ public class Post extends BaseEntity {
         if (post.promotion != null) {
             this.promotion = post.promotion;
         }
-        if(post.thumbnail != null){
+        if (post.thumbnail != null) {
             this.thumbnail = post.thumbnail;
         }
     }
 
     /**
      * 댓글 좋아요/싫어요 증감
-     * @param likeType 좋아요/싫어요 타입
+     *
+     * @param likeType  좋아요/싫어요 타입
      * @param increment 증가/감소 타입(true = 증가, false = 감소)
      */
     public void updateLikeAndDisCount(LikeType likeType, boolean increment) {

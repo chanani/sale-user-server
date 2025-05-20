@@ -24,5 +24,10 @@ public interface PostRepositoryCustom {
      */
     List<PostsResponse> findQuery(PostCondition condition, Pageable pageable);
 
+    /**
+     * 게시글 단건 조회
+     * @param postId 게시글 식별자
+     * @return 게시글 정보 Dto
+     */
     PostResponse findByIdQuery(Long postId);
 }
