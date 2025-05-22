@@ -43,9 +43,6 @@ public class PostCreateRequest{
     @Schema(description = "카테고리 고유번호", example = "1")
     private Long categoryId;
 
-    @Schema(description = "광고 진행 여부", example = "false")
-    private boolean promotion;
-
     public Post toEntity(Category category, User user, String thumbnail) {
         return Post.builder()
                 .title(this.title)
@@ -59,7 +56,7 @@ public class PostCreateRequest{
                 .category(category)
                 .user(user)
                 .authorType(AuthorType.USER)
-                .promotion(promotion ? BooleanYn.Y : BooleanYn.N)
+                .promotion(BooleanYn.N)
                 .build();
     }
 }

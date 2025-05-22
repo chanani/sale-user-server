@@ -158,6 +158,7 @@ public class DefaultPostService implements PostService {
 
         if (findPostLike != null) { // 기록이 존재할 경우
             if (findPostLike.getType().equals(likeType)) { // 같은 버튼을 눌렀을 경우 삭제
+                postLikeRepository.delete(findPostLike);
                 findPostLike.remove();
                 // 댓글 누적 좋아요/싫어요 증가
                 findPost.updateLikeAndDisCount(likeType, false);

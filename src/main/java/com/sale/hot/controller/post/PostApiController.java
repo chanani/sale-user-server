@@ -63,13 +63,12 @@ public class PostApiController {
 
     @Operation(summary = "게시글 등록 API", description = """
             게시글을 등록합니다. 제목, 내용은 필수입니다.
-            기업이 아닌 기본 사용자가 게시글을 등록할 경우 promotion은 꼭 false로 전달해주세요.
             """)
     @PostMapping(value = "/api/v1/user/post", consumes = {
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE
     })
-    public ResponseEntity<DataResponse<GradeUpdateResponse>> addNotice(
+    public ResponseEntity<DataResponse<GradeUpdateResponse>> addPost(
             @Valid @RequestPart(value = "postCreateRequest") PostCreateRequest request,
             @RequestPart(value = "file", required = false) MultipartFile thumbnail,
             @Parameter(hidden = true) User user

@@ -7,6 +7,7 @@ import com.sale.hot.entity.notification.Notification;
 import com.sale.hot.entity.post.Post;
 import com.sale.hot.global.eventListener.post.dto.PostLikeEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -14,6 +15,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PostEventListener {
 
     private final NotificationRepository notificationRepository;
