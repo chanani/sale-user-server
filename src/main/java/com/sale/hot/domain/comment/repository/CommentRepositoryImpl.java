@@ -8,7 +8,6 @@ import com.sale.hot.domain.comment.service.dto.response.CommentResponse;
 import com.sale.hot.domain.post.service.dto.response.PostCompanyResponse;
 import com.sale.hot.domain.post.service.dto.response.PostUserResponse;
 import com.sale.hot.entity.common.constant.StatusType;
-import com.sale.hot.entity.company.QCompany;
 import com.sale.hot.global.page.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
