@@ -69,6 +69,12 @@ public class Company extends BaseEntity {
     @Column(name = "last_visit")
     private LocalDateTime lastVisit;
 
+    @Column(name = "post_count")
+    private Integer postCount;
+
+    @Column(name = "comment_count")
+    private Integer commentCount;
+
     @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
     @Builder.Default
     private List<CompanyNotification> notifications = new ArrayList<>();

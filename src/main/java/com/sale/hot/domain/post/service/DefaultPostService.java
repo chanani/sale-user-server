@@ -13,6 +13,7 @@ import com.sale.hot.domain.post.service.dto.response.PostsResponse;
 import com.sale.hot.domain.postLike.repository.PostLikeRepository;
 import com.sale.hot.domain.user.repository.UserRepository;
 import com.sale.hot.entity.category.Category;
+import com.sale.hot.entity.common.constant.AuthorType;
 import com.sale.hot.entity.common.constant.LikeType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.post.Post;
@@ -105,7 +106,7 @@ public class DefaultPostService implements PostService {
     @Transactional
     public void updatePost(Long postId, PostUpdateRequest request, User user, MultipartFile thumbnail) {
         // 게시글 조회
-        Post findPost = postRepository.findById(postId)
+        Post findPost = postRepository.findByIdAndAuthorType(postId, AuthorType.USER)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
         // 본인 게시글인지 체크
         if (!findPost.getCreatedBy().equals(user.getId())) {
@@ -128,7 +129,7 @@ public class DefaultPostService implements PostService {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         // 게시글 조회
-        Post findPost = postRepository.findById(postId)
+        Post findPost = postRepository.findByIdAndAuthorType(postId, AuthorType.USER)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_POST));
         // 본인 게시글인지 체크
         if (!findPost.getCreatedBy().equals(user.getId())) {

@@ -182,12 +182,7 @@ public class DefaultUserService implements UserService {
         }
     }
 
-    /**
-     * 회원 연락처 중복 체크(본인 연락처 제외)
-     * 중복일 경우 바로 예외 발생
-     *
-     * @param phone 연락처
-     */
+
     private void checkUserPhoneNotId(String phone, Long userId) {
         if (userRepository.existsByPhoneAndStatusAndIdNot(phone, StatusType.ACTIVE, userId)) {
             throw new OperationErrorException(ErrorCode.EXISTS_USER_PHONE);
