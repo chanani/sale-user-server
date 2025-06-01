@@ -55,7 +55,7 @@ public class NoticeApiController {
                     제목, 내용, 활성화 여부는 필수입니다.
                     """)
     @PostMapping("/api/v1/admin/notice")
-    public ResponseEntity<DataResponse> addNotice(
+    public ResponseEntity<DataResponse<Long>> addNotice(
             @Valid @RequestBody NoticeCreateRequest request
     ) {
         Long noticeId = noticeService.save(request);
