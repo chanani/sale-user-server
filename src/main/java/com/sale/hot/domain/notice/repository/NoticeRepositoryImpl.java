@@ -3,6 +3,7 @@ package com.sale.hot.domain.notice.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
+import com.sale.hot.entity.common.constant.NoticeType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.notice.Notice;
 import com.sale.hot.global.page.Pageable;
@@ -25,9 +26,14 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .from(notice)
                 .where(
                         searchKeyword(condition),
-                        notDelete()
+                        notDelete(),
+                        eqType()
                 )
                 .fetchOne();
+    }
+
+    private BooleanExpression eqType() {
+        return notice.type.eq(NoticeType.USER);
     }
 
     @Override
@@ -36,7 +42,8 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .from(notice)
                 .where(
                         searchKeyword(condition),
-                        notDelete()
+                        notDelete(),
+                        eqType()
                 )
                 .orderBy(notice.createdAt.desc())
                 .limit(pageable.getLimit())
