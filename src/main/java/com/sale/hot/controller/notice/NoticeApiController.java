@@ -2,17 +2,13 @@ package com.sale.hot.controller.notice;
 
 import com.sale.hot.controller.notice.input.NoticesInput;
 import com.sale.hot.domain.notice.service.NoticeService;
-import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
-import com.sale.hot.domain.notice.service.dto.request.NoticeUpdateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.global.annotation.NoneAuth;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.response.ApiResponse;
-import com.sale.hot.global.response.DataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +36,8 @@ public class NoticeApiController {
         return ResponseEntity.ok(notices);
     }
 
+    // Todo 공지사항 상세 조회 API
+
     @Operation(summary = "공지사항 조회수 증가 API",description = "공지사항 조회수를 증가합니다.")
     @NoneAuth
     @PutMapping("/api/v1/none/notice/{noticeId}")
@@ -47,42 +45,5 @@ public class NoticeApiController {
         noticeService.plusNoticeViewCount(noticeId);
         return ResponseEntity.ok(ApiResponse.ok());
     }
-
-
-    @Operation(summary = "공지사항 등록 API",
-            description = """
-                    공지사항을 등록합니다.
-                    제목, 내용, 활성화 여부는 필수입니다.
-                    """)
-    @PostMapping("/api/v1/admin/notice")
-    public ResponseEntity<DataResponse<Long>> addNotice(
-            @Valid @RequestBody NoticeCreateRequest request
-    ) {
-        Long noticeId = noticeService.save(request);
-        return ResponseEntity.ok(DataResponse.send(noticeId));
-    }
-
-    @Operation(summary = "공지사항 수정 API",
-            description = """
-                    공지사항을 수정합니다.
-                    제목, 내용, 활성화 여부는 필수입니다.
-                    """)
-    @PutMapping("/api/v1/admin/notice/{noticeId}")
-    public ResponseEntity<ApiResponse> updateNotice(
-            @PathVariable(name = "noticeId") Long noticeId,
-            @Valid @RequestBody NoticeUpdateRequest request
-    ) {
-        noticeService.updateNotice(noticeId, request);
-        return ResponseEntity.ok(ApiResponse.ok());
-    }
-
-    @Operation(summary = "공지사항 삭제 API",
-            description = "공지사항을 삭제합니다.")
-    @DeleteMapping("/api/v1/admin/notice/{noticeId}")
-    public ResponseEntity<ApiResponse> deleteNotice(@PathVariable(name = "noticeId") Long noticeId) {
-        noticeService.deleteNotice(noticeId);
-        return ResponseEntity.ok(ApiResponse.ok());
-    }
-
 
 }

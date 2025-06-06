@@ -42,12 +42,6 @@ spring:
             timeout: 5000
             starttls:
               enable: true
-# jwt
-jwt:
-  secret-key: sale-2025-delivery+1004kksale-2025-delivery+1004kksale-2025-delivery+1004k
-  issuer-uri: www.hotDelivery.com
-  accessToken-expired-time: 3600000
-  refreshToken-expired-time: 86400000
 # swagger
 springdoc:
   api-docs:
