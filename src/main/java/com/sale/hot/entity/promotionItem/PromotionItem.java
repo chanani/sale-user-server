@@ -31,9 +31,8 @@ public class PromotionItem extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PromotionType type;
 
-    @Column(name = "payment_status")
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
+    @Column(name = "period")
+    private Integer period;
 
     @Column(name = "amount")
     private Integer amount;

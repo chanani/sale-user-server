@@ -3,8 +3,6 @@ package com.sale.hot.domain.notice.service;
 import com.sale.hot.controller.notice.input.NoticesInput;
 import com.sale.hot.domain.notice.repository.NoticeRepository;
 import com.sale.hot.domain.notice.repository.condition.NoticeCondition;
-import com.sale.hot.domain.notice.service.dto.request.NoticeCreateRequest;
-import com.sale.hot.domain.notice.service.dto.request.NoticeUpdateRequest;
 import com.sale.hot.domain.notice.service.dto.response.NoticeResponse;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.notice.Notice;
@@ -52,30 +50,6 @@ public class DefaultNoticeService implements NoticeService {
         notice.addViewCount();
     }
 
-    @Override
-    @Transactional
-    public Long save(NoticeCreateRequest request) {
-        // Notice Entity로 변경
-        Notice newNotice = request.toEntity();
-        // 공지사항 등록
-        Notice notice = noticeRepository.save(newNotice);
-        return notice.getId();
-    }
 
-    @Override
-    @Transactional
-    public void updateNotice(Long noticeId, NoticeUpdateRequest request) {
-        Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
-        Notice updateNotice = request.toEntity();
-        notice.update(updateNotice);
-    }
 
-    @Override
-    @Transactional
-    public void deleteNotice(Long noticeId) {
-        Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_NOTICE));
-        notice.remove();
-    }
 }
