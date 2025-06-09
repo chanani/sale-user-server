@@ -49,4 +49,5 @@ public class PromotionItem extends BaseEntity {
         payment.setPromotion(this);
     }
 
+
 }
