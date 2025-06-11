@@ -81,4 +81,15 @@ public class UserApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    /**
+     * todo 카카오 로그인
+     */
+
+    /**
+     * todo 네이버 로그인
+     */
+
+    /**
+     * todo 구글 로그인
+     */
 }

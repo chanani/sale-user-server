@@ -1,16 +1,15 @@
 package com.sale.hot.entity.common.constant;
 
 /**
- * 작성자 타입
+ * 공지 대상 타입
  */
-public enum AuthorType {
+public enum TargetType {
     USER("회원"),
-    COMPANY("기업"),
-    ADMIN("관리자");
+    COMPANY("기업");
 
     private final String value;
 
-    private AuthorType(String value) {
+    private TargetType(String value) {
         this.value = value;
     }
 
