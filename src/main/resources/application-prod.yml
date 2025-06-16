@@ -3,9 +3,9 @@ spring:
     name: saleUserBe
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://49.247.173.142:3306/hotDelivery?serverTimezone=Asia/Seoul
-    username: chan
-    password: 1q2w3e4r!
+    url: jdbc:mysql://***REMOVED***:3306/discount?serverTimezone=Asia/Seoul
+    username: root
+    password: ***REMOVED***home
 
     # security
     security:
