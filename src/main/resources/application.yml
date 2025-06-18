@@ -56,4 +56,3 @@ jwt:
   accessToken-expired-time: 3600000
   refreshToken-expired-time: 86400000
 
-
