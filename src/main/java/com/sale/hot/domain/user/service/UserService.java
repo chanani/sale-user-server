@@ -7,12 +7,14 @@ import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
 import com.sale.hot.entity.user.User;
+import com.sale.hot.infra.kakao.login.dto.KakaoJoinRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoLoginRequestDto;
+import jakarta.validation.Valid;
 
 public interface UserService {
     /**
      * 회원가입
      * @param request 회원가입 요청 객체
-     * @return 저장된 고객 식별자
      */
     void join(JoinRequest request);
 
@@ -43,4 +45,17 @@ public interface UserService {
      * @return 회원 정보
      */
     UserInfoResponse getInfo(User user);
+
+    /**
+     * 카카오 간편 회원가입
+     * @param request 회원가입 요청 객체
+     */
+    void kakaoJoin(KakaoJoinRequestDto request);
+
+    /**
+     * 카카오 로그인
+     * @param request 로그인 요청 객체
+     * @return accessToken, refreshToken 객체 반환
+     */
+    LoginResponse kakaoLogin(KakaoLoginRequestDto request) throws Exception;
 }

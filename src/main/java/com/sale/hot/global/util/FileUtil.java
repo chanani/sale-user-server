@@ -1,5 +1,7 @@
 package com.sale.hot.global.util;
 
+import com.sale.hot.global.exception.OperationErrorException;
+import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.util.dto.FileName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -75,11 +78,36 @@ public class FileUtil {
      * @param folderName    업로드할 폴더
      * @return FileName<원본 파일명, 업로드 파일명> 리스트
      */
-    public List<FileName> saveFileList(List<MultipartFile> inputFileList, String folderName) {
+    public List<FileName> fileListUpload(List<MultipartFile> inputFileList, String folderName) {
         List<FileName> FileNames = new ArrayList<>();
         for (MultipartFile inputFile : inputFileList) {
             FileNames.add(fileUpload(inputFile, folderName));
         }
         return FileNames;
     }
+
+    /**
+     * 파일 확장자 추출 메서드
+     */
+    public String fileExtension(String fileName){
+        return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+    }
+
+
+    /**
+     * 이미지 파일 확장자 체크
+     */
+    public void existsImageFileExtension(MultipartFile file) {
+        String extension = fileExtension(Objects.requireNonNull(file.getOriginalFilename()));
+        if (!extension.equals("png") &&
+                !extension.equals("jpeg") &&
+                !extension.equals("jpg") &&
+                !extension.equals("webp")
+        ) {
+            throw new OperationErrorException(ErrorCode.EXISTS_EXTENSION);
+        }
+    }
+
+
+
 }

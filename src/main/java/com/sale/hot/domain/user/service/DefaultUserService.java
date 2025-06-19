@@ -12,7 +12,7 @@ import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
-import com.sale.hot.entity.attend.Attend;
+import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.common.constant.UserType;
 import com.sale.hot.entity.grade.Grade;
@@ -20,6 +20,10 @@ import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.jwt.JWTProvider;
+import com.sale.hot.infra.kakao.login.dto.KakaoJoinRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoLoginRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoUserInfoResponseDto;
+import com.sale.hot.infra.kakao.login.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +46,7 @@ public class DefaultUserService implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
     private final GradeService gradeService;
+    private final KakaoService kakaoService;
 
     @Override
     @Transactional
@@ -142,6 +147,73 @@ public class DefaultUserService implements UserService {
         User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
         return new UserInfoResponse(findUser);
+    }
+
+    @Override
+    @Transactional
+    public void kakaoJoin(KakaoJoinRequestDto request) {
+        // 연락처 중복 검사
+        checkUserPhone(request.getPhone());
+        // 닉네임 중복 검사
+        if (StringUtils.hasText(request.getNickname())) {
+            checkUserNickname(request.getNickname());
+        }
+        // 카카오에서 반환된 code로 accessToken 추출
+        String accessToken = kakaoService.getAccessTokenFromKakao(request.getCode());
+        // 사용자 정보 조회
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
+        // 이메일 중복 검사
+        checkUserEmail(userInfo.kakaoAccount.email);
+
+        // Entity 생성
+        User newUser = request.toEntity(userInfo);
+        // 최저 등급 조회
+        Grade grade = gradeRepository.findFirstByStatusOrderByRankingAsc(StatusType.ACTIVE).orElseThrow();
+        newUser.addGrade(grade);
+
+        // 회원가입
+        userRepository.save(newUser);
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse kakaoLogin(KakaoLoginRequestDto request) throws Exception {
+        // 카카오에서 반환된 code로 accessToken 추출
+        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(request.code());
+        // 사용자 정보 조회
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(kakaoAccessToken);
+        // 회원 정보 조회
+        User findUser = userRepository.findBySocialIdAndStatusAndSocialType(
+                String.valueOf(userInfo.id), StatusType.ACTIVE, SocialType.KAKAO)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+
+        // accessToken 발급
+        String accessToken = jwtProvider.createAccessToken(findUser.getId(), UserType.USER);
+        // refreshToken 발급
+        String refreshToken = jwtProvider.createRefreshToken(findUser.getId(), UserType.USER);
+
+        // 최근 접속일 정보 업데이트
+        findUser.updateLastVisit();
+
+        // 출석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
+        LocalDate now = LocalDate.now();
+        String nextGrade = null;
+        if (!attendRepository.existsByUserIdAndAttendDate(findUser.getId(), now)) {
+            // 출석 체크
+            attendService.save(findUser, now);
+            // 회원 정보에 출석 + 1
+            findUser.plusAttendCount();
+            // 등업 대상자인지 확인
+            nextGrade = gradeService.upgradeGrade(findUser);
+        }
+        // 등업 여부 확인(nextGrade가 null일 경우 false)
+        GradeUpdateResponse gradeUpdated = new GradeUpdateResponse(StringUtils.hasText(nextGrade), nextGrade);
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .gradeUpdate(gradeUpdated)
+                .build();
     }
 
 
