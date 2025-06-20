@@ -26,5 +26,17 @@ public class CommonController {
         return "kakao/oauth-kakao";
     }
 
+    @NoneAuth
+    @GetMapping("/api/v1/none/naver-login")
+    public String naverLogin() {
+        return "naver/naver";
+    }
+
+    @NoneAuth
+    @GetMapping("/api/v1/none/oauth/naver")
+    public String oauthNaver(HttpServletRequest request, HttpServletResponse response) {
+        return "naver/oauth-naver";
+    }
+
 
 }
