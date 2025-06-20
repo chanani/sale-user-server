@@ -9,6 +9,8 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+import static com.sale.hot.global.util.CommonUtil.createKakaoUserId;
+
 @Getter
 public class KakaoJoinRequestDto extends JoinRequestDto {
 
@@ -18,7 +20,7 @@ public class KakaoJoinRequestDto extends JoinRequestDto {
 
     public User toEntity(KakaoUserInfoResponseDto userInfo) {
         return User.builder()
-                .id(null)
+                .userId(createKakaoUserId(SocialType.KAKAO))
                 .email(userInfo.kakaoAccount.email)
                 .name(this.getName())
                 .gender(this.getGender())

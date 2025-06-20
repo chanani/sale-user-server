@@ -20,8 +20,11 @@ import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.jwt.JWTProvider;
+import com.sale.hot.global.util.FileUtil;
+import com.sale.hot.global.util.dto.FileName;
 import com.sale.hot.infra.kakao.login.dto.KakaoJoinRequestDto;
 import com.sale.hot.infra.kakao.login.dto.KakaoLoginRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoMergeRequestDto;
 import com.sale.hot.infra.kakao.login.dto.KakaoUserInfoResponseDto;
 import com.sale.hot.infra.kakao.login.service.KakaoService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -47,6 +51,7 @@ public class DefaultUserService implements UserService {
     private final JWTProvider jwtProvider;
     private final GradeService gradeService;
     private final KakaoService kakaoService;
+    private final FileUtil fileUtil;
 
     @Override
     @Transactional
@@ -59,7 +64,7 @@ public class DefaultUserService implements UserService {
         checkUserPhone(request.phone());
         // 이메일 중복 검사
         checkUserEmail(request.email());
-        // 닉네임 중복 검사
+        // 닉네임 중복 검사(nickname이 없을 경우 Entity 생성 시 임의로 nickname 생성)
         if (StringUtils.hasText(request.nickname())) {
             checkUserNickname(request.nickname());
         }
@@ -157,6 +162,8 @@ public class DefaultUserService implements UserService {
         // 닉네임 중복 검사
         if (StringUtils.hasText(request.getNickname())) {
             checkUserNickname(request.getNickname());
+        } else { // 닉네임이 없을 경우 임의 생성
+            request.updateNickName();
         }
         // 카카오에서 반환된 code로 accessToken 추출
         String accessToken = kakaoService.getAccessTokenFromKakao(request.getCode());
@@ -183,8 +190,7 @@ public class DefaultUserService implements UserService {
         // 사용자 정보 조회
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(kakaoAccessToken);
         // 회원 정보 조회
-        User findUser = userRepository.findBySocialIdAndStatusAndSocialType(
-                String.valueOf(userInfo.id), StatusType.ACTIVE, SocialType.KAKAO)
+        User findUser = userRepository.findBySocialIdAndStatus(String.valueOf(userInfo.id), StatusType.ACTIVE)
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
 
         // accessToken 발급
@@ -214,6 +220,23 @@ public class DefaultUserService implements UserService {
                 .refreshToken(refreshToken)
                 .gradeUpdate(gradeUpdated)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void updateProfile(MultipartFile inputFile, User user) {
+        // 회원 정보 조회
+        User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // 서버에 파일 업로드
+        FileName fileName = fileUtil.fileUpload(inputFile, "profile");
+        // 회원 정보 수정
+        findUser.updateProfile(fileName.getModifiedFileName());
+    }
+
+    @Override
+    public void kakaoMerge(KakaoMergeRequestDto request, User user) {
+
     }
 
 
