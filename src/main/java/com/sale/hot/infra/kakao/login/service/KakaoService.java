@@ -49,8 +49,7 @@ public class KakaoService {
     }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
-
-        KakaoUserInfoResponseDto userInfo = WebClient.create(KAUTH_USER_URL_HOST)
+        return WebClient.create(KAUTH_USER_URL_HOST)
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
@@ -63,9 +62,6 @@ public class KakaoService {
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
                 .bodyToMono(KakaoUserInfoResponseDto.class)
                 .block();
-        log.info("[ Kakao Service ] Auth ID ---> {} ", userInfo.getId());
-
-        return userInfo;
     }
 
 }

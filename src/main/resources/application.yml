@@ -64,3 +64,8 @@ file:
 kakao:
   restapi-key: 017f314b795d2d84aacac0877a1d58ec
   redirect-uri: http://localhost:3001
+
+# naver
+naver:
+  client-id: i3siOwKjlSwl_cWH6A1E
+  client-secret: 17aWKxirW8

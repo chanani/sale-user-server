@@ -88,6 +88,8 @@ public class FileUtil {
 
     /**
      * 파일 확장자 추출 메서드
+     * @param fileName 원본 파일명
+     * @return 파일 확장자
      */
     public String fileExtension(String fileName){
         return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
@@ -96,6 +98,7 @@ public class FileUtil {
 
     /**
      * 이미지 파일 확장자 체크
+     * @param file 파일 객체
      */
     public void existsImageFileExtension(MultipartFile file) {
         String extension = fileExtension(Objects.requireNonNull(file.getOriginalFilename()));

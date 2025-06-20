@@ -7,7 +7,7 @@
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script>
         const code = new URLSearchParams(window.location.search).get("code");
-
+        const token = "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6OSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInN1YiI6IkFVVEgiLCJpc3MiOiJ3d3cuaG90RGVsaXZlcnkuY29tIiwiaWF0IjoxNzUwMzkyNDg4LCJleHAiOjE3NTAzOTYwODh9.QdIbyeFmtej6qCetZwZY3KUj5chGFAhazey_-j0_2Crz8U81xA56iMw1yTM7BKWBoZnHcIa5ZRc_cGuzxKuTlg"
         if (!code) {
             alert("인가 코드가 없습니다.");
         }
@@ -17,14 +17,16 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
                 code : code,
                 name : '잔잔제롱',
+                email : 'bb@bb.bb',
                 nickname : '잔잔바리',
                 phone :'01011234564',
                 gender: "M",
-                birth : "1995-07-10"
+                birth : "1995-07-10",
             }),
         })
             .then(async (res) => {

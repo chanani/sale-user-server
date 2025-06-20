@@ -31,6 +31,8 @@ public enum ErrorCode {
     NOT_FOUND_COMPANY_INFO(1005, HttpStatus.BAD_REQUEST.value(), "기업정보가 확인되지 않습니다."),
     EXISTS_EXTENSION(1006, HttpStatus.BAD_REQUEST.value(), "파일 확장자를 확인해주세요."),
     NOT_FOUND_SOCIAL_PHONE(1007, HttpStatus.BAD_REQUEST.value(), "계정에 연락처가 존재하지 않습니다."),
+    USED_SOCIAL_ID(1008, HttpStatus.BAD_REQUEST.value(), "이미 사용 중인 계정입니다."),
+    NOT_FOUND_SOCIAL_ID(1009, HttpStatus.BAD_REQUEST.value(), "존재하지 않은 계정입니다."),
 
     // 1050 ~ 1099 토큰 관련 예외
     // UNAUTHORIZED:401(리프레시토큰요청필요할때) , FORBIDDEN:403(팅겨내야할때)

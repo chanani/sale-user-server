@@ -21,7 +21,7 @@ public class KakaoJoinRequestDto extends JoinRequestDto {
     public User toEntity(KakaoUserInfoResponseDto userInfo) {
         return User.builder()
                 .userId(createKakaoUserId(SocialType.KAKAO))
-                .email(userInfo.kakaoAccount.email)
+                .email(this.getEmail())
                 .name(this.getName())
                 .gender(this.getGender())
                 .birth(LocalDate.parse(this.getBirth()))

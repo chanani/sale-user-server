@@ -4,7 +4,6 @@ import com.sale.hot.entity.common.constant.Gender;
 import com.sale.hot.global.regex.Regex;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -22,6 +21,11 @@ public class JoinRequestDto {
     @Schema(description = "닉네임", example = "네고왕")
     @Pattern(regexp = Regex.KICKNAME, message = "닉네임 형식을 확인해주세요.")
     private String nickname;
+
+    @Schema(description = "이메일", example = "xx@xx.xx")
+    @Pattern(regexp = Regex.EMAIL, message = "이메일 형식을 확인해주세요.")
+    @NotBlank(message = "이메일은 필수입니다.")
+    private String email;
 
     @Schema(description = "연락처", example = "01012341234")
     @Pattern(regexp = Regex.PHONE, message = "연락처 형식을 확인해주세요.")
