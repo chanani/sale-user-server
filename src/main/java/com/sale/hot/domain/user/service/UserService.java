@@ -9,7 +9,9 @@ import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
 import com.sale.hot.entity.user.User;
 import com.sale.hot.infra.kakao.login.dto.KakaoJoinRequestDto;
 import com.sale.hot.infra.kakao.login.dto.KakaoLoginRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoMergeRequestDto;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     /**
@@ -42,7 +44,7 @@ public interface UserService {
     /**
      * 회원 정보 조회
      * @param user 로그인 사용자 객체
-     * @return 회원 정보
+     * @return 로그인 회원 객체
      */
     UserInfoResponse getInfo(User user);
 
@@ -58,4 +60,18 @@ public interface UserService {
      * @return accessToken, refreshToken 객체 반환
      */
     LoginResponse kakaoLogin(KakaoLoginRequestDto request) throws Exception;
+
+    /**
+     * 회원 프로필 이미지 변경
+     * @param inputFile 이미지 파일 객체
+     * @param user 로그인 회원 객체
+     */
+    void updateProfile(MultipartFile inputFile, User user);
+
+    /**
+     * 회원 카카오 계정 연동
+     * @param request 계정 연동 요청 객체
+     * @param user
+     */
+    void kakaoMerge(@Valid KakaoMergeRequestDto request, User user);
 }

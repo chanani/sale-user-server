@@ -13,6 +13,7 @@ import com.sale.hot.global.response.ApiResponse;
 import com.sale.hot.global.response.DataResponse;
 import com.sale.hot.infra.kakao.login.dto.KakaoJoinRequestDto;
 import com.sale.hot.infra.kakao.login.dto.KakaoLoginRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoMergeRequestDto;
 import com.sale.hot.infra.kakao.login.service.KakaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "User API Controller", description = "회원 관련 API를 제공합니다.")
 @RestController
@@ -74,6 +76,17 @@ public class UserApiController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @Operation(summary = "회원 프로필 이미지 수정 API",
+            description = "회원 프로필 이미지를 수정합니다.")
+    @PutMapping(value = "/api/v1/user/profile", consumes = {"multipart/form-data"})
+    public ResponseEntity<ApiResponse> updateProfile(
+            @RequestPart(value = "uploadImage") MultipartFile inputFile,
+            @Parameter(hidden = true) User user
+    ) {
+        userService.updateProfile(inputFile, user);
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
     @Operation(summary = "비밀번호 수정 API",
             description = "비밀번호 수정합니다.")
     @PutMapping("/api/v1/user/update-password")
@@ -106,6 +119,20 @@ public class UserApiController {
         LoginResponse response = userService.kakaoLogin(request);
         return ResponseEntity.ok(DataResponse.send(response));
     }
+
+    @Operation(summary = "카카오 계정 연동 API",
+            description = "기존 계정으로 접속 후 카카오 계정과 계정 연동합니다.")
+    @NoneAuth
+    @PostMapping("/api/v1/none/kakao-merge")
+    public ResponseEntity<ApiResponse> kakaoMerge(
+            @Valid @RequestBody KakaoMergeRequestDto request,
+            @Parameter(hidden = true) User user
+    ) {
+        userService.kakaoMerge(request, user);
+
+        return ResponseEntity.ok(ApiResponse.ok());
+    }
+
 
     /**
      * todo 네이버 로그인

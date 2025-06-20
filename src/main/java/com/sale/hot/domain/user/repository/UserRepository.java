@@ -1,6 +1,5 @@
 package com.sale.hot.domain.user.repository;
 
-import com.sale.hot.entity.common.constant.SocialType;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmailAndIdNot(String email, Long userId);
     boolean existsByNicknameAndIdNot(String nickname, Long userId);
 
-    Optional<User> findBySocialIdAndStatusAndSocialType(String id, StatusType statusType, SocialType socialType);
+    Optional<User> findBySocialIdAndStatus(String id, StatusType statusType);
 }
