@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
 @OpenAPIDefinition(
-        info = @Info(title = "HotSale User Server API 명세서",
+        info = @Info(title = "Discount User Server API 명세서",
                 description = """
-                            HotSale User Server API 명세서
+                            Discount User Server API 명세서
                             Y/N 또는 모든 유형에 대한 값은 반드시 대문자여야 합니다
                             또한 전화번호, 사업자 등록번호 등 입력시 -(하이픈) 없이 입력합니다.
                             예 ) 01012345678(o) 010-1234-5678(x)

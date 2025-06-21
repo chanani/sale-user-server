@@ -47,6 +47,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/error/**",
                         "/reissue",
                         "/sale-user-be/**",
+                        "/user-dev/**",
                         "/favicon.ico"
                 )
                 .addPathPatterns("/**");
