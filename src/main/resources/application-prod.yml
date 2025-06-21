@@ -56,4 +56,7 @@ springdoc:
     path: /sale-user-be/user/swagger-ui.html
     url: /sale-user-be/user/v3/api-docs
 
+# file path
+file:
+  path: /discount-image/
 
