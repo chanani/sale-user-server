@@ -40,7 +40,7 @@ springdoc:
   api-docs:
     path: /user-dev/user/v3/api-docs
   swagger-ui:
-    path: /user-dev/user/swagger-ui.html
+    path: /user-dev/user/swagger-ui/index.html
     url: /user-dev/user/v3/api-docs
 
 # file path
