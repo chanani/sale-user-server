@@ -29,6 +29,7 @@ com.vlast.socialmetrics
 ├── domain/             # 비즈니스 로직 & 서비스
 ├── entity/             # JPA 엔티티
 ├── infra/              # 인프라 및 크롤링
+├── scheduler/          # 스케줄링
 └── global/             # 공통 설정 & 유틸리티
 ```
 
