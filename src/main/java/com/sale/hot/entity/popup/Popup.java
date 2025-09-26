@@ -2,6 +2,7 @@ package com.sale.hot.entity.popup;
 
 import com.sale.hot.entity.BaseEntity;
 import com.sale.hot.entity.common.constant.BooleanYn;
+import com.sale.hot.entity.common.constant.TargetType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -27,6 +28,13 @@ public class Popup extends BaseEntity {
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "link")
+    private String link;
+
+    @Column(name = "target_type")
+    @Enumerated(EnumType.STRING)
+    private TargetType targetType;
 
     @Column(name = "active")
     @Enumerated(EnumType.STRING)

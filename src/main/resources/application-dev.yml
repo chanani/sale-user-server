@@ -1,11 +1,17 @@
+server:
+  ssl:
+    enabled: true
+    key-store: file:/cert/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: example
 spring:
   application:
     name: saleUserBe
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://49.247.173.142:3306/hotDelivery?serverTimezone=Asia/Seoul
-    username: chan
-    password: 1q2w3e4r!
+    url: jdbc:mysql://localhost:3306/discount?serverTimezone=Asia/Seoul
+    username: root
+    password: password
 
   # security
   security:
@@ -21,7 +27,6 @@ spring:
 
   jpa:
     hibernate:
-      # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
       ddl-auto: none
 
   data:
@@ -30,24 +35,14 @@ spring:
       port: 6379
       database: 0
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: mink240000@gmail.com
-    password: wsqerlrvbcoqtujf
-    properties:
-      mail:
-        smtp:
-          auth: true
-          timeout: 5000
-          starttls:
-            enable: true
 # swagger
 springdoc:
   api-docs:
-    path: /sale-user-be/user/v3/api-docs
+    path: /user-dev/user/v3/api-docs
   swagger-ui:
-    path: /sale-user-be/user/swagger-ui.html
-    url: /sale-user-be/user/v3/api-docs
+    path: /user-dev/user/swagger-ui/index.html
+    url: /user-dev/user/v3/api-docs
 
-
+# file path
+file:
+  path: example

@@ -12,7 +12,6 @@ import com.sale.hot.domain.user.service.dto.request.UserUpdatePasswordRequest;
 import com.sale.hot.domain.user.service.dto.request.UserUpdateRequest;
 import com.sale.hot.domain.user.service.dto.response.LoginResponse;
 import com.sale.hot.domain.user.service.dto.response.UserInfoResponse;
-import com.sale.hot.entity.attend.Attend;
 import com.sale.hot.entity.common.constant.StatusType;
 import com.sale.hot.entity.common.constant.UserType;
 import com.sale.hot.entity.grade.Grade;
@@ -20,12 +19,24 @@ import com.sale.hot.entity.user.User;
 import com.sale.hot.global.exception.OperationErrorException;
 import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.jwt.JWTProvider;
+import com.sale.hot.global.util.FileUtil;
+import com.sale.hot.global.util.dto.FileName;
+import com.sale.hot.infra.kakao.login.dto.KakaoJoinRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoLoginRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoMergeRequestDto;
+import com.sale.hot.infra.kakao.login.dto.KakaoUserInfoResponseDto;
+import com.sale.hot.infra.kakao.login.service.KakaoService;
+import com.sale.hot.infra.naver.login.dto.NaverJoinRequestDto;
+import com.sale.hot.infra.naver.login.dto.NaverMergeRequestDto;
+import com.sale.hot.infra.naver.login.dto.NaverUserInfoResponseDto;
+import com.sale.hot.infra.naver.login.service.NaverService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -42,6 +53,9 @@ public class DefaultUserService implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
     private final GradeService gradeService;
+    private final KakaoService kakaoService;
+    private final NaverService naverService;
+    private final FileUtil fileUtil;
 
     @Override
     @Transactional
@@ -54,7 +68,7 @@ public class DefaultUserService implements UserService {
         checkUserPhone(request.phone());
         // 이메일 중복 검사
         checkUserEmail(request.email());
-        // 닉네임 중복 검사
+        // 닉네임 중복 검사(nickname이 없을 경우 Entity 생성 시 임의로 nickname 생성)
         if (StringUtils.hasText(request.nickname())) {
             checkUserNickname(request.nickname());
         }
@@ -144,6 +158,211 @@ public class DefaultUserService implements UserService {
         return new UserInfoResponse(findUser);
     }
 
+    @Override
+    @Transactional
+    public void kakaoJoin(KakaoJoinRequestDto request) {
+        // 카카오에서 반환된 code로 accessToken 추출
+        String accessToken = kakaoService.getAccessTokenFromKakao(request.getCode());
+        // 사용자 정보 조회
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
+        // 이미 가입된 카카오 ID 여부 검사
+        checkSocialId(String.valueOf(userInfo.id));
+        // 연락처 중복 검사
+        checkUserPhone(request.getPhone());
+        // 닉네임 중복 검사
+        if (StringUtils.hasText(request.getNickname())) {
+            checkUserNickname(request.getNickname());
+        } else { // 닉네임이 없을 경우 임의 생성
+            request.updateNickName();
+        }
+        // 이메일 중복 검사
+        checkUserEmail(userInfo.kakaoAccount.email);
+        // Entity 생성
+        User newUser = request.toEntity(userInfo);
+        // 최저 등급 조회
+        Grade grade = gradeRepository.findFirstByStatusOrderByRankingAsc(StatusType.ACTIVE).orElseThrow();
+        newUser.addGrade(grade);
+
+        // 회원가입
+        userRepository.save(newUser);
+    }
+
+
+    @Override
+    @Transactional
+    public LoginResponse kakaoLogin(KakaoLoginRequestDto request) throws Exception {
+        // 카카오에서 반환된 code로 accessToken 추출
+        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(request.code());
+        // 사용자 정보 조회
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(kakaoAccessToken);
+        // 회원 정보 조회
+        User findUser = userRepository.findBySocialIdAndStatus(String.valueOf(userInfo.id), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+
+        // accessToken 발급
+        String accessToken = jwtProvider.createAccessToken(findUser.getId(), UserType.USER);
+        // refreshToken 발급
+        String refreshToken = jwtProvider.createRefreshToken(findUser.getId(), UserType.USER);
+
+        // 최근 접속일 정보 업데이트
+        findUser.updateLastVisit();
+
+        // 출석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
+        LocalDate now = LocalDate.now();
+        String nextGrade = null;
+        if (!attendRepository.existsByUserIdAndAttendDate(findUser.getId(), now)) {
+            // 출석 체크
+            attendService.save(findUser, now);
+            // 회원 정보에 출석 + 1
+            findUser.plusAttendCount();
+            // 등업 대상자인지 확인
+            nextGrade = gradeService.upgradeGrade(findUser);
+        }
+        // 등업 여부 확인(nextGrade가 null일 경우 false)
+        GradeUpdateResponse gradeUpdated = new GradeUpdateResponse(StringUtils.hasText(nextGrade), nextGrade);
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .gradeUpdate(gradeUpdated)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public void updateProfile(MultipartFile inputFile, User user) {
+        // 회원 정보 조회
+        User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // 서버에 파일 업로드
+        FileName fileName = fileUtil.fileUpload(inputFile, "profile");
+        // 회원 정보 수정
+        findUser.updateProfile(fileName.getModifiedFileName());
+    }
+
+    @Override
+    @Transactional
+    public void kakaoMerge(KakaoMergeRequestDto request, User user) {
+        // 회원 Entity 조회
+        User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // 카카오에서 반환된 code로 accessToken 추출
+        String accessToken = kakaoService.getAccessTokenFromKakao(request.code());
+        // 사용자 정보 조회
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
+        // 이미 등록된 소셜 계정일 경우 예외 발생
+        checkSocialId(String.valueOf(userInfo.id));
+        // 소셜 정보 업데이트
+        findUser.updateSocialId(String.valueOf(userInfo.id));
+    }
+
+    @Override
+    @Transactional
+    public void naverJoin(NaverJoinRequestDto request) {
+        // 카카오에서 반환된 code로 accessToken 추출
+        String accessToken = naverService.getAccessTokenFromNaver(request.getCode());
+        // 사용자 정보 조회
+        NaverUserInfoResponseDto userInfo = naverService.getUserInfo(accessToken);
+        // 이미 가입된 카카오 ID 여부 검사
+        checkSocialId(userInfo.id);
+        // 연락처 중복 검사
+        checkUserPhone(request.getPhone());
+        // 닉네임 중복 검사
+        if (StringUtils.hasText(request.getNickname())) {
+            checkUserNickname(request.getNickname());
+        } else { // 닉네임이 없을 경우 임의 생성
+            request.updateNickName();
+        }
+        // 이메일 중복 검사
+        checkUserEmail(userInfo.email);
+        // Entity 생성
+        User newUser = request.toEntity(userInfo);
+        // 최저 등급 조회
+        Grade grade = gradeRepository.findFirstByStatusOrderByRankingAsc(StatusType.ACTIVE).orElseThrow();
+        newUser.addGrade(grade);
+
+        // 회원가입
+        userRepository.save(newUser);
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse naverLogin(KakaoLoginRequestDto request) throws Exception {
+        // 네이버에서 반환된 code로 accessToken 추출
+        String naverAccessToken = naverService.getAccessTokenFromNaver(request.code());
+        // 네이버로 회원 정보 조회 요청
+        NaverUserInfoResponseDto userInfo = naverService.getUserInfo(naverAccessToken);
+        // 네이버 고유 아이디가 없을 경우 예외
+        checkSocialIdIsNull(userInfo.id);
+        // 회원 정보 조회
+        User findUser = userRepository.findBySocialIdAndStatus(userInfo.id, StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+
+        // accessToken 발급
+        String accessToken = jwtProvider.createAccessToken(findUser.getId(), UserType.USER);
+        // refreshToken 발급
+        String refreshToken = jwtProvider.createRefreshToken(findUser.getId(), UserType.USER);
+
+        // 최근 접속일 정보 업데이트
+        findUser.updateLastVisit();
+
+        // 출석 등록 : 오늘 날짜 조회 후 오늘 로그인하지 않았다면 출석 체크 진행
+        LocalDate now = LocalDate.now();
+        String nextGrade = null;
+        if (!attendRepository.existsByUserIdAndAttendDate(findUser.getId(), now)) {
+            // 출석 체크
+            attendService.save(findUser, now);
+            // 회원 정보에 출석 + 1
+            findUser.plusAttendCount();
+            // 등업 대상자인지 확인
+            nextGrade = gradeService.upgradeGrade(findUser);
+        }
+        // 등업 여부 확인(nextGrade가 null일 경우 false)
+        GradeUpdateResponse gradeUpdated = new GradeUpdateResponse(StringUtils.hasText(nextGrade), nextGrade);
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .gradeUpdate(gradeUpdated)
+                .build();
+
+    }
+
+    @Override
+    public void naverMerge(NaverMergeRequestDto request, User user) {
+        // 회원 Entity 조회
+        User findUser = userRepository.findByIdAndStatus(user.getId(), StatusType.ACTIVE)
+                .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_USER));
+        // 네이버에서 반환된 code로 accessToken 추출
+        String naverAccessToken = naverService.getAccessTokenFromNaver(request.code());
+        // 네이버로 회원 정보 조회 요청
+        NaverUserInfoResponseDto userInfo = naverService.getUserInfo(naverAccessToken);
+        // 이미 등록된 소셜 계정일 경우 예외 발생
+        checkSocialId(userInfo.id);
+        // 소셜 정보 업데이트
+        findUser.updateSocialId(userInfo.id);
+    }
+
+    /**
+     * 소셜 아이디 null 여부 체크
+     * @param id 소셜 id
+     */
+    private static void checkSocialIdIsNull(String id) {
+        if (id != null) {
+            throw new OperationErrorException(ErrorCode.NOT_FOUND_SOCIAL_ID);
+        }
+    }
+
+    /**
+     * 소셜 아이디 가입 여부 체크
+     *
+     * @param id 소셜 계정 아이디
+     */
+    private void checkSocialId(String id) {
+        if (userRepository.existsBySocialIdAndStatus(id, StatusType.ACTIVE)) {
+            throw new OperationErrorException(ErrorCode.USED_SOCIAL_ID);
+        }
+    }
 
     /**
      * 회원 아이디 중복 체크(탈퇴한 아이디로 가입 불가)
@@ -182,7 +401,12 @@ public class DefaultUserService implements UserService {
         }
     }
 
-
+    /**
+     * 회원 연락처 중복 체크(본인 연락처 제외)
+     *
+     * @param phone  연락처
+     * @param userId 회원 식별자
+     */
     private void checkUserPhoneNotId(String phone, Long userId) {
         if (userRepository.existsByPhoneAndStatusAndIdNot(phone, StatusType.ACTIVE, userId)) {
             throw new OperationErrorException(ErrorCode.EXISTS_USER_PHONE);
@@ -203,7 +427,6 @@ public class DefaultUserService implements UserService {
 
     /**
      * 회원 이메일 중복 체크(본인 이메일 제외)
-     * 중복일 경우 바로 예외 발생
      *
      * @param email 이메일
      */

@@ -25,6 +25,8 @@ import com.sale.hot.global.exception.dto.ErrorCode;
 import com.sale.hot.global.page.Page;
 import com.sale.hot.global.page.PageInput;
 import com.sale.hot.global.page.Pageable;
+import com.sale.hot.global.util.FileUtil;
+import com.sale.hot.global.util.dto.FileName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -47,6 +49,7 @@ public class DefaultPostService implements PostService {
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final GradeService gradeService;
+    private final FileUtil fileUtil;
 
     @Override
     public Page<List<PostsResponse>> getPosts(PostsInput input, PageInput pageInput) {
@@ -82,8 +85,12 @@ public class DefaultPostService implements PostService {
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
 
         // 썸네일 있을 경우 이미지 저장
-        // Todo 이미지 저장 관련 로직 제작 해야됨
-        String thumbnailPath = thumbnail == null ? null : thumbnail.getOriginalFilename(); // originalName이 아닌 업로드 경로로 넣어줘야함
+        FileName thumbnailFileName = null;
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            fileUtil.existsImageFileExtension(thumbnail); // 확장자 확인
+            thumbnailFileName = fileUtil.fileUpload(thumbnail, "thumbnail");
+        }
+        String thumbnailPath = thumbnail == null ? null : thumbnailFileName.getModifiedFileName();
 
         // 게시글 객체로 변환
         Post newPost = request.toEntity(findCategory, user, thumbnailPath);
@@ -116,8 +123,13 @@ public class DefaultPostService implements PostService {
         Category findCategory = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() -> new OperationErrorException(ErrorCode.NOT_FOUND_CATEGORY));
         // 썸네일 있을 경우 이미지 저장
-        // Todo 이미지 저장 관련 로직 제작 해야됨
-        String thumbnailPath = thumbnail == null ? null : thumbnail.getOriginalFilename(); // originalName이 아닌 업로드 경로로 넣어줘야함
+        FileName thumbnailFileName = null;
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            fileUtil.existsImageFileExtension(thumbnail); // 확장자 확인
+            thumbnailFileName = fileUtil.fileUpload(thumbnail, "thumbnail");
+        }
+        String thumbnailPath = thumbnail == null ? null : thumbnailFileName.getModifiedFileName();
+
         // 게시글 수정
         Post newEntity = request.toEntity(findCategory, thumbnailPath);
         findPost.update(newEntity);

@@ -9,11 +9,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+
+import static com.sale.hot.global.util.CommonUtil.createNickName;
 
 public record JoinRequest(
         @Schema(description = "아이디", example = "testId1")
@@ -38,7 +39,6 @@ public record JoinRequest(
 
         @Schema(description = "닉네임", example = "네고왕")
         @Pattern(regexp = Regex.KICKNAME, message = "닉네임 형식을 확인해주세요.")
-        @NotEmpty(message = "닉네임은 필수입니다.")
         String nickname,
 
         @Schema(description = "연락처", example = "01012341234")
@@ -66,20 +66,20 @@ public record JoinRequest(
         @Schema(description = "소셜 아이디")
         String socialId
 ) {
-        // Entity 생성 시 비밀번호 암호화 진행
-        public User toEntity(){
-                return User.builder()
-                        .userId(this.userId)
-                        .password(new BCryptPasswordEncoder().encode(this.password))
-                        .name(this.name)
-                        .nickname(this.nickname)
-                        .phone(this.phone)
-                        .email(this.email)
-                        .gender(this.gender)
-                        .birth(LocalDate.parse(this.birth))
-                        .socialType(this.socialType)
-                        .socialId(this.socialId)
-                        .build();
-        }
+    // Entity 생성 시 비밀번호 암호화 진행
+    public User toEntity() {
+        return User.builder()
+                .userId(this.userId)
+                .password(new BCryptPasswordEncoder().encode(this.password))
+                .name(this.name)
+                .nickname(StringUtils.hasText(this.nickname) ? this.nickname : createNickName())
+                .phone(this.phone)
+                .email(this.email)
+                .gender(this.gender)
+                .birth(LocalDate.parse(this.birth))
+                .socialType(this.socialType)
+                .socialId(this.socialId)
+                .build();
+    }
 
 }

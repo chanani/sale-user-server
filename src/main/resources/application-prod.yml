@@ -1,17 +1,20 @@
+server:
+  port: 11001
+  ssl:
+    enabled: true
+    key-store: file:/cert/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: ${SSL_PASSWORD}
+
 spring:
   application:
     name: saleUserBe
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://49.247.173.142:3306/hotDelivery?serverTimezone=Asia/Seoul
-    username: chan
-    password: 1q2w3e4r!
-
-    # security
-    security:
-      user:
-        name: user
-        password: asdf1234!@
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       connection-timeout: 60000
       maximum-pool-size: 12
@@ -19,35 +22,55 @@ spring:
       idle-timeout: 300000
       max-lifetime: 6000000
 
-    jpa:
+  # security
+  security:
+    user:
+      name: user
+      password: asdf1234!@
+
+  jpa:
+    hibernate:
+      # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
+      ddl-auto: none
+    show-sql: false
+    properties:
       hibernate:
-        # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
-        ddl-auto: none
+        format_sql: false
 
-    data:
-      redis:
-        host: localhost
-        port: 6379
-        database: 0
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: 0
 
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: mink240000@gmail.com
-      password: wsqerlrvbcoqtujf
-      properties:
-        mail:
-          smtp:
-            auth: true
-            timeout: 5000
-            starttls:
-              enable: true
 # swagger
 springdoc:
   api-docs:
     path: /sale-user-be/user/v3/api-docs
   swagger-ui:
-    path: /sale-user-be/user/swagger-ui.html
+    path: /sale-user-be/user/swagger-ui/index.html
     url: /sale-user-be/user/v3/api-docs
 
+# file path
+file:
+  path: ${FILE_PATH}
 
+# OAuth 설정
+oauth:
+  kakao:
+    restapi-key: ${KAKAO_RESTAPI_KEY}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_SECRET}
+
+# 운영환경 로깅 설정
+logging:
+  level:
+    org.springframework: INFO
+    com.mysql.cj.jdbc: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: /logs/application.log

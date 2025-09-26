@@ -34,7 +34,7 @@ class UserTest {
         Grade gradeResult = gradeRepository.save(grade);
 
         User user = User.builder()
-                .userId("***REMOVED***12")
+                .userId("chanhan12")
                 .password("asdf1234")
                 .birth(LocalDate.now())
                 .email("aa@aa.aa")

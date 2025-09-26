@@ -45,7 +45,11 @@ public class SecurityConfig {
                  * anyRequest().authenticated() : 위에 명시하지 않은 나머지 요청은 사용자만 접근, 즉 로그인 해야 접근 가능
                  */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/api/v1/none/login", "/api/v1/none/**", "/sale-user-be/**").permitAll()
+                        .requestMatchers("/",
+                                "/api/v1/none/login",
+                                "/api/v1/none/**",
+                                "/sale-user-be/**",
+                                "/user-dev/**").permitAll()
                         .requestMatchers("/api/v1/admin/**", "/error-codes").hasRole("ADMIN")
                         .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .anyRequest().authenticated()

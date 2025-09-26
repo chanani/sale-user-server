@@ -1,5 +1,8 @@
 package com.sale.hot.entity.common.constant;
 
+/**
+ * 작성자 타입
+ */
 public enum AuthorType {
     USER("회원"),
     COMPANY("기업"),

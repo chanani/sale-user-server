@@ -28,6 +28,11 @@ public enum ErrorCode {
     FAILED_TO_WITHDRAWAL(1002, HttpStatus.BAD_REQUEST.value(), "회원 탈퇴에 실패하였습니다."),
     INVALID_SORT_FIELD(1003, HttpStatus.BAD_REQUEST.value(), "올바르지 않은 정렬 조건입니다."),
     NOT_EQUAL_WRITER(1004, HttpStatus.BAD_REQUEST.value(), "작성자만 수정 및 삭제 할 수 있습니다."),
+    NOT_FOUND_COMPANY_INFO(1005, HttpStatus.BAD_REQUEST.value(), "기업정보가 확인되지 않습니다."),
+    EXISTS_EXTENSION(1006, HttpStatus.BAD_REQUEST.value(), "파일 확장자를 확인해주세요."),
+    NOT_FOUND_SOCIAL_PHONE(1007, HttpStatus.BAD_REQUEST.value(), "계정에 연락처가 존재하지 않습니다."),
+    USED_SOCIAL_ID(1008, HttpStatus.BAD_REQUEST.value(), "이미 사용 중인 계정입니다."),
+    NOT_FOUND_SOCIAL_ID(1009, HttpStatus.BAD_REQUEST.value(), "존재하지 않은 계정입니다."),
 
     // 1050 ~ 1099 토큰 관련 예외
     // UNAUTHORIZED:401(리프레시토큰요청필요할때) , FORBIDDEN:403(팅겨내야할때)
@@ -88,7 +93,17 @@ public enum ErrorCode {
     // 1550 ~ 1599 기업 관련 예외
     EXISTS_COMPANY_ID(1550, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 아아디입니다."),
     EXISTS_COMPANY_PHONE(1551, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 연락처입니다."),
-    EXISTS_COMPANY_EMAIL(1552, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다.");
+    EXISTS_COMPANY_EMAIL(1552, HttpStatus.BAD_REQUEST.value(), "이미 사용중인 이메일입니다."),
+
+    // 1600 ~ 1649 광고 상품 관련 예외
+    NOT_FOUND_PROMOTION_ITEM(1600, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 광고 상품입니다."),
+
+    // 1650 ~ 1699 팝업 관련 예외
+    NOT_FOUND_POPUP(1650, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 팝업입니다."),
+    FAIL_TO_ACTIVE_POPUP(1651, HttpStatus.BAD_REQUEST.value(), "활성화할 수 있는 팝업은 최대 3개입니다."),
+
+    // 1700 ~ 1749 광고 상품 관련 예외
+    NOT_FOUND_PROMOTION(1700, HttpStatus.BAD_REQUEST.value(), "찾을 수 없는 광고 내역입니다.");
 
 
     private final int code;

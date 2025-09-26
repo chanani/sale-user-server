@@ -251,4 +251,10 @@ public class User extends BaseEntity {
     }
 
 
+    /**
+     * 소셜 계정 연동
+     */
+    public void updateSocialId(String id) {
+        this.socialId = id;
+    }
 }

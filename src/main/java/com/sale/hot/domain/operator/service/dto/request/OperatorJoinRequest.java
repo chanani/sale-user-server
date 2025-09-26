@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDate;
 
 public record OperatorJoinRequest(
-        @Schema(description = "아이디", example = "***REMOVED***12")
+        @Schema(description = "아이디", example = "chanhan12")
         @NotBlank(message = "아이디는 필수입니다.")
         String operatorId,
 
