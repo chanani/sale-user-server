@@ -17,10 +17,10 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class NaverService {
 
-    @Value("${naver.client-id}")
+    @Value("${oauth.naver.client-id}")
     private String clientId;
 
-    @Value("${naver.client-secret}")
+    @Value("${oauth.naver.client-secret}")
     private String clientSecret;
 
     private final String NAVER_TOKEN_URL_HOST = "https://nid.naver.com";

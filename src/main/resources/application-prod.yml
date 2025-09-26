@@ -3,51 +3,39 @@ server:
     enabled: true
     key-store: file:/cert/keystore.p12
     key-store-type: PKCS12
-    key-store-password: ***REMOVED***
+    key-store-password: ${SSL_PASSWORD}
 spring:
   application:
     name: saleUserBe
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://***REMOVED***:3306/discount?serverTimezone=Asia/Seoul
-    username: root
-    password: ***REMOVED***home
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
-    # security
-    security:
-      user:
-        name: user
-        password: asdf1234!@
-    hikari:
-      connection-timeout: 60000
-      maximum-pool-size: 12
-      minimum-idle: 5
-      idle-timeout: 300000
-      max-lifetime: 6000000
+  # security
+  security:
+    user:
+      name: user
+      password: asdf1234!@
+  hikari:
+    connection-timeout: 60000
+    maximum-pool-size: 12
+    minimum-idle: 5
+    idle-timeout: 300000
+    max-lifetime: 6000000
 
-    jpa:
-      hibernate:
-        # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
-        ddl-auto: none
+  jpa:
+    hibernate:
+      # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
+      ddl-auto: none
 
-    data:
-      redis:
-        host: localhost
-        port: 6379
-        database: 0
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: 0
 
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: mink240000@gmail.com
-      password: wsqerlrvbcoqtujf
-      properties:
-        mail:
-          smtp:
-            auth: true
-            timeout: 5000
-            starttls:
-              enable: true
 # swagger
 springdoc:
   api-docs:
@@ -58,5 +46,15 @@ springdoc:
 
 # file path
 file:
-  path: /discount-image/
+  path: ${FILE_PATH}
 
+# kakao
+oauth:
+  kakao:
+    restapi-key: ${KAKAO_RESTAPI_KEY}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
+
+  # naver
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_SECRET}

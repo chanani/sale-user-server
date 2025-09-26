@@ -45,7 +45,7 @@ public class SwaggerConfig {
 
         OpenAPI openAPI = new OpenAPI()
                 .components(components)
-                .addSecurityItem(new SecurityRequirement().addList(authorization));;
+                .addSecurityItem(new SecurityRequirement().addList(authorization));
         return openAPI;
     }
 

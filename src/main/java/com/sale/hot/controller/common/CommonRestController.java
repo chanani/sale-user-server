@@ -23,7 +23,7 @@ public class CommonRestController {
     public ResponseEntity<DataResponse<String>> editorImageUpload(
             @RequestPart(value = "uploadImage") MultipartFile inputFile
     ) {
-        String filePath = commonService.EditorImageUpload(inputFile);
+        String filePath = commonService.editorImageUpload(inputFile);
         return ResponseEntity.ok(DataResponse.send(filePath));
     }
 

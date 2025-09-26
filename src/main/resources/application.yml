@@ -14,7 +14,7 @@ spring:
   security:
     user:
       name: user
-      password: asdf1234!@
+      password: example
 
   # multipart/form-data
   servlet:
@@ -61,11 +61,13 @@ file:
   path: /Users/i***REMOVED***/Desktop/uploads/
 
 # kakao
-kakao:
-  restapi-key: 017f314b795d2d84aacac0877a1d58ec
-  redirect-uri: http://localhost:3001
 
-# naver
-naver:
-  client-id: i3siOwKjlSwl_cWH6A1E
-  client-secret: 17aWKxirW8
+oauth:
+  kakao:
+    restapi-key: example
+    redirect-uri: example
+
+  # naver
+  naver:
+    client-id: example
+    client-secret: example

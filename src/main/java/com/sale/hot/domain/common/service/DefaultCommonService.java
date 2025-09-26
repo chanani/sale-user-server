@@ -17,7 +17,7 @@ public class DefaultCommonService implements CommonService {
     private final FileUtil fileUtil;
 
     @Override
-    public String EditorImageUpload(MultipartFile inputFile) {
+    public String editorImageUpload(MultipartFile inputFile) {
         // 파일 확장자 확인
         fileUtil.existsImageFileExtension(inputFile);
         // 파일 업로드

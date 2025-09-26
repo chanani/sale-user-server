@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class KakaoService {
 
-    @Value("${kakao.restapi-key}")
+    @Value("${oauth.kakao.restapi-key}")
     private String clientId;
 
     private final String KAUTH_TOKEN_URL_HOST = "https://kauth.kakao.com";

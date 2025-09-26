@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -21,9 +23,10 @@ public class PostEventListener {
     private final NotificationRepository notificationRepository;
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW) // REQUIRES_NEW는 원본 트랜잭션과 분리된 안전한 쓰기 보장
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void savePostLieNotification(PostLikeEvent postLikeEvent) {
-        Post post = postLikeEvent.post();
+    public void savePostLieNotification(PostLikeEvent event) {
+        Post post = event.post();
         Notification notification = Notification.builder()
                 .type(NotificationType.LIKE)
                 .user(post.getUser())

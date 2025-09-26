@@ -9,5 +9,5 @@ public interface CommonService {
      * @param inputFile 업로드 파일 객체
      * @return 업로드 된 파일 경로
      */
-    String EditorImageUpload(MultipartFile inputFile);
+    String editorImageUpload(MultipartFile inputFile);
 }

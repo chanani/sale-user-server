@@ -63,7 +63,6 @@ public class UserApiController {
             description = "회원 정보를 조회합니다.")
     @GetMapping("/api/v1/user/info")
     public ResponseEntity<DataResponse<UserInfoResponse>> getUserInfo(@Parameter(hidden = true) User user) {
-        System.out.println("user = " + user);
         UserInfoResponse userInfo = userService.getInfo(user);
         return ResponseEntity.ok(DataResponse.send(userInfo));
     }
