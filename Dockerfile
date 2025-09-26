@@ -1,5 +1,5 @@
 # 빌드 스테이지
-FROM openjdk:17-jdk-slim AS builder
+FROM eclipse-temurin:21-jdk AS builder
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ COPY src/ src/
 RUN ./gradlew clean bootJar --no-daemon
 
 # 런타임 스테이지
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
