@@ -1,34 +1,41 @@
 server:
+  port: 11001
   ssl:
     enabled: true
     key-store: file:/cert/keystore.p12
     key-store-type: PKCS12
     key-store-password: ${SSL_PASSWORD}
+
 spring:
   application:
     name: saleUserBe
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 12
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 6000000
 
   # security
   security:
     user:
       name: user
       password: asdf1234!@
-  hikari:
-    connection-timeout: 60000
-    maximum-pool-size: 12
-    minimum-idle: 5
-    idle-timeout: 300000
-    max-lifetime: 6000000
 
   jpa:
     hibernate:
       # create, create-drop 등 사용시 db가 초기화 될 수 있으므로 조심해야함
       ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
 
   data:
     redis:
@@ -48,13 +55,22 @@ springdoc:
 file:
   path: ${FILE_PATH}
 
-# kakao
+# OAuth 설정
 oauth:
   kakao:
     restapi-key: ${KAKAO_RESTAPI_KEY}
     redirect-uri: ${KAKAO_REDIRECT_URI}
-
-  # naver
   naver:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_SECRET}
+
+# 운영환경 로깅 설정
+logging:
+  level:
+    org.springframework: INFO
+    com.mysql.cj.jdbc: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: /logs/application.log
